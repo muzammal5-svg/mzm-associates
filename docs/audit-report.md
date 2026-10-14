@@ -1,6 +1,6 @@
 # Phases 1–7 Audit Report
 
-**Last updated:** 2026-10-13  
+**Last updated:** 2026-10-14  
 **Scope:** Stage 1 audit, verified Stage 2 Part 1 (P0/P1 items C–J), and the accepted Stage 2 Part 2 Chunk 2 work (Documents, query errors, uploads, generated types, filter-option pagination). P2 items outside this chunk, Stages 3–4, and Phase 8 remain out of scope.
 
 ## Verification commands and results
@@ -19,7 +19,7 @@
 | `npx tsc --noEmit` (serial run) | Passed. A first concurrent run overlapped `next build` regenerating `.next/types` and failed transiently; serial rerun passed. |
 | `npm run lint` | Passed. |
 | `npm run build` (`next build`) | Passed; all 32 static pages generated. |
-| Current handoff verification (2026-10-13) | `npx tsc --noEmit` passed; `npm run lint` passed; `npm run build` passed and generated 32 static pages. `reset-demo-data.mjs` restored 1 firm, 3 profiles, 10 clients, 25 cases, 30 hearings, 0 reminders. Default `generate_reminders()` processed 21 cases, created 34 reminders, closed 0; aggregate count was 34 total / 34 upcoming. `verify-seed.mjs` passed all 14 printed checks. `verify-filter-options.mjs` returned all 620 court and judge values and cleaned up to 0 temporary / 30 total hearings. The updated seed verifier now generates reminders in its finalizer; final database count is 34 total / 34 upcoming. Document delete JWT checks found clerks denied and admins allowed, but lawyers are also denied by the deployed policies. The new lawyer/admin migration dry run is blocked because remote migration versions 20240001000000–20240007000000 have no matching local migration files; it was not pushed. This is one confirmed broken authorization behavior pending migration history reconciliation. |
+| Current handoff verification (2026-10-14) | `npm ci` in `web/` passed; `npx tsc --noEmit`, `npm run lint`, and `npm run build` all exited 0; build generated 32 static pages. `supabase/scripts/npm ci`, reset-demo, seed verification (including final 34/34 reminders), Stage 2 Part 1 (9/9), and document-delete real-JWT verification passed. Clerk storage/row deletes denied; own-firm lawyer and admin storage/row deletes succeeded; second-firm lawyer storage/row deletes denied. Cleanup: 0 temp document rows, 0 temp objects, temp firm/user removed. Root migration list: 8 local = 8 remote. No Phase 8 work started. |
 | Generated Supabase types | `supabase gen types typescript --project-id zxxpsvhlekemgccrcwtg --schema public` completed; 1,272 generated lines were written to a temporary file, leaving application types untouched. |
 | `supabase db reset` | Not run; Docker is unavailable and the approved verification target is the remote dev project. No reset or destructive operation was performed. |
 | Seed load | Earlier setup verification seeded the remote dev project. The revised seed file now also fills missing seeded-case hearings and includes the requested date cases; this latest seed revision was not re-run during this verification pass. |
@@ -131,7 +131,7 @@ Status definitions: `[DONE]` verified complete; `[PARTIAL]` implemented but inco
 | 5 — Cause List | 4 | 3 | 0 | 0 |
 | 6 — Decided Cases | 2 | 3 | 0 | 0 |
 | 7 — Reminders & Notifications | 0 | 6 | 0 | 0 |
-| **Total** | **13** | **27** | **0** | **1** |
+| **Total** | **13** | **28** | **0** | **0** |
 
 ## Remaining work outside this approval
 
