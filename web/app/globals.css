@@ -1,0 +1,142 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Google Fonts ─────────────────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Cormorant+Garamond:wght@400;600;700&family=Inter:wght@300;400;500;600;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap');
+
+/* ─── CSS Variables ─────────────────────────────────────────────────────────── */
+:root {
+  --font-playfair:   'Playfair Display', Georgia, serif;
+  --font-cormorant:  'Cormorant Garamond', Georgia, serif;
+  --font-inter:      'Inter', system-ui, sans-serif;
+  --font-noto-urdu:  'Noto Nastaliq Urdu', serif;
+
+  --color-gold:      #8A6414;
+  --color-navy:      #0B1B3A;
+  --color-offwhite:  #F7F7F4;
+  --color-success:   #1F7A4D;
+  --color-danger:    #C0392B;
+
+  /* Bottom nav safe area on iOS */
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-top:    env(safe-area-inset-top, 0px);
+}
+
+/* ─── Base ──────────────────────────────────────────────────────────────────── */
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  font-family: var(--font-inter);
+  background-color: var(--color-offwhite);
+  color: var(--color-navy);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  min-height: 100dvh;
+  overflow-x: hidden;
+}
+
+/* ─── Typography ────────────────────────────────────────────────────────────── */
+h1, h2, h3, h4 {
+  font-family: var(--font-playfair);
+  color: var(--color-navy);
+  line-height: 1.25;
+}
+
+/* ─── Urdu text helper ──────────────────────────────────────────────────────── */
+.urdu {
+  font-family: var(--font-noto-urdu);
+  direction: rtl;
+  text-align: right;
+  line-height: 2;
+}
+
+/* ─── RTL support ───────────────────────────────────────────────────────────── */
+[dir="rtl"] body {
+  font-family: var(--font-noto-urdu);
+}
+[dir="rtl"] h1, [dir="rtl"] h2, [dir="rtl"] h3, [dir="rtl"] h4 {
+  font-family: var(--font-noto-urdu);
+}
+/* Sidebar offset flips in RTL */
+[dir="rtl"] .md\:ml-64 {
+  margin-left: 0;
+  margin-right: 16rem;
+}
+[dir="rtl"] .md\:left-0 {
+  left: auto;
+  right: 0;
+}
+
+/* ─── Scrollbar (desktop) ───────────────────────────────────────────────────── */
+@media (min-width: 768px) {
+  ::-webkit-scrollbar       { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 9999px; }
+}
+
+/* ─── Mobile bottom navigation padding ─────────────────────────────────────── */
+.page-content-mobile {
+  padding-bottom: calc(4.5rem + var(--safe-bottom));
+}
+
+/* ─── Focus ring ────────────────────────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 2px;
+}
+
+/* ─── Touch targets ─────────────────────────────────────────────────────────── */
+button, a, [role="button"] {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* ─── Card ──────────────────────────────────────────────────────────────────── */
+@layer components {
+  .card {
+    @apply bg-white rounded-xl shadow-card border border-navy-50/60 p-4;
+  }
+  .card-header {
+    @apply text-sm font-semibold text-navy-400 uppercase tracking-wider mb-3;
+  }
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg
+           bg-gold text-white font-semibold text-sm
+           hover:bg-gold-600 active:bg-gold-700
+           transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2
+           disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg
+           bg-white text-navy border border-navy-100 font-semibold text-sm
+           hover:bg-navy-50 active:bg-navy-100
+           transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-navy focus-visible:ring-offset-2
+           disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  .btn-danger {
+    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg
+           bg-danger text-white font-semibold text-sm
+           hover:bg-red-700 active:bg-red-800
+           transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  .input {
+    @apply w-full rounded-lg border border-navy-100 bg-white px-3.5 py-2.5 text-sm text-navy
+           placeholder:text-navy-300
+           focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent
+           disabled:bg-navy-50 disabled:cursor-not-allowed
+           transition-shadow duration-150;
+  }
+  .label {
+    @apply block text-sm font-medium text-navy-400 mb-1.5;
+  }
+  .badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold;
+  }
+}

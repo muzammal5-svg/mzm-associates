@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-label="MZM & Associates logo">
+  <defs>
+    <linearGradient id="gold" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#CDAA52"/>
+      <stop offset="100%" stop-color="#8A6414"/>
+    </linearGradient>
+  </defs>
+  <rect x="18" y="18" width="476" height="476" rx="112" fill="#0B1B3A"/>
+  <rect x="40" y="40" width="432" height="432" rx="96" fill="none" stroke="url(#gold)" stroke-width="18"/>
+  <path d="M120 350V160h58l78 144 78-144h58v190h-46V216l-90 165-90-165v134z" fill="url(#gold)"/>
+  <path d="M182 131h50l52 92 52-92h50l-83 140 83 140h-50l-52-92-52 92h-50l83-140z" fill="#0B1B3A" opacity="0.12"/>
+</svg>
