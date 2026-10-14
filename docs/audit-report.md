@@ -144,7 +144,7 @@ Status definitions: `[DONE]` verified complete; `[PARTIAL]` implemented but inco
 
 | Chunk 3 item | Status | Evidence / remaining work |
 |---|---|---|
-| M1 hardcoded UI strings | PARTIAL | AST scan: 208 JSX text candidates, 105 static UI attribute candidates, and 37 toast calls with literal arguments. A representative `rg -n` scan still finds English in auth, document upload, and document-list UI. These strings were not fully migrated; this item is not complete. |
+| M1 hardcoded UI strings | PARTIAL | AST scan: 207 JSX text candidates, 106 static UI attribute candidates, and 37 toast calls with literal arguments. A representative `rg -n` scan still finds English in auth, document upload, and document-list UI. These strings were not fully migrated; this item is not complete. |
 | M2 locale parity and checker | DONE | `npm run i18n:check`: EN_KEYS 214, UR_KEYS 214, MISSING_IN_UR 0, EXTRA_IN_UR 0, UNUSED_KEYS 0. The checker scans static translation calls and interpolated namespace prefixes. 68 source-unreferenced locale keys were removed from both locale files. |
 | M3 RTL/logical classes | DONE | Physical directional utility count measured against `chunk2-verified`: 87 before, 0 after. `LangProvider` updates html lang/dir and toggles `font-urdu`; global CSS loads Noto Nastaliq Urdu and mirrors arrow/chevron icons. |
 | M4 date formatting | DONE | User-visible date values call `fmtDate` in `web/lib/utils.ts`, which formats timestamps in Asia/Karachi as `dd MMM yyyy`; date-only values preserve their calendar date. Reminder cards now use the helper. |

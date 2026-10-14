@@ -11,7 +11,7 @@
 
 ## Incomplete
 
-- M1 is PARTIAL. The scan still found 208 JSX text candidates, 105 static UI attribute candidates, and 37 toast calls with literal arguments in `web/app` and `web/components`. These have not all been moved to translation keys. A sample grep output is in the Chunk 3 audit evidence.
+- M1 is PARTIAL. The scan still found 207 JSX text candidates, 106 static UI attribute candidates, and 37 toast calls with literal arguments in `web/app` and `web/components`. These have not all been moved to translation keys. A sample grep output is in the Chunk 3 audit evidence.
 - The Playwright smoke test is the only E2E test run. No additional test suites, RLS tests or Phase 8 work were started.
 - `chunk3-verified` was intentionally not tagged because M1 is incomplete.
 
