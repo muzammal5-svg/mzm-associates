@@ -140,3 +140,18 @@ Status definitions: `[DONE]` verified complete; `[PARTIAL]` implemented but inco
 - Stage 3 automated tests and Stage 4 manual checklist have not started.
 
 **Stage 2 Part 1 verification completed 2026-10-12; accepted Chunk 2 work verified 2026-10-13.** P2 items outside this chunk, Stages 3–4, and Phase 8 were not started.
+## Chunk 3 — M/N/P verification (2026-10-14)
+
+| Chunk 3 item | Status | Evidence / remaining work |
+|---|---|---|
+| M1 hardcoded UI strings | PARTIAL | AST scan: 208 JSX text candidates, 105 static UI attribute candidates, and 37 toast calls with literal arguments. A representative `rg -n` scan still finds English in auth, document upload, and document-list UI. These strings were not fully migrated; this item is not complete. |
+| M2 locale parity and checker | DONE | `npm run i18n:check`: EN_KEYS 214, UR_KEYS 214, MISSING_IN_UR 0, EXTRA_IN_UR 0, UNUSED_KEYS 0. The checker scans static translation calls and interpolated namespace prefixes. 68 source-unreferenced locale keys were removed from both locale files. |
+| M3 RTL/logical classes | DONE | Physical directional utility count measured against `chunk2-verified`: 87 before, 0 after. `LangProvider` updates html lang/dir and toggles `font-urdu`; global CSS loads Noto Nastaliq Urdu and mirrors arrow/chevron icons. |
+| M4 date formatting | DONE | User-visible date values call `fmtDate` in `web/lib/utils.ts`, which formats timestamps in Asia/Karachi as `dd MMM yyyy`; date-only values preserve their calendar date. Reminder cards now use the helper. |
+| N1/N2 logo-derived PWA assets | DONE | Source `web/public/logo/mzm-mark.svg`; Sharp generator creates 72/96/128/144/152/180/192/384/512 icons, separate maskable 512, and 64 favicon. Manifest checker passed all 10 icon dimension checks. |
+| N3 logo usage | DONE | Shared `Logo` component renders `/logo/mzm-mark.svg`; it is used by splash, sign-in, and Header. Mobile/sidebar firm-logo branches retain configured firm branding and use the shared logo fallback. |
+| P1/P2 smoke test setup | DONE | Added typecheck/test/test:watch/test:e2e/i18n:check scripts, Vitest, Playwright, Sharp and coverage dependencies. Vitest smoke: 1/1 passed. Playwright `/auth/sign-in/` smoke: 1 passed. |
+| Final checks | DONE | TypeScript, lint, build (32 static pages), i18n checker, npm test, and the single Playwright smoke test exited successfully. |
+
+**Chunk 3 subtotal:** DONE 8 / PARTIAL 1 / MISSING 0 / BROKEN 0.  
+**Tag:** `chunk3-verified` was not created because M1 remains partial.
