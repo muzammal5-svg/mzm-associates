@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   manifest:    "/manifest.json",
   appleWebApp: { capable: true, statusBarStyle: "black-translucent", title: BRAND.shortName },
   icons: {
-    icon:  [{ url: "/icons/icon-192.png", sizes: "192x192" }],
+    icon:  [{ url: "/favicon.png", sizes: "64x64", type: "image/png" }, { url: "/icons/icon-192.png", sizes: "192x192" }],
     apple: [{ url: "/icons/icon-180.png", sizes: "180x180" }],
   },
 };
