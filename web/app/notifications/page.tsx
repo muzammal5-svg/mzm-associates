@@ -151,7 +151,7 @@ function NotificationsPage() {
               <button
                 key={item.id}
                 onClick={() => void openNotification(item)}
-                className={`block w-full rounded-xl border text-left transition-colors ${
+                className={`block w-full rounded-xl border text-start transition-colors ${
                   item.is_read ? "border-navy-50 bg-white" : "border-gold-200 bg-gold-50"
                 }`}
               >

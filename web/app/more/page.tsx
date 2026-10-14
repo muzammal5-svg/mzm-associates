@@ -112,7 +112,7 @@ function MorePage() {
                 {Inner}
               </Link>
             ) : (
-              <button key={item.label} onClick={item.action} className="w-full hover:bg-navy-50/50 transition-colors active:bg-navy-50 text-left">
+              <button key={item.label} onClick={item.action} className="w-full hover:bg-navy-50/50 transition-colors active:bg-navy-50 text-start">
                 {Inner}
               </button>
             );

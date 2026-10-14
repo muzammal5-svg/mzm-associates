@@ -267,7 +267,7 @@ export function CauseListView({
           <thead className="bg-navy-50/70 sticky top-0 z-10">
             <tr>
               {["Sr.", "Prev. Date", "Parties", "From", "Current Proceeding", "Next Proceeding", "Next Date", "Court/Judge", ""].map((h, i) => (
-                <th key={i} className="px-3 py-2.5 text-left text-xs font-semibold text-navy-400 uppercase tracking-wider whitespace-nowrap">
+                <th key={i} className="px-3 py-2.5 text-start text-xs font-semibold text-navy-400 uppercase tracking-wider whitespace-nowrap">
                   {h}
                 </th>
               ))}

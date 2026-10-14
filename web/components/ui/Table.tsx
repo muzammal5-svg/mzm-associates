@@ -47,7 +47,7 @@ export function Table<T>({
                 scope="col"
                 style={col.width ? { width: col.width } : undefined}
                 className={cn(
-                  "text-left font-semibold text-xs uppercase tracking-wider",
+                  "text-start font-semibold text-xs uppercase tracking-wider",
                   "px-4 py-3 border-b border-navy-50",
                   col.headerClass
                 )}

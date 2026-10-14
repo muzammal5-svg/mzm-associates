@@ -143,7 +143,7 @@ function ProfilePage() {
               onClick={() => fileRef.current?.click()}
               disabled={uploadingPhoto}
               aria-label={t("profile.changePhoto")}
-              className="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-gold text-white flex items-center justify-center shadow-card hover:bg-gold-600 transition-colors disabled:opacity-50"
+              className="absolute bottom-0 end-0 w-8 h-8 rounded-full bg-gold text-white flex items-center justify-center shadow-card hover:bg-gold-600 transition-colors disabled:opacity-50"
             >
               <Camera className="w-4 h-4" />
             </button>
@@ -222,7 +222,7 @@ function ProfilePage() {
                 type="button"
                 aria-label={showCurrent ? t("auth.hidePassword") : t("auth.showPassword")}
                 onClick={() => setShowCurrent(v => !v)}
-                className="absolute right-3 bottom-2.5 text-navy-300 hover:text-navy"
+                className="absolute end-3 bottom-2.5 text-navy-300 hover:text-navy"
               >
                 {showCurrent ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
@@ -240,7 +240,7 @@ function ProfilePage() {
                 type="button"
                 aria-label={showNew ? t("auth.hidePassword") : t("auth.showPassword")}
                 onClick={() => setShowNew(v => !v)}
-                className="absolute right-3 bottom-2.5 text-navy-300 hover:text-navy"
+                className="absolute end-3 bottom-2.5 text-navy-300 hover:text-navy"
               >
                 {showNew ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>

@@ -52,7 +52,7 @@ export function Sidebar() {
           <span className="relative flex-shrink-0">
             <Icon className={cn("w-4.5 h-4.5", isActive ? "text-white" : "text-navy-300 group-hover:text-white")} />
             {badge > 0 && (
-              <span aria-hidden="true" className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-danger" />
+              <span aria-hidden="true" className="absolute -top-1 -end-1 w-2 h-2 rounded-full bg-danger" />
             )}
           </span>
         )}
@@ -68,7 +68,7 @@ export function Sidebar() {
   }
 
   return (
-    <aside className="hidden md:flex flex-col w-64 min-h-screen bg-navy fixed left-0 top-0 z-30">
+    <aside className="hidden md:flex flex-col w-64 min-h-screen bg-navy fixed start-0 top-0 z-30">
       {/* Logo / firm header */}
       <div className="px-5 py-5 border-b border-white/10 flex items-center gap-3">
         {firm?.logo_url ? (

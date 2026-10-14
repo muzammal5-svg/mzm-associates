@@ -127,7 +127,7 @@ function EditClientPage() {
             <div className="space-y-1.5">
               <label className="label">
                 {t("clients.cnic")}
-                <span className="text-navy-300 text-xs ml-1">({t("common.optional")})</span>
+                <span className="text-navy-300 text-xs ms-1">({t("common.optional")})</span>
               </label>
               <input
                 type="text" inputMode="numeric"

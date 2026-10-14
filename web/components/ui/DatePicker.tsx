@@ -25,13 +25,13 @@ export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
         {label && (
           <label htmlFor={inputId} className="label">
             {label}
-            {required && <span className="text-danger ml-0.5" aria-hidden="true">*</span>}
+            {required && <span className="text-danger ms-0.5" aria-hidden="true">*</span>}
           </label>
         )}
 
         <div className="relative flex items-center">
           <Calendar
-            className="absolute left-3 w-4 h-4 text-navy-300 pointer-events-none"
+            className="absolute start-3 w-4 h-4 text-navy-300 pointer-events-none"
             aria-hidden="true"
           />
           <input
@@ -41,7 +41,7 @@ export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
             required={required}
             aria-invalid={!!error}
             className={cn(
-              "input pl-9",
+              "input ps-9",
               // iOS date input needs explicit colour
               "[color-scheme:light]",
               error && "border-danger focus:ring-danger",

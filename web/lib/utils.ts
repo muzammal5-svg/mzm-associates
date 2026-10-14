@@ -1,7 +1,7 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { format, parseISO } from "date-fns";
-import { toZonedTime } from "date-fns-tz";
+import { formatInTimeZone } from "date-fns-tz";
 import { BRAND } from "./brand";
 
 /** Merge Tailwind classes safely */
@@ -17,8 +17,11 @@ export function fmtDate(value: string | Date | null | undefined): string {
   if (!value) return "—";
   try {
     const date = typeof value === "string" ? parseISO(value) : value;
-    const zoned = toZonedTime(date, BRAND.timezone);
-    return format(zoned, BRAND.dateFormat);
+    // Date-only values are calendar dates and must not shift with the browser timezone.
+    if (typeof value === "string" && /^\d{4}-\d{2}-\d{2}$/.test(value)) {
+      return format(date, BRAND.dateFormat);
+    }
+    return formatInTimeZone(date, BRAND.timezone, BRAND.dateFormat);
   } catch {
     return "—";
   }
@@ -29,8 +32,7 @@ export function fmtTime(value: string | Date | null | undefined): string {
   if (!value) return "—";
   try {
     const date = typeof value === "string" ? parseISO(value) : value;
-    const zoned = toZonedTime(date, BRAND.timezone);
-    return format(zoned, "HH:mm");
+    return formatInTimeZone(date, BRAND.timezone, "HH:mm");
   } catch {
     return "—";
   }
@@ -38,8 +40,7 @@ export function fmtTime(value: string | Date | null | undefined): string {
 
 /** Today's date string YYYY-MM-DD in Karachi timezone */
 export function todayKarachi(): string {
-  const now = toZonedTime(new Date(), BRAND.timezone);
-  return format(now, "yyyy-MM-dd");
+  return formatInTimeZone(new Date(), BRAND.timezone, "yyyy-MM-dd");
 }
 
 /** Truncate long text with ellipsis */

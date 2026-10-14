@@ -159,7 +159,7 @@ export function BottomSheet({
         aria-labelledby={title ? "sheet-title" : undefined}
         style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
         className={cn(
-          "fixed bottom-0 left-0 right-0 z-50",
+          "fixed bottom-0 start-0 end-0 z-50",
           "bg-white rounded-t-3xl shadow-modal",
           "flex flex-col animate-slide-up",
           heightClass,

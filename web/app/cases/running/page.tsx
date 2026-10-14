@@ -104,7 +104,7 @@ function RunningCasesPage({ updateCaseId }: { updateCaseId: string | null }) {
           >
             Filters
             {activeFilterCount > 0 && (
-              <Badge variant="danger" size="sm" className="-mr-1">{activeFilterCount}</Badge>
+              <Badge variant="danger" size="sm" className="-me-1">{activeFilterCount}</Badge>
             )}
           </Button>
         </div>

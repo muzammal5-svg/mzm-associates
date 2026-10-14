@@ -53,7 +53,7 @@ export function DesktopTopBar({ title, subtitle, actions }: DesktopTopBarProps) 
           {unreadCount > 0 && (
             <span
               aria-hidden="true"
-              className="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-0.5 rounded-full bg-danger text-white text-[9px] font-bold flex items-center justify-center"
+              className="absolute -top-0.5 -end-0.5 min-w-[16px] h-4 px-0.5 rounded-full bg-danger text-white text-[9px] font-bold flex items-center justify-center"
             >
               {unreadCount > 99 ? "99+" : unreadCount}
             </span>
@@ -90,7 +90,7 @@ export function DesktopTopBar({ title, subtitle, actions }: DesktopTopBarProps) 
           {menuOpen && (
             <>
               <div className="fixed inset-0 z-40" onClick={() => setMenuOpen(false)} aria-hidden />
-              <div className="absolute right-0 top-full mt-1.5 w-48 bg-white rounded-xl shadow-modal border border-navy-50 z-50 animate-slide-down overflow-hidden">
+              <div className="absolute end-0 top-full mt-1.5 w-48 bg-white rounded-xl shadow-modal border border-navy-50 z-50 animate-slide-down overflow-hidden">
                 <Link href="/profile"
                   onClick={() => setMenuOpen(false)}
                   className="flex items-center gap-2.5 px-4 py-3 text-sm text-navy hover:bg-navy-50 transition-colors"

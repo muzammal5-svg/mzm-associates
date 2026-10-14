@@ -35,7 +35,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
         {label && (
           <label htmlFor={textareaId} className="label">
             {label}
-            {required && <span className="text-danger ml-0.5" aria-hidden="true">*</span>}
+            {required && <span className="text-danger ms-0.5" aria-hidden="true">*</span>}
           </label>
         )}
 
@@ -49,7 +49,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
           aria-invalid={!!error}
           className={cn(
             "input min-h-[80px] resize-y py-2.5",
-            dir === "rtl" && "font-urdu text-right",
+            dir === "rtl" && "font-urdu text-end",
             error && "border-danger focus:ring-danger",
             className
           )}

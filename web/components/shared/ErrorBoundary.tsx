@@ -43,7 +43,7 @@ export class ErrorBoundary extends Component<Props, State> {
             An unexpected error occurred. Please refresh the page or try again.
           </p>
           {process.env.NODE_ENV === "development" && this.state.error && (
-            <pre className="mt-3 text-left text-xs bg-red-50 text-danger rounded-xl p-4 max-w-sm mx-auto overflow-x-auto">
+            <pre className="mt-3 text-start text-xs bg-red-50 text-danger rounded-xl p-4 max-w-sm mx-auto overflow-x-auto">
               {this.state.error.message}
             </pre>
           )}

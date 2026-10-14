@@ -34,7 +34,7 @@ export function SplashScreen({ onDone, minDuration = 1400 }: SplashScreenProps) 
       `}
     >
       {/* Gold top accent bar */}
-      <div className="absolute top-0 left-0 right-0 h-1 bg-gold" />
+      <div className="absolute top-0 start-0 end-0 h-1 bg-gold" />
 
       {/* Logo mark (large) */}
       <div className="animate-fade-in flex flex-col items-center gap-6">
@@ -58,7 +58,7 @@ export function SplashScreen({ onDone, minDuration = 1400 }: SplashScreenProps) 
       </div>
 
       {/* Bottom firm name */}
-      <div className="absolute bottom-8 left-0 right-0 text-center">
+      <div className="absolute bottom-8 start-0 end-0 text-center">
         <p className="text-navy-300 text-xs tracking-widest uppercase">
           {BRAND.name}
         </p>

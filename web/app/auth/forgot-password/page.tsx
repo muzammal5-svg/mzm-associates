@@ -55,13 +55,13 @@ export default function ForgotPasswordPage() {
               <div className="space-y-1.5">
                 <label htmlFor="reset-email" className="label">{t("auth.email")}</label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-navy-300 pointer-events-none" />
+                  <Mail className="absolute start-3 top-1/2 -translate-y-1/2 w-4 h-4 text-navy-300 pointer-events-none" />
                   <input
                     id="reset-email" type="email" autoComplete="email" required
                     value={email} onChange={e => setEmail(e.target.value)}
                     placeholder={t("auth.emailPlaceholder")}
                     disabled={loading}
-                    className="input pl-9"
+                    className="input ps-9"
                   />
                 </div>
               </div>

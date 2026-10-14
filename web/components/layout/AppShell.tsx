@@ -49,7 +49,7 @@ export function AppShell({
       {/* ── Main content ── */}
       <main
         className={cn(
-          "md:ml-64 min-h-dvh",
+          "md:ms-64 min-h-dvh",
           // Mobile: pad bottom for nav bar + safe area
           "pb-[calc(4.5rem+env(safe-area-inset-bottom,0px))] md:pb-0",
           className

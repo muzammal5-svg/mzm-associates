@@ -63,7 +63,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
         className={cn(
           "fixed z-90 flex flex-col gap-2 pointer-events-none",
           // Mobile: bottom centre; Desktop: top-right
-          "bottom-20 left-4 right-4 md:bottom-auto md:top-4 md:left-auto md:right-4 md:w-80"
+          "bottom-20 start-4 end-4 md:bottom-auto md:top-4 md:start-auto md:end-4 md:w-80"
         )}
       >
         {toasts.map((t) => (

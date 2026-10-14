@@ -40,9 +40,9 @@ export function OfflineBanner() {
       role="status"
       aria-live="polite"
       className={cn(
-        "fixed top-0 left-0 right-0 z-[90] flex items-center justify-center gap-2",
+        "fixed top-0 start-0 end-0 z-[90] flex items-center justify-center gap-2",
         "px-4 py-2 text-sm font-medium transition-colors duration-300",
-        "md:top-auto md:bottom-4 md:left-1/2 md:-translate-x-1/2 md:right-auto",
+        "md:top-auto md:bottom-4 md:start-1/2 md:-translate-x-1/2 md:end-auto",
         "md:rounded-xl md:shadow-modal md:px-5 md:py-2.5 md:w-auto",
         online
           ? "bg-success text-white"

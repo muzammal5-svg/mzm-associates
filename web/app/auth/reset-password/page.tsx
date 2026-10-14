@@ -66,10 +66,10 @@ export default function ResetPasswordPage() {
                     id="new-password" type={showPwd ? "text" : "password"}
                     autoComplete="new-password" required minLength={8}
                     value={newPwd} onChange={e => setNewPwd(e.target.value)}
-                    className="input pr-10" disabled={loading}
+                    className="input pe-10" disabled={loading}
                   />
                   <button type="button" onClick={() => setShowPwd(v => !v)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-navy-300 hover:text-navy p-0.5"
+                    className="absolute end-3 top-1/2 -translate-y-1/2 text-navy-300 hover:text-navy p-0.5"
                     aria-label={showPwd ? t("auth.hidePassword") : t("auth.showPassword")}
                   >
                     {showPwd ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}

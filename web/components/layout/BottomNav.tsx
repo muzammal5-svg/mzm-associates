@@ -21,7 +21,7 @@ export function BottomNav() {
 
   return (
     <nav
-      className="md:hidden fixed bottom-0 left-0 right-0 z-30 bg-white border-t border-navy-50 shadow-navbar"
+      className="md:hidden fixed bottom-0 start-0 end-0 z-30 bg-white border-t border-navy-50 shadow-navbar"
       style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
       aria-label={t("nav.home")}
     >
@@ -56,7 +56,7 @@ export function BottomNav() {
                 {badge > 0 && (
                   <span
                     aria-hidden="true"
-                    className="absolute -top-1 -right-1.5 min-w-[14px] h-3.5 px-0.5 rounded-full bg-danger text-white text-[9px] font-bold flex items-center justify-center leading-none"
+                    className="absolute -top-1 -end-1.5 min-w-[14px] h-3.5 px-0.5 rounded-full bg-danger text-white text-[9px] font-bold flex items-center justify-center leading-none"
                   >
                     {badge > 9 ? "9+" : badge}
                   </span>

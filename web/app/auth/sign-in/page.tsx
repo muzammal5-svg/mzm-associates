@@ -156,13 +156,13 @@ export default function SignInPage() {
               <div className="space-y-1.5">
                 <label htmlFor="email" className="label">{t("auth.email")}</label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-navy-300 pointer-events-none" />
+                  <Mail className="absolute start-3 top-1/2 -translate-y-1/2 w-4 h-4 text-navy-300 pointer-events-none" />
                   <input
                     id="email" type="email" autoComplete="email" required
                     value={email} onChange={e => setEmail(e.target.value)}
                     placeholder={t("auth.emailPlaceholder")}
                     disabled={!IS_SUPABASE_CONFIGURED || loading}
-                    className="input pl-9"
+                    className="input ps-9"
                   />
                 </div>
               </div>
@@ -175,13 +175,13 @@ export default function SignInPage() {
                     autoComplete="current-password" required
                     value={password} onChange={e => setPassword(e.target.value)}
                     disabled={!IS_SUPABASE_CONFIGURED || loading}
-                    className="input pr-10"
+                    className="input pe-10"
                   />
                   <button
                     type="button"
                     aria-label={showPwd ? t("auth.hidePassword") : t("auth.showPassword")}
                     onClick={() => setShowPwd(v => !v)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-navy-300 hover:text-navy transition-colors p-0.5"
+                    className="absolute end-3 top-1/2 -translate-y-1/2 text-navy-300 hover:text-navy transition-colors p-0.5"
                   >
                     {showPwd ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
@@ -242,13 +242,13 @@ export default function SignInPage() {
                 <div className="space-y-1.5">
                   <label htmlFor="phone" className="label">{t("auth.phone")}</label>
                   <div className="relative">
-                    <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-navy-300 pointer-events-none" />
+                    <Phone className="absolute start-3 top-1/2 -translate-y-1/2 w-4 h-4 text-navy-300 pointer-events-none" />
                     <input
                       id="phone" type="tel" autoComplete="tel" required
                       value={phone} onChange={e => setPhone(e.target.value)}
                       placeholder={t("auth.phonePlaceholder")}
                       disabled={loading}
-                      className="input pl-9"
+                      className="input ps-9"
                     />
                   </div>
                 </div>

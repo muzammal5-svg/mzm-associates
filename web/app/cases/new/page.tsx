@@ -141,7 +141,7 @@ function NewCasePage() {
         <Card>
           <h2 className="text-sm font-semibold text-navy-400 uppercase tracking-wider mb-3">Client</h2>
           <div className="space-y-1.5">
-            <label className="label">{t("clients.title")} <span className="text-danger ml-0.5">*</span></label>
+            <label className="label">{t("clients.title")} <span className="text-danger ms-0.5">*</span></label>
             <Controller
               name="client_id"
               control={control}
@@ -197,7 +197,7 @@ function NewCasePage() {
 
             {/* Representing toggle */}
             <div className="space-y-1.5">
-              <label className="label">{t("cases.representing")} <span className="text-danger ml-0.5">*</span></label>
+              <label className="label">{t("cases.representing")} <span className="text-danger ms-0.5">*</span></label>
               <div className="flex rounded-xl overflow-hidden border border-navy-100">
                 {(["plaintiff", "defendant"] as const).map(r => {
                   const active = watch("representing") === r;

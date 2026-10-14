@@ -40,7 +40,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
         {label && (
           <label htmlFor={selectId} className="label">
             {label}
-            {required && <span className="text-danger ml-0.5" aria-hidden="true">*</span>}
+            {required && <span className="text-danger ms-0.5" aria-hidden="true">*</span>}
           </label>
         )}
 
@@ -51,7 +51,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
             required={required}
             aria-invalid={!!error}
             className={cn(
-              "input appearance-none pr-9",
+              "input appearance-none pe-9",
               error && "border-danger focus:ring-danger",
               className
             )}
@@ -69,7 +69,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
             ))}
           </select>
           <ChevronDown
-            className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-navy-300 pointer-events-none"
+            className="absolute end-3 top-1/2 -translate-y-1/2 w-4 h-4 text-navy-300 pointer-events-none"
             aria-hidden="true"
           />
         </div>

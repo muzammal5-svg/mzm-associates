@@ -36,7 +36,7 @@ export function MobileHeader({ title, showBack, actions, className }: MobileHead
           <button
             onClick={() => router.back()}
             aria-label={t("common.back")}
-            className="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-navy-50 transition-colors -ml-1"
+            className="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-navy-50 transition-colors -ms-1"
           >
             <ArrowLeft className="w-5 h-5 text-navy" />
           </button>
@@ -86,7 +86,7 @@ export function MobileHeader({ title, showBack, actions, className }: MobileHead
             {unreadCount > 0 && (
               <span
                 aria-hidden="true"
-                className="absolute top-1 right-1 min-w-[16px] h-4 px-0.5 rounded-full bg-danger text-white text-[10px] font-bold flex items-center justify-center leading-none"
+                className="absolute top-1 end-1 min-w-[16px] h-4 px-0.5 rounded-full bg-danger text-white text-[10px] font-bold flex items-center justify-center leading-none"
               >
                 {unreadCount > 99 ? "99+" : unreadCount}
               </span>

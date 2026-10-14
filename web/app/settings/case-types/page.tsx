@@ -141,7 +141,7 @@ function CaseTypesAdmin() {
                     <div className="flex-1">
                       <span className="text-sm font-medium text-navy">{ct.name}</span>
                       {ct.requires_offence && (
-                        <Badge variant="warning" size="sm" className="ml-2">Requires Offence</Badge>
+                        <Badge variant="warning" size="sm" className="ms-2">Requires Offence</Badge>
                       )}
                     </div>
                     <div className="flex gap-1">

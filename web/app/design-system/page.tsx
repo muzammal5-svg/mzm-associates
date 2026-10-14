@@ -110,7 +110,7 @@ export default function DesignSystemPage() {
           <h3 className="font-cormorant text-xl font-semibold text-navy">Cormorant Garamond — Legal Documents</h3>
           <p className="font-body text-base text-navy">Inter body text — Muhammad Aslam Khan vs Province of Punjab. Civil case filed on 15 March 2024.</p>
           <p className="font-body text-sm text-navy-400">Small body / labels — Next hearing date: 15 Jan 2025</p>
-          <p className="font-urdu text-2xl text-navy text-right" dir="rtl">نوٹو نستعلیق اردو — فاطمہ بی بی بنام ارسلان احمد</p>
+          <p className="font-urdu text-2xl text-navy text-end" dir="rtl">نوٹو نستعلیق اردو — فاطمہ بی بی بنام ارسلان احمد</p>
           <p className="font-mono text-sm text-navy-400">Monospace — WP-1234/2024 · 35201-1234567-1</p>
         </Section>
 
@@ -422,23 +422,23 @@ export default function DesignSystemPage() {
         {/* ── RTL Preview ──────────────────────────────────────────── */}
         <Section title="RTL / Urdu Preview">
           <div dir="rtl" className="space-y-3 font-urdu bg-white rounded-xl border border-navy-50 p-4">
-            <h3 className="text-xl font-semibold text-navy text-right">مقدمہ تفصیل</h3>
+            <h3 className="text-xl font-semibold text-navy text-end">مقدمہ تفصیل</h3>
             <div className="grid grid-cols-2 gap-3 text-sm">
               <div>
-                <span className="text-navy-400 block text-right">مدعی</span>
-                <span className="text-navy font-medium text-right block">فاطمہ بی بی</span>
+                <span className="text-navy-400 block text-end">مدعی</span>
+                <span className="text-navy font-medium text-end block">فاطمہ بی بی</span>
               </div>
               <div>
-                <span className="text-navy-400 block text-right">مدعاعلیہ</span>
-                <span className="text-navy font-medium text-right block">ارسلان احمد</span>
+                <span className="text-navy-400 block text-end">مدعاعلیہ</span>
+                <span className="text-navy font-medium text-end block">ارسلان احمد</span>
               </div>
               <div>
-                <span className="text-navy-400 block text-right">عدالت</span>
-                <span className="text-navy font-medium text-right block">فیملی کورٹ لاہور</span>
+                <span className="text-navy-400 block text-end">عدالت</span>
+                <span className="text-navy font-medium text-end block">فیملی کورٹ لاہور</span>
               </div>
               <div>
-                <span className="text-navy-400 block text-right">اگلی تاریخ</span>
-                <span className="text-navy font-medium text-right block">15 جنوری 2025</span>
+                <span className="text-navy-400 block text-end">اگلی تاریخ</span>
+                <span className="text-navy font-medium text-end block">15 جنوری 2025</span>
               </div>
             </div>
             <Textarea

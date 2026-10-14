@@ -130,7 +130,7 @@ function DetailRow({ label, value, isUrduText = false }: {
     <div className="flex items-start justify-between gap-4 py-2.5 border-b border-navy-50 last:border-0">
       <span className="text-sm text-navy-400 flex-shrink-0 w-32">{label}</span>
       <span
-        className={`text-sm text-navy text-right flex-1 ${isUrduText && isUrdu(value) ? "font-urdu" : ""}`}
+        className={`text-sm text-navy text-end flex-1 ${isUrduText && isUrdu(value) ? "font-urdu" : ""}`}
         dir={isUrduText ? textDir(value) : "ltr"}
       >
         {value}

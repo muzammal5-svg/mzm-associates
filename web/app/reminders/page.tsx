@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { differenceInCalendarDays, format, parseISO } from "date-fns";
+import { differenceInCalendarDays, parseISO } from "date-fns";
 import { useTranslation } from "react-i18next";
 import { Bell, Check, ExternalLink, RotateCcw, X } from "lucide-react";
 import { AppShell } from "@/components/layout/AppShell";
@@ -112,11 +112,8 @@ function RemindersPage() {
                     <div className={`w-[76px] shrink-0 rounded-xl p-2 text-center ${
                       daysLeft === 0 ? "bg-danger text-white" : daysLeft !== null && daysLeft <= 3 ? "bg-gold text-white" : "bg-navy-50 text-navy"
                     }`}>
-                      <p className="text-xl font-bold leading-tight">
-                        {nextDate ? format(parseISO(nextDate), "dd") : "--"}
-                      </p>
-                      <p className="text-[11px] font-semibold uppercase">
-                        {nextDate ? format(parseISO(nextDate), "MMM") : "Date"}
+                      <p className="text-sm font-bold leading-tight">
+                        {nextDate ? fmtDate(nextDate) : t("reminders.dateUnavailable")}
                       </p>
                       <p className="mt-1 text-[10px] leading-tight">{timing}</p>
                     </div>
@@ -164,7 +161,7 @@ function RemindersPage() {
                         onClick={() => void setStatus(reminder.id, "upcoming")}
                       >{t("reminders.undo")}</Button>
                     )}
-                    <Link href={caseUrl} className="ml-auto">
+                    <Link href={caseUrl} className="ms-auto">
                       <Button size="sm" variant="ghost" rightIcon={<ExternalLink className="h-3.5 w-3.5" />}>
                         {t("reminders.viewCase")}
                       </Button>

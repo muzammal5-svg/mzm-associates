@@ -33,13 +33,13 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         {label && (
           <label htmlFor={inputId} className="label">
             {label}
-            {required && <span className="text-danger ml-0.5" aria-hidden="true">*</span>}
+            {required && <span className="text-danger ms-0.5" aria-hidden="true">*</span>}
           </label>
         )}
 
         <div className="relative flex items-center">
           {leftElement && (
-            <div className="absolute left-3 flex items-center pointer-events-none text-navy-300">
+            <div className="absolute start-3 flex items-center pointer-events-none text-navy-300">
               {leftElement}
             </div>
           )}
@@ -52,8 +52,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             aria-describedby={error ? `${inputId}-error` : hint ? `${inputId}-hint` : undefined}
             className={cn(
               "input",
-              leftElement  && "pl-9",
-              rightElement && "pr-9",
+              leftElement  && "ps-9",
+              rightElement && "pe-9",
               error && "border-danger focus:ring-danger",
               className
             )}
@@ -61,7 +61,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           />
 
           {rightElement && (
-            <div className="absolute right-3 flex items-center text-navy-300">
+            <div className="absolute end-3 flex items-center text-navy-300">
               {rightElement}
             </div>
           )}

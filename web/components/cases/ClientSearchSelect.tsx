@@ -57,7 +57,7 @@ export function ClientSearchSelect({
         aria-haspopup="listbox"
         aria-expanded={open}
         className={cn(
-          "input flex items-center justify-between gap-2 cursor-pointer text-left",
+          "input flex items-center justify-between gap-2 cursor-pointer text-start",
           error && "border-danger",
           disabled && "opacity-50 cursor-not-allowed"
         )}
@@ -70,7 +70,7 @@ export function ClientSearchSelect({
           >
             {value.full_name}
             {value.phone && (
-              <span className="text-navy-400 font-normal ml-2 text-xs">{value.phone}</span>
+              <span className="text-navy-400 font-normal ms-2 text-xs">{value.phone}</span>
             )}
           </span>
         ) : (
@@ -94,19 +94,19 @@ export function ClientSearchSelect({
       {open && (
         <div
           role="listbox"
-          className="absolute z-50 left-0 right-0 top-full mt-1 bg-white rounded-xl border border-navy-100 shadow-modal overflow-hidden animate-slide-down"
+          className="absolute z-50 start-0 end-0 top-full mt-1 bg-white rounded-xl border border-navy-100 shadow-modal overflow-hidden animate-slide-down"
         >
           {/* Search box */}
           <div className="p-2 border-b border-navy-50">
             <div className="relative">
-              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-navy-300 pointer-events-none" />
+              <Search className="absolute start-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-navy-300 pointer-events-none" />
               <input
                 type="text"
                 autoFocus
                 value={search}
                 onChange={e => setSearch(e.target.value)}
                 placeholder="Name, CNIC or phone…"
-                className="input pl-8 py-1.5 text-xs h-8"
+                className="input ps-8 py-1.5 text-xs h-8"
               />
             </div>
             {isError && <div className="p-3"><QueryErrorState onRetry={() => void refetch()} /></div>}
@@ -121,7 +121,7 @@ export function ClientSearchSelect({
                 role="option"
                 aria-selected={false}
                 onClick={() => select(c)}
-                className="w-full px-3 py-2.5 text-left hover:bg-navy-50 flex items-center gap-2 transition-colors"
+                className="w-full px-3 py-2.5 text-start hover:bg-navy-50 flex items-center gap-2 transition-colors"
               >
                 <div className="w-7 h-7 rounded-full bg-gold/10 flex items-center justify-center flex-shrink-0">
                   <span className="text-xs font-bold text-gold">

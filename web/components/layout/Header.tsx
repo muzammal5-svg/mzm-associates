@@ -43,7 +43,7 @@ export function Header({ title, showBack = false, actions, className }: HeaderPr
           <button
             onClick={() => router.back()}
             aria-label="Go back"
-            className="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-navy-50 transition-colors -ml-2"
+            className="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-navy-50 transition-colors -ms-2"
           >
             <ArrowLeft className="w-5 h-5 text-navy" />
           </button>
@@ -54,7 +54,7 @@ export function Header({ title, showBack = false, actions, className }: HeaderPr
 
       {/* Centre: title */}
       {title && (
-        <span className="absolute left-1/2 -translate-x-1/2 text-sm font-semibold text-navy truncate max-w-[45vw]">
+        <span className="absolute start-1/2 -translate-x-1/2 text-sm font-semibold text-navy truncate max-w-[45vw]">
           {title}
         </span>
       )}

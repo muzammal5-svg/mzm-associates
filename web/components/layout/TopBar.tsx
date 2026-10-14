@@ -20,7 +20,7 @@ export function TopBar({ title }: TopBarProps) {
       <Logo size="xs" variant="full" />
 
       {title && (
-        <span className="absolute left-1/2 -translate-x-1/2 text-sm font-semibold text-navy truncate max-w-[40vw]">
+        <span className="absolute start-1/2 -translate-x-1/2 text-sm font-semibold text-navy truncate max-w-[40vw]">
           {title}
         </span>
       )}

@@ -202,7 +202,7 @@ function OverviewTab({ caseId }: { caseId: string }) {
     return (
       <div className="flex items-start justify-between gap-4 py-2.5 border-b border-navy-50 last:border-0">
         <span className="text-sm text-navy-400 flex-shrink-0 w-28">{label}</span>
-        <span className={`text-sm text-navy text-right flex-1 ${mono ? "font-mono" : ""} ${isUrdu(value) ? "font-urdu" : ""}`}
+        <span className={`text-sm text-navy text-end flex-1 ${mono ? "font-mono" : ""} ${isUrdu(value) ? "font-urdu" : ""}`}
           dir={textDir(value)}>{value}</span>
       </div>
     );
@@ -294,7 +294,7 @@ function CaseActionsMenu({
         {open && (
           <>
             <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
-            <div className="absolute right-0 top-full mt-1.5 w-52 bg-white rounded-xl shadow-modal border border-navy-50 z-50 animate-slide-down overflow-hidden">
+            <div className="absolute end-0 top-full mt-1.5 w-52 bg-white rounded-xl shadow-modal border border-navy-50 z-50 animate-slide-down overflow-hidden">
               {status === "running" && (
                 <>
                   <Link href={`/cases/running?updateCaseId=${caseId}`} onClick={() => setOpen(false)}

@@ -64,16 +64,6 @@ h1, h2, h3, h4 {
 [dir="rtl"] h1, [dir="rtl"] h2, [dir="rtl"] h3, [dir="rtl"] h4 {
   font-family: var(--font-noto-urdu);
 }
-/* Sidebar offset flips in RTL */
-[dir="rtl"] .md\:ml-64 {
-  margin-left: 0;
-  margin-right: 16rem;
-}
-[dir="rtl"] .md\:left-0 {
-  left: auto;
-  right: 0;
-}
-
 /* ─── Scrollbar (desktop) ───────────────────────────────────────────────────── */
 @media (min-width: 768px) {
   ::-webkit-scrollbar       { width: 6px; height: 6px; }
@@ -139,4 +129,12 @@ button, a, [role="button"] {
   .badge {
     @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold;
   }
+}
+
+/* Directional navigation glyphs mirror with the document direction. */
+[dir="rtl"] .lucide-chevron-right,
+[dir="rtl"] .lucide-chevron-left,
+[dir="rtl"] .lucide-arrow-right,
+[dir="rtl"] .lucide-arrow-left {
+  transform: rotate(180deg);
 }

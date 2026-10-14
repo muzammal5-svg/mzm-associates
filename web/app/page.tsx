@@ -187,7 +187,7 @@ function DashboardPage() {
                     <Badge
                       variant={svc.key === "notifications" ? "danger" : "gold"}
                       size="sm"
-                      className="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] flex items-center justify-center px-1"
+                      className="absolute -top-1.5 -end-1.5 min-w-[18px] h-[18px] flex items-center justify-center px-1"
                     >
                       {svc.badge > 99 ? "99+" : svc.badge}
                     </Badge>
@@ -247,7 +247,7 @@ function DashboardPage() {
                       <p className="text-xs text-navy-400 truncate">{h.case_ref_no} · {h.case_type_name}</p>
                     </div>
                     {/* Court info */}
-                    <div className="text-right flex-shrink-0">
+                    <div className="text-end flex-shrink-0">
                       <p className="text-xs font-medium text-navy-400">{h.hearing_court_no ?? h.case_court_no ?? ""}</p>
                       {h.next_date && (
                         <p className="text-[10px] text-navy-300">{fmtDate(h.next_date)}</p>
