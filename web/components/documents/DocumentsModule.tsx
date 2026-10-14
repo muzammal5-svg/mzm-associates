@@ -1,0 +1,96 @@
+"use client";
+
+import { useState } from "react";
+import { DocumentUploader } from "./DocumentUploader";
+import { DocumentList }     from "./DocumentList";
+import { Input } from "@/components/ui/Input";
+import { Select } from "@/components/ui/Select";
+import { QueryErrorState } from "@/components/ui/QueryErrorState";
+import { useDocumentFilterOptions } from "@/hooks/useDocuments";
+
+interface DocumentsModuleProps {
+  clientId?: string | null;
+  caseId?:   string | null;
+  className?: string;
+  firmWide?: boolean;
+}
+
+/**
+ * Reusable Documents module.
+ * Accepts {clientId?, caseId?} — same component used for:
+ *   - Client profile → pass clientId
+ *   - Case detail    → pass caseId
+ *   - Decided cases  → pass caseId
+ */
+export function DocumentsModule({ clientId, caseId, className, firmWide = false }: DocumentsModuleProps) {
+  const [search, setSearch] = useState("");
+  const [filterClientId, setFilterClientId] = useState("");
+  const [filterCaseId, setFilterCaseId] = useState("");
+  const [documentType, setDocumentType] = useState("");
+  const filters = useDocumentFilterOptions(firmWide);
+
+  return (
+    <div className={className}>
+      {firmWide && (
+        <div className="mb-4 space-y-3 rounded-xl border border-navy-100 bg-white p-4">
+          <Input
+            label="Search documents"
+            placeholder="Search by document name"
+            value={search}
+            onChange={event => setSearch(event.target.value)}
+          />
+          {filters.isError ? (
+            <QueryErrorState onRetry={() => void filters.refetch()} className="py-5" />
+          ) : (
+            <div className="grid gap-3 sm:grid-cols-3">
+              <Select
+                label="Client"
+                value={filterClientId}
+                onChange={event => setFilterClientId(event.target.value)}
+                placeholder="All clients"
+                options={(filters.data?.clients ?? []).map(client => ({
+                  value: client.id, label: client.full_name,
+                }))}
+              />
+              <Select
+                label="Case"
+                value={filterCaseId}
+                onChange={event => setFilterCaseId(event.target.value)}
+                placeholder="All cases"
+                options={(filters.data?.cases ?? []).map(case_ => ({
+                  value: case_.id, label: case_.case_ref_no,
+                }))}
+              />
+              <Select
+                label="Type"
+                value={documentType}
+                onChange={event => setDocumentType(event.target.value)}
+                placeholder="All types"
+                options={[
+                  { value: "pdf", label: "PDF" },
+                  { value: "image", label: "Images" },
+                  { value: "other", label: "Other" },
+                ]}
+              />
+            </div>
+          )}
+        </div>
+      )}
+      {(!firmWide || clientId || caseId) && (
+        <DocumentUploader
+          clientId={clientId}
+          caseId={caseId}
+          className="mb-4"
+        />
+      )}
+      <DocumentList
+        clientId={clientId}
+        caseId={caseId}
+        filterClientId={firmWide ? filterClientId || null : null}
+        filterCaseId={firmWide ? filterCaseId || null : null}
+        search={firmWide ? search : undefined}
+        documentType={firmWide ? documentType : undefined}
+      />
+    </div>
+  );
+}
