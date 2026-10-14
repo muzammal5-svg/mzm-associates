@@ -1,0 +1,233 @@
+"use client";
+
+import { useState, useRef }     from "react";
+import { useTranslation }       from "react-i18next";
+import { useForm }              from "react-hook-form";
+import { zodResolver }          from "@hookform/resolvers/zod";
+import { z }                    from "zod";
+import { CheckSquare, Upload, X, FileText } from "lucide-react";
+
+import { Modal, BottomSheet }   from "@/components/ui/Modal";
+import { Select }               from "@/components/ui/Select";
+import { DatePicker }           from "@/components/ui/DatePicker";
+import { Textarea }             from "@/components/ui/Textarea";
+import { Button }               from "@/components/ui/Button";
+import { useToast }             from "@/components/ui/Toast";
+import { useAuth }              from "@/providers/AuthProvider";
+import { useMarkAsDecidedFull } from "@/hooks/useActivityLog";
+import { supabase, uploadDocument } from "@/lib/supabase/client";
+import { todayKarachi, fmtDate } from "@/lib/utils";
+import { compressImage, formatFileSize, ALLOWED_MIME_ACCEPT, ALLOWED_MIME_TYPES, MAX_FILE_SIZE } from "@/lib/imageCompress";
+import type { CaseOutcome }     from "@/types/supabase";
+
+const schema = z.object({
+  decision_date:  z.string().min(1, "Required"),
+  outcome:        z.enum(["won","lost","dismissed","settled","withdrawn"] as const),
+  decision_notes: z.string().optional(),
+});
+type FormData = z.infer<typeof schema>;
+
+interface MarkDecidedModalProps {
+  caseId:    string;
+  caseRef:   string;
+  parties:   string;
+  open:      boolean;
+  onClose:   () => void;
+}
+
+export function MarkDecidedModal({
+  caseId, caseRef, parties, open, onClose,
+}: MarkDecidedModalProps) {
+  const { t }       = useTranslation();
+  const toast       = useToast();
+  const { profile } = useAuth();
+  const fileRef     = useRef<HTMLInputElement>(null);
+
+  const markDecided = useMarkAsDecidedFull();
+  const [docFile,    setDocFile]    = useState<File | null>(null);
+  const [uploading,  setUploading]  = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+
+  const {
+    register, handleSubmit, reset,
+    formState: { errors, isSubmitting },
+  } = useForm<FormData>({
+    resolver: zodResolver(schema),
+    defaultValues: { decision_date: todayKarachi() },
+  });
+
+  async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > MAX_FILE_SIZE) {
+      toast.warning("File skipped", `${file.name} exceeds the ${formatFileSize(MAX_FILE_SIZE)} limit.`);
+      e.target.value = "";
+      return;
+    }
+    if (!(ALLOWED_MIME_TYPES as readonly string[]).includes(file.type)) {
+      toast.warning("File skipped", `${file.name} has an unsupported type. Allowed types: PDF, JPEG, PNG, WebP, DOC, DOCX.`);
+      e.target.value = "";
+      return;
+    }
+    try {
+      const compressed = await compressImage(file);
+      setDocFile(compressed);
+    } catch (error) {
+      toast.error("Unable to process file", error instanceof Error ? error.message : file.name);
+    }
+  }
+
+  async function onSubmit(data: FormData) {
+    if (!profile) return;
+    let uploadedPath: string | null = null;
+    try {
+      let document: { name: string; file_path: string; mime: string; size: number } | undefined;
+      if (docFile) {
+        setUploading(true);
+        const upload = await uploadDocument(profile.firm_id, docFile, setUploadProgress);
+        uploadedPath = upload.path;
+        document = {
+          name: `Final Order — ${caseRef}`,
+          file_path: uploadedPath,
+          mime: docFile.type,
+            size: docFile.size,
+        };
+      }
+
+      await markDecided.mutateAsync({
+        caseId,
+        decisionDate:  data.decision_date,
+        outcome:       data.outcome as CaseOutcome,
+        decisionNotes: data.decision_notes,
+        document,
+      });
+
+      toast.success("Case decided!", `${caseRef} moved to Decided Cases.`);
+      reset();
+      setDocFile(null);
+      setUploading(false);
+      setUploadProgress(0);
+      onClose();
+    } catch (err: unknown) {
+      setUploading(false);
+      setUploadProgress(0);
+      const message = err instanceof Error ? err.message : "Failed.";
+      if (uploadedPath) {
+        const { error: cleanupError } = await supabase.storage.from("documents").remove([uploadedPath]);
+        if (cleanupError) {
+          toast.error(t("common.error"), `${message} Uploaded file cleanup failed: ${cleanupError.message}`);
+          return;
+        }
+      }
+      toast.error(t("common.error"), message);
+    }
+  }
+
+  const formContent = (
+    <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-4">
+      {/* Case info */}
+      <div className="bg-navy-50 rounded-xl px-3 py-2.5">
+        <p className="text-xs font-mono text-gold font-semibold">{caseRef}</p>
+        <p className="text-sm text-navy font-medium truncate mt-0.5">{parties}</p>
+      </div>
+
+      <DatePicker
+        label="Decision Date"
+        required
+        error={errors.decision_date?.message}
+        {...register("decision_date")}
+      />
+
+      <Select
+        label="Outcome"
+        required
+        options={[
+          { value: "won",       label: "Won" },
+          { value: "lost",      label: "Lost" },
+          { value: "dismissed", label: "Dismissed" },
+          { value: "settled",   label: "Settled (Compromise)" },
+          { value: "withdrawn", label: "Withdrawn" },
+        ]}
+        error={errors.outcome?.message}
+        {...register("outcome")}
+      />
+
+      <Textarea
+        label="Decision Notes"
+        rows={3}
+        placeholder="Summary of judgment, order details…"
+        {...register("decision_notes")}
+      />
+
+      {/* Optional final order upload */}
+      <div className="space-y-1.5">
+        <label className="label">
+          Final Order Document <span className="text-navy-300 text-xs">(Optional)</span>
+        </label>
+        {docFile ? (
+          <div className="flex items-center gap-2 p-3 bg-green-50 border border-success/30 rounded-xl">
+            <FileText className="w-4 h-4 text-success flex-shrink-0" />
+            <div className="flex-1 min-w-0">
+              <p className="text-xs font-medium text-navy truncate">{docFile.name}</p>
+              <p className="text-[11px] text-navy-400">{formatFileSize(docFile.size)}</p>
+            </div>
+            {uploading && <progress className="w-full" max={100} value={uploadProgress} aria-label={`Upload progress ${uploadProgress}%`} />}
+            <button
+              type="button"
+              onClick={() => { setDocFile(null); if (fileRef.current) fileRef.current.value = ""; }}
+              className="text-navy-300 hover:text-danger transition-colors"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+        ) : (
+          <button
+            type="button"
+            onClick={() => fileRef.current?.click()}
+            className="w-full flex items-center gap-2 p-3 border-2 border-dashed border-navy-100 rounded-xl hover:border-gold hover:bg-gold-50/30 transition-colors text-sm text-navy-400"
+          >
+            <Upload className="w-4 h-4 flex-shrink-0" />
+            Upload final order / judgment
+          </button>
+        )}
+        <input
+          ref={fileRef}
+          type="file"
+          accept={ALLOWED_MIME_ACCEPT}
+          className="sr-only"
+          onChange={handleFileChange}
+        />
+      </div>
+
+      <p className="text-[11px] text-navy-400 bg-yellow-50 border border-yellow-100 rounded-lg px-3 py-2">
+        All open reminders for this case will be automatically dismissed.
+        This case will move from Running Cases to Decided Cases.
+      </p>
+
+      <div className="flex gap-3">
+        <Button type="button" variant="secondary" onClick={onClose} className="flex-1">
+          {t("common.cancel")}
+        </Button>
+        <Button
+          type="submit"
+          loading={isSubmitting || uploading}
+          leftIcon={<CheckSquare className="w-4 h-4" />}
+          className="flex-1"
+        >
+          Mark as Decided
+        </Button>
+      </div>
+    </form>
+  );
+
+  return (
+    <>
+      <BottomSheet open={open} onClose={onClose} title="Mark as Decided" snapPoints="auto" className="md:hidden">
+        {formContent}
+      </BottomSheet>
+      <Modal open={open} onClose={onClose} title="Mark as Decided" size="md" className="hidden md:flex">
+        {formContent}
+      </Modal>
+    </>
+  );
+}
