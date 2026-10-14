@@ -1,0 +1,37 @@
+project_id = "zxxpsvhlekemgccrcwtg"
+# Supabase local dev config — used by `supabase start`
+# See: https://supabase.com/docs/guides/cli/config
+
+[api]
+port = 54321
+
+[db]
+port = 54322
+shadow_port = 54320
+major_version = 15
+
+[db.seed]
+enabled = true
+sql_paths = ["./seed.sql"]
+
+[studio]
+port = 54323
+
+[inbucket]
+port = 54324
+
+[storage]
+file_size_limit = "50MiB"
+
+[auth]
+site_url = "http://localhost:3000"
+additional_redirect_urls = ["http://localhost:3000/**", "capacitor://localhost"]
+jwt_expiry = 3600
+enable_signup = false   # Invite-only firm: admin creates accounts
+
+[auth.email]
+enable_signup = false
+enable_confirmations = false
+
+[functions.send-push]
+verify_jwt = true
