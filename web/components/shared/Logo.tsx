@@ -21,11 +21,11 @@ export function Logo({ size = "md", variant = "full", className }: LogoProps) {
   return (
     <div className={cn("flex items-center gap-2.5 select-none", className)}>
       <Image
-        src="/logo/mzm-mark.svg"
+        src="/logo/logoadv.jpeg"
         alt="MZM & Associates"
         width={s.pixels}
         height={s.pixels}
-        className={cn("object-contain flex-shrink-0", s.mark)}
+        className={cn("object-contain flex-shrink-0 rounded-full bg-white", s.mark)}
         priority={size === "lg"}
       />
       {variant === "full" && (

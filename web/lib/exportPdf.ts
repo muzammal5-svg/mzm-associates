@@ -16,6 +16,7 @@ export interface PdfExportOptions {
   rows:      CauseListRow[];
   date:      string;
   firmName?: string;
+  firmLogoUrl?: string | null;
   title?:    string;
 }
 
@@ -28,11 +29,27 @@ export async function exportCauseListPdf(opts: PdfExportOptions): Promise<void> 
     rows,
     date,
     firmName = BRAND.name as string,
+    firmLogoUrl,
     title    = "Cause List",
   } = opts;
 
   const doc = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
   const pageW = doc.internal.pageSize.getWidth();
+
+  // Use the firm upload when present and the real brand mark as the fallback.
+  try {
+    const response = await fetch(firmLogoUrl || "/logo/logoadv.jpeg");
+    if (response.ok) {
+      const logo = await response.blob();
+      const dataUrl = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(String(reader.result));
+        reader.onerror = reject;
+        reader.readAsDataURL(logo);
+      });
+      doc.addImage(dataUrl, "JPEG", 14, 7, 15, 15);
+    }
+  } catch { /* The text header remains available if the image cannot be loaded. */ }
 
   // ── Header ─────────────────────────────────────────────────────────────────
   doc.setFont("helvetica", "bold");

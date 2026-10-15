@@ -72,6 +72,7 @@ function CauseListPage() {
         rows:     allData.rows,
         date,
         firmName: firm?.name,
+        firmLogoUrl: firm?.logo_url,
       });
       toast.success("PDF downloaded!");
     } catch (err: unknown) {
