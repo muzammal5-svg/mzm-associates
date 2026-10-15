@@ -65,7 +65,7 @@ function CauseListPage() {
   }
 
   async function handleExportPdf() {
-    if (!allData?.rows.length) { toast.info("No hearings to export."); return; }
+    if (!allData?.rows.length) { toast.info(t("causeList.noHearingsToExport")); return; }
     setExporting(true);
     try {
       await exportCauseListPdf({
@@ -74,19 +74,19 @@ function CauseListPage() {
         firmName: firm?.name,
         firmLogoUrl: firm?.logo_url,
       });
-      toast.success("PDF downloaded!");
+      toast.success(t("causeList.pdfDownloaded"));
     } catch (err: unknown) {
-      toast.error("Export failed", err instanceof Error ? err.message : "");
+      toast.error(t("causeList.exportFailed"), err instanceof Error ? err.message : "");
     } finally { setExporting(false); }
   }
 
   async function handleShare() {
-    if (!allData?.rows.length) { toast.info("No hearings to share."); return; }
+    if (!allData?.rows.length) { toast.info(t("causeList.noHearingsToShare")); return; }
     setSharing(true);
     try {
       await shareCauseList(allData.rows, date, firm?.name ?? undefined);
-      toast.success("Copied to clipboard / shared!");
-    } catch { toast.error("Share failed."); }
+      toast.success(t("causeList.shared"));
+    } catch { toast.error(t("causeList.shareFailed")); }
     finally  { setSharing(false); }
   }
 
@@ -105,21 +105,21 @@ function CauseListPage() {
             leftIcon={<Printer className="w-4 h-4" />}
             className="hidden md:inline-flex"
           >
-            Print
+            {t("common.print")}
           </Button>
           <Button size="sm" variant="secondary"
             loading={sharing}
             onClick={handleShare}
             leftIcon={<Share2 className="w-4 h-4" />}
           >
-            Share
+            {t("common.share")}
           </Button>
           <Button size="sm"
             loading={exporting}
             onClick={handleExportPdf}
             leftIcon={<Download className="w-4 h-4" />}
           >
-            PDF
+            {t("common.pdf")}
           </Button>
         </div>
       }
@@ -132,18 +132,18 @@ function CauseListPage() {
           <div className="flex items-center gap-1 bg-white rounded-xl border border-navy-100 p-1">
             <button
               onClick={() => navigate(-1)}
-              aria-label="Previous day"
+              aria-label={t("common.previousDay")}
               className="w-8 h-8 flex items-center justify-center rounded-lg text-navy hover:bg-navy-50 transition-colors"
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
             <div className="px-3 text-center min-w-[130px]">
               <p className="text-sm font-semibold text-navy">{fmtDate(date)}</p>
-              {isToday && <p className="text-[10px] text-gold font-semibold uppercase tracking-wider">Today</p>}
+              {isToday && <p className="text-[10px] text-gold font-semibold uppercase tracking-wider">{t("common.today")}</p>}
             </div>
             <button
               onClick={() => navigate(1)}
-              aria-label="Next day"
+              aria-label={t("common.nextDay")}
               className="w-8 h-8 flex items-center justify-center rounded-lg text-navy hover:bg-navy-50 transition-colors"
             >
               <ChevronRight className="w-4 h-4" />
@@ -155,14 +155,14 @@ function CauseListPage() {
               onClick={() => { setDate(todayKarachi()); setPage(1); }}
               className="text-xs text-gold hover:underline font-medium flex items-center gap-1"
             >
-              <Calendar className="w-3.5 h-3.5" /> Back to Today
+              <Calendar className="w-3.5 h-3.5" /> {t("common.backToToday")}
             </button>
           )}
 
           {/* Count badge */}
           {allData && (
             <span className="text-xs bg-navy-50 text-navy-400 px-2.5 py-1 rounded-full font-medium">
-              {allData.total} hearing{allData.total !== 1 ? "s" : ""}
+              {t("hearings.hearingCount", { count: allData.total })}
             </span>
           )}
         </div>
@@ -172,7 +172,7 @@ function CauseListPage() {
           {/* Print header (hidden on screen) */}
           <div className="hidden print:block mb-4 text-center">
             <h1 className="text-lg font-bold">{firm?.name ?? "MZM & Associates"}</h1>
-            <p className="text-sm">Cause List — {fmtDate(date)}</p>
+            <p className="text-sm">{t("nav.causeList")} — {fmtDate(date)}</p>
           </div>
 
           <CauseListView
@@ -180,7 +180,7 @@ function CauseListPage() {
             onPageChange={setPage}
             showQuickEdit
             showUpdateHearing
-            emptyMessage={isToday ? t("dashboard.noHearingsToday") : `No hearings on ${fmtDate(date)}`}
+            emptyMessage={isToday ? t("dashboard.noHearingsToday") : t("causeList.noHearingsOnDate", { date: fmtDate(date) })}
           />
         </div>
 

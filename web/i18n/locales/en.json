@@ -1,4 +1,7 @@
 {
+  "brand": {
+    "tagline": "Advocates & Legal Consultants"
+  },
   "nav": {
     "home": "Home",
     "dashboard": "Dashboard",
@@ -15,6 +18,9 @@
     "help": "Help"
   },
   "auth": {
+    "configTitle": "Supabase is not configured",
+    "configAddKeys": "Add the required keys to",
+    "configRestart": "then restart the app.",
     "signIn": "Sign In",
     "signOut": "Sign Out",
     "email": "Email",
@@ -71,6 +77,10 @@
     "decided": "Decided Cases",
     "running": "Running Cases",
     "caseNo": "Case No.",
+    "searchRunningPlaceholder": "Search party name, case ref, client…",
+    "emptyRunningResults": "No running cases match your filters.",
+    "hearingDate": "Hearing Date",
+    "caseReference": "Case Ref",
     "caseType": "Case Type",
     "court": "Court",
     "courtNo": "Court No.",
@@ -96,18 +106,41 @@
     "whatsapp": "WhatsApp",
     "email": "Email",
     "address": "Address",
-    "city": "City"
+    "city": "City",
+    "namePlaceholder": "e.g. Muhammad Aslam Khan or Fatima Bibi",
+    "sameAsPhone": "Same as phone",
+    "selectCity": "Select city",
+    "addressPlaceholder": "Street, neighborhood, district…",
+    "saveContinue": "Save & Continue"
   },
   "hearings": {
     "serialNo": "Serial No.",
+    "updateHearing": "Update hearing",
+    "previousDate": "Previous date",
+    "nextDateLabel": "Next date",
+    "hearingCount": "{{count}} hearings",
     "currentProceeding": "Current Proceeding",
     "nextProceeding": "Next Proceeding",
     "nextDate": "Next Date",
     "judge": "Judge",
     "courtNo": "Court No."
   },
+  "causeList": {
+    "noHearingsToExport": "No hearings to export.",
+    "pdfDownloaded": "PDF downloaded!",
+    "exportFailed": "Export failed",
+    "noHearingsToShare": "No hearings to share.",
+    "shared": "Copied to clipboard / shared!",
+    "shareFailed": "Share failed.",
+    "noHearingsOnDate": "No hearings on {{date}}"
+  },
   "documents": {
     "upload": "Upload Document",
+    "uploaded": "Documents uploaded!",
+    "uploadFailed": "Some documents failed to upload.",
+    "uploadTitle": "Upload Documents",
+    "skip": "Skip",
+    "done": "Done",
     "download": "Download",
     "delete": "Delete"
   },
@@ -239,6 +272,40 @@
     "confirm": "Are you sure?",
     "addNew": "Add New",
     "offline": "You are offline. Some features may be unavailable.",
-    "optional": "Optional"
+    "optional": "Optional",
+    "close": "Close",
+    "backOnline": "Back online",
+    "tryAgain": "Try Again",
+    "goHome": "Go Home",
+    "errorTitle": "Something went wrong",
+    "errorDescription": "An unexpected error occurred. Please refresh the page or try again.",
+    "confirmTitle": "Confirm",
+    "confirmAction": "Confirm",
+    "dismiss": "Dismiss",
+    "mainNavigation": "Main navigation",
+    "filters": "Filters",
+    "clearFilters": "Clear Filters",
+    "clear": "Clear",
+    "all": "All",
+    "allCourts": "All courts",
+    "allJudges": "All judges",
+    "allTypes": "All types",
+    "nextDateFrom": "Next date from",
+    "nextDateTo": "Next date to",
+    "ascending": "Ascending",
+    "descending": "Descending",
+    "previousPage": "Prev",
+    "nextPage": "Next",
+    "previousDay": "Previous day",
+    "nextDay": "Next day",
+    "backToToday": "Back to Today",
+    "today": "Today",
+    "print": "Print",
+    "share": "Share",
+    "pdf": "PDF",
+    "update": "Update",
+    "quickEdit": "Quick edit",
+    "vs": "vs",
+    "parties": "Parties"
   }
 }

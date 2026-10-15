@@ -1,6 +1,7 @@
 "use client";
 
 import { useLang } from "@/providers/LangProvider";
+import { useTranslation } from "react-i18next";
 import { cn }      from "@/lib/utils";
 import type { SupportedLang } from "@/i18n/config";
 
@@ -10,6 +11,7 @@ interface LangSwitcherProps {
 }
 
 export function LangSwitcher({ compact = false, className }: LangSwitcherProps) {
+  const { t } = useTranslation();
   const { lang, setLang, languages } = useLang();
 
   return (
@@ -20,7 +22,7 @@ export function LangSwitcher({ compact = false, className }: LangSwitcherProps) 
         className
       )}
       role="group"
-      aria-label="Language selector"
+      aria-label={t("settings.language")}
     >
       {languages.map((l) => {
         const active = lang === l.code;

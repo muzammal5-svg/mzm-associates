@@ -3,6 +3,7 @@
 import { Component, type ReactNode, type ErrorInfo } from "react";
 import { AlertTriangle, RefreshCw } from "lucide-react";
 import { Logo } from "./Logo";
+import i18n from "@/i18n/config";
 
 interface Props   { children: ReactNode; fallback?: ReactNode }
 interface State   { hasError: boolean; error: Error | null }
@@ -38,9 +39,9 @@ export class ErrorBoundary extends Component<Props, State> {
           <div className="w-16 h-16 rounded-full bg-red-50 flex items-center justify-center mx-auto">
             <AlertTriangle className="w-8 h-8 text-danger" />
           </div>
-          <h2 className="text-xl font-heading font-bold text-navy">Something went wrong</h2>
+          <h2 className="text-xl font-heading font-bold text-navy">{i18n.t("common.errorTitle")}</h2>
           <p className="text-sm text-navy-400 max-w-sm mx-auto">
-            An unexpected error occurred. Please refresh the page or try again.
+            {i18n.t("common.errorDescription")}
           </p>
           {process.env.NODE_ENV === "development" && this.state.error && (
             <pre className="mt-3 text-start text-xs bg-red-50 text-danger rounded-xl p-4 max-w-sm mx-auto overflow-x-auto">
@@ -53,13 +54,13 @@ export class ErrorBoundary extends Component<Props, State> {
             onClick={() => this.reset()}
             className="btn-secondary flex items-center gap-2"
           >
-            <RefreshCw className="w-4 h-4" /> Try Again
+            <RefreshCw className="w-4 h-4" /> {i18n.t("common.tryAgain")}
           </button>
           <button
             onClick={() => { this.reset(); window.location.href = "/"; }}
             className="btn-primary"
           >
-            Go Home
+            {i18n.t("common.goHome")}
           </button>
         </div>
       </div>

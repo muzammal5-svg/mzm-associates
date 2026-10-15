@@ -81,17 +81,17 @@ export function Sidebar() {
           <p className="text-white text-sm font-heading font-bold truncate leading-tight">
             {firm?.name ?? "MZM & Associates"}
           </p>
-          <p className="text-navy-300 text-[10px] truncate">Case Management</p>
+          <p className="text-navy-300 text-[10px] truncate">{t("nav.dashboard")}</p>
         </div>
       </div>
 
       {/* Main nav */}
-      <nav className="flex-1 px-3 py-4 overflow-y-auto space-y-0.5" aria-label="Main navigation">
+      <nav className="flex-1 px-3 py-4 overflow-y-auto space-y-0.5" aria-label={t("common.mainNavigation")}>
         {mainItems.map(item => <NavLink key={item.href} item={item} />)}
 
         <div className="pt-3 pb-1">
           <p className="text-[10px] font-semibold uppercase tracking-widest text-navy-400 px-3 mb-1">
-            More
+            {t("nav.more")}
           </p>
         </div>
         {moreItems.map(item => <NavLink key={item.href} item={item} />)}

@@ -43,7 +43,7 @@ function CauseCard({
           {onQuickEdit && (
             <button onClick={() => onQuickEdit(row)}
               className="w-7 h-7 flex items-center justify-center rounded-lg text-navy-300 hover:bg-navy-50 hover:text-gold transition-colors"
-              aria-label="Quick edit serial/proceeding"
+              aria-label={t("common.quickEdit")}
             >
               <Edit2 className="w-3.5 h-3.5" />
             </button>
@@ -51,9 +51,9 @@ function CauseCard({
           {onUpdateHearing && (
             <button onClick={() => onUpdateHearing(row)}
               className="btn-secondary text-xs px-2 py-1 min-h-0 h-7"
-              aria-label="Update hearing"
+              aria-label={t("hearings.updateHearing")}
             >
-              Update
+              {t("common.update")}
             </button>
           )}
         </div>
@@ -66,7 +66,7 @@ function CauseCard({
           dir={isUrdu(row.plaintiff_name ?? "") || isUrdu(row.defendant_name ?? "") ? "rtl" : "ltr"}
         >
           {row.plaintiff_name}
-          <span className="text-navy-300 font-normal mx-1 text-xs">vs</span>
+          <span className="text-navy-300 font-normal mx-1 text-xs">{t("common.vs")}</span>
           {row.defendant_name}
         </p>
       </Link>
@@ -75,12 +75,12 @@ function CauseCard({
       <div className="flex items-center gap-3 text-xs text-navy-400 flex-wrap">
         {row.hearing_court_no && (
           <span className="flex items-center gap-1">
-            <Gavel className="w-3 h-3" /> Court {row.hearing_court_no}
+            <Gavel className="w-3 h-3" /> {t("cases.court")} {row.hearing_court_no}
           </span>
         )}
         {row.hearing_judge && <span>{row.hearing_judge}</span>}
         <Badge variant={row.representing === "plaintiff" ? "gold" : "info"} size="sm">
-          {row.representing === "plaintiff" ? "Plaintiff" : "Defendant"}
+          {row.representing === "plaintiff" ? t("cases.plaintiff") : t("cases.defendant")}
         </Badge>
       </div>
 
@@ -92,10 +92,10 @@ function CauseCard({
       {/* Dates row */}
       <div className="flex items-center justify-between text-xs border-t border-navy-50 pt-2">
         <span className="text-navy-400">
-          Prev: <span className="text-navy font-medium">{row.previous_date ? fmtDate(row.previous_date) : "—"}</span>
+          {t("hearings.previousDate")}: <span className="text-navy font-medium">{row.previous_date ? fmtDate(row.previous_date) : "—"}</span>
         </span>
         <span className="text-navy-400">
-          Next: <span className={`font-semibold ${row.next_date ? "text-gold" : "text-navy-300"}`}>
+          {t("hearings.nextDateLabel")}: <span className={`font-semibold ${row.next_date ? "text-gold" : "text-navy-300"}`}>
             {row.next_date ? fmtDate(row.next_date) : "—"}
           </span>
         </span>
@@ -112,6 +112,7 @@ function TableRow({
   onQuickEdit?: (r: CauseListRow) => void;
   onUpdateHearing?: (r: CauseListRow) => void;
 }) {
+  const { t } = useTranslation();
   return (
     <tr className="border-b border-navy-50 hover:bg-navy-50/30 transition-colors">
       <td className="px-3 py-2.5 text-center">
@@ -125,14 +126,14 @@ function TableRow({
           className="hover:text-gold transition-colors">
           <p className="text-sm font-medium text-navy"
             dir={isUrdu(row.plaintiff_name ?? "") || isUrdu(row.defendant_name ?? "") ? "rtl" : "ltr"}>
-            {row.plaintiff_name} <span className="text-navy-300 text-xs">vs</span> {row.defendant_name}
+            {row.plaintiff_name} <span className="text-navy-300 text-xs">{t("common.vs")}</span> {row.defendant_name}
           </p>
           <p className="text-[11px] text-gold font-mono">{row.case_ref_no}</p>
         </Link>
       </td>
       <td className="px-3 py-2.5">
         <Badge variant={row.representing === "plaintiff" ? "gold" : "info"} size="sm">
-          {row.representing === "plaintiff" ? "Pltf" : "Def"}
+              {row.representing === "plaintiff" ? t("cases.plaintiff") : t("cases.defendant")}
         </Badge>
       </td>
       <td className="px-3 py-2.5 text-xs text-navy-400 max-w-[150px]">
@@ -155,7 +156,7 @@ function TableRow({
           {onQuickEdit && (
             <button onClick={() => onQuickEdit(row)}
               className="w-6 h-6 flex items-center justify-center rounded text-navy-300 hover:text-gold hover:bg-gold-50 transition-colors"
-              aria-label="Quick edit"
+              aria-label={t("common.quickEdit")}
             >
               <Edit2 className="w-3.5 h-3.5" />
             </button>
@@ -164,7 +165,7 @@ function TableRow({
             <button onClick={() => onUpdateHearing(row)}
               className="text-[11px] font-semibold text-gold hover:underline whitespace-nowrap"
             >
-              Update →
+              {t("common.update")} →
             </button>
           )}
         </div>
@@ -177,12 +178,13 @@ function TableRow({
 function Pagination({ page, totalPages, onChange }: {
   page: number; totalPages: number; onChange: (p: number) => void;
 }) {
+  const { t } = useTranslation();
   if (totalPages <= 1) return null;
   return (
     <div className="flex items-center justify-center gap-2 mt-4">
-      <Button size="sm" variant="secondary" disabled={page === 1} onClick={() => onChange(page - 1)}>← Prev</Button>
+      <Button size="sm" variant="secondary" disabled={page === 1} onClick={() => onChange(page - 1)}>{t("common.previousPage")} →</Button>
       <span className="text-sm text-navy-400">{page} / {totalPages}</span>
-      <Button size="sm" variant="secondary" disabled={page === totalPages} onClick={() => onChange(page + 1)}>Next →</Button>
+      <Button size="sm" variant="secondary" disabled={page === totalPages} onClick={() => onChange(page + 1)}>← {t("common.nextPage")}</Button>
     </div>
   );
 }
@@ -266,7 +268,7 @@ export function CauseListView({
         <table className="w-full text-sm border-collapse">
           <thead className="bg-navy-50/70 sticky top-0 z-10">
             <tr>
-              {["Sr.", "Prev. Date", "Parties", "From", "Current Proceeding", "Next Proceeding", "Next Date", "Court/Judge", ""].map((h, i) => (
+              {[t("hearings.serialNo"), t("hearings.previousDate"), t("common.parties"), t("cases.representing"), t("hearings.currentProceeding"), t("hearings.nextProceeding"), t("hearings.nextDateLabel"), `${t("cases.court")}/${t("cases.judge")}`, ""].map((h, i) => (
                 <th key={i} className="px-3 py-2.5 text-start text-xs font-semibold text-navy-400 uppercase tracking-wider whitespace-nowrap">
                   {h}
                 </th>

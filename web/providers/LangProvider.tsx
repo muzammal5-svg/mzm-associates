@@ -42,6 +42,14 @@ export function LangProvider({ children }: { children: ReactNode }) {
     return () => i18n.off("languageChanged", handler);
   }, [i18n]);
 
+  // Apply the saved language after hydration so server and client first render match.
+  useEffect(() => {
+    const saved = localStorage.getItem("i18nextLng");
+    if ((saved === "en" || saved === "ur") && saved !== i18n.language) {
+      void i18n.changeLanguage(saved);
+    }
+  }, [i18n]);
+
   // Apply dir + font-class to <html>
   useEffect(() => {
     const html = document.documentElement;

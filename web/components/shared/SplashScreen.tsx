@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Logo } from "./Logo";
 import { BRAND } from "@/lib/brand";
 
@@ -12,6 +13,7 @@ interface SplashScreenProps {
 }
 
 export function SplashScreen({ onDone, minDuration = 1400 }: SplashScreenProps) {
+  const { t } = useTranslation();
   const [visible, setVisible] = useState(true);
   const [fading,  setFading]  = useState(false);
 
@@ -26,7 +28,7 @@ export function SplashScreen({ onDone, minDuration = 1400 }: SplashScreenProps) 
   return (
     <div
       aria-live="polite"
-      aria-label="Loading MZM & Associates"
+      aria-label={t("common.loading") + " MZM & Associates"}
       className={`
         fixed inset-0 z-[100] flex flex-col items-center justify-center
         bg-navy transition-opacity duration-300
@@ -42,7 +44,7 @@ export function SplashScreen({ onDone, minDuration = 1400 }: SplashScreenProps) 
 
         {/* Tagline */}
         <p className="text-navy-200 text-sm font-body tracking-wide text-center px-8">
-          {BRAND.tagline}
+          {t("brand.tagline")}
         </p>
 
         {/* Loading dots */}

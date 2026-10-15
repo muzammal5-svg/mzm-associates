@@ -6,6 +6,7 @@ import { useTranslation }      from "react-i18next";
 import { Eye, EyeOff, Phone, Mail, ArrowRight, AlertCircle } from "lucide-react";
 import { supabase, IS_SUPABASE_CONFIGURED } from "@/lib/supabase/client";
 import { Logo }   from "@/components/shared/Logo";
+import { LangSwitcher } from "@/components/shared/LangSwitcher";
 import { BRAND }  from "@/lib/brand";
 import { cn }     from "@/lib/utils";
 
@@ -115,16 +116,18 @@ export default function SignInPage() {
           <div className="flex flex-col items-center gap-2 pb-2">
             <Logo size="lg" variant="full" />
             <p className="text-xs text-navy-300 text-center leading-snug">
-              {BRAND.tagline}
+              {t("brand.tagline")}
             </p>
           </div>
+
+          <LangSwitcher className="ms-auto max-w-32" />
 
           {/* Not-configured notice */}
           {!IS_SUPABASE_CONFIGURED && (
             <div className="bg-gold-50 border border-gold-200 rounded-xl p-3">
-              <p className="text-xs font-semibold text-gold-700 mb-0.5">Supabase not configured</p>
+              <p className="text-xs font-semibold text-gold-700 mb-0.5">{t("auth.configTitle")}</p>
               <p className="text-xs text-gold-600">
-                Add keys to <code className="bg-white px-1 rounded font-mono">web/.env.local</code> and restart.
+                {t("auth.configAddKeys")} <code className="bg-white px-1 rounded font-mono">web/.env.local</code> {t("auth.configRestart")}
               </p>
             </div>
           )}

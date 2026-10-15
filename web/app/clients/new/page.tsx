@@ -162,8 +162,8 @@ function AddClientPage() {
           uploaded_by: profile.id,
         });
       }
-      toast.success("Documents uploaded!");
-    } catch { toast.error(t("common.error"), "Some documents failed to upload."); }
+      toast.success(t("documents.uploaded"));
+    } catch { toast.error(t("common.error"), t("documents.uploadFailed")); }
     finally   { setSaving(false); }
     router.push(`/clients/view?id=${createdId}`);
   }
@@ -189,7 +189,7 @@ function AddClientPage() {
                 label={t("clients.name")}
                 required
                 error={errors.full_name?.message}
-                placeholder="e.g. Muhammad Aslam Khan or فاطمہ بی بی"
+                placeholder={t("clients.namePlaceholder")}
                 {...register("full_name")}
               />
 
@@ -241,7 +241,7 @@ function AddClientPage() {
                   className="w-4 h-4 rounded border-navy-200 accent-gold"
                   {...register("whatsapp_same")}
                 />
-                <span className="text-sm text-navy">{t("clients.whatsapp")} same as phone</span>
+                <span className="text-sm text-navy">{t("clients.whatsapp")} {t("clients.sameAsPhone")}</span>
               </label>
 
               {!whatsappSame && (
@@ -276,7 +276,7 @@ function AddClientPage() {
               <Select
                 label={t("clients.city")}
                 options={PK_CITY_OPTIONS}
-                placeholder="Select city"
+                placeholder={t("clients.selectCity")}
                 {...register("city")}
               />
 
@@ -284,7 +284,7 @@ function AddClientPage() {
               <Textarea
                 label={t("clients.address")}
                 rows={2}
-                placeholder="Street, Mohalla, District…"
+                placeholder={t("clients.addressPlaceholder")}
                 {...register("address")}
               />
 
@@ -303,7 +303,7 @@ function AddClientPage() {
                   loading={saving}
                   className="flex-1"
                 >
-                  Save & Continue
+                  {t("clients.saveContinue")}
                 </Button>
               </div>
             </form>
@@ -314,7 +314,7 @@ function AddClientPage() {
         {step === 1 && createdId && (
           <Card>
             <h2 className="text-sm font-semibold text-navy mb-4">
-              Upload Documents <span className="text-navy-300 font-normal">(Optional)</span>
+              {t("documents.uploadTitle")} <span className="text-navy-300 font-normal">({t("common.optional")})</span>
             </h2>
             <DocumentUploader
               clientId={createdId}
@@ -326,13 +326,13 @@ function AddClientPage() {
                 onClick={() => router.push(`/clients/view?id=${createdId}`)}
                 className="flex-1"
               >
-                Skip
+                {t("documents.skip")}
               </Button>
               <Button
                 onClick={() => router.push(`/clients/view?id=${createdId}`)}
                 className="flex-1"
               >
-                Done
+                {t("documents.done")}
               </Button>
             </div>
           </Card>

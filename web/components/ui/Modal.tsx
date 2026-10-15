@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, type ReactNode } from "react";
+import { useTranslation } from "react-i18next";
 import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "./Button";
@@ -45,6 +46,7 @@ export function Modal({
   size      = "md",
   className,
 }: ModalProps) {
+  const { t } = useTranslation();
   // Lock body scroll
   useEffect(() => {
     if (open) {
@@ -90,7 +92,7 @@ export function Modal({
               </h2>
               <button
                 onClick={onClose}
-                aria-label="Close"
+                aria-label={t("common.close")}
                 className="w-8 h-8 flex items-center justify-center rounded-lg text-navy-300 hover:bg-navy-50 hover:text-navy transition-colors"
               >
                 <X className="w-4 h-4" />
@@ -137,6 +139,7 @@ export function BottomSheet({
   snapPoints = "auto",
   className,
 }: BottomSheetProps) {
+  const { t } = useTranslation();
   useEffect(() => {
     if (open) document.body.style.overflow = "hidden";
     else       document.body.style.overflow = "";
@@ -179,7 +182,7 @@ export function BottomSheet({
             </h2>
             <button
               onClick={onClose}
-              aria-label="Close"
+              aria-label={t("common.close")}
               className="w-8 h-8 flex items-center justify-center rounded-lg text-navy-300 hover:bg-navy-50 transition-colors"
             >
               <X className="w-4 h-4" />
@@ -221,23 +224,24 @@ export function ConfirmDialog({
   open,
   onClose,
   onConfirm,
-  title         = "Confirm",
+  title,
   message,
-  confirmLabel  = "Confirm",
+  confirmLabel,
   confirmVariant = "primary",
   loading,
 }: ConfirmDialogProps) {
+  const { t } = useTranslation();
   return (
     <Modal
       open={open}
       onClose={onClose}
-      title={title}
+      title={title ?? t("common.confirmTitle")}
       size="sm"
       footer={
         <>
-          <Button variant="secondary" size="sm" onClick={onClose}>Cancel</Button>
+          <Button variant="secondary" size="sm" onClick={onClose}>{t("common.cancel")}</Button>
           <Button variant={confirmVariant} size="sm" onClick={onConfirm} loading={loading}>
-            {confirmLabel}
+            {confirmLabel ?? t("common.confirmAction")}
           </Button>
         </>
       }

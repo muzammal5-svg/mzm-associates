@@ -12,12 +12,6 @@ export type SupportedLang = (typeof SUPPORTED_LANGUAGES)[number]["code"];
 
 // Safe init — works in both SSR and browser
 if (!i18n.isInitialized) {
-  // Detect saved language only in browser
-  const savedLang =
-    typeof window !== "undefined"
-      ? (localStorage.getItem("i18nextLng") ?? "en")
-      : "en";
-
   i18n
     .use(initReactI18next)   // No LanguageDetector — avoids SSR window access
     .init({
@@ -25,7 +19,9 @@ if (!i18n.isInitialized) {
         en: { translation: en },
         ur: { translation: ur },
       },
-      lng: savedLang,
+      // Start with a stable language for SSR; LangProvider applies the saved
+      // preference after hydration to avoid rendering different server/client text.
+      lng: "en",
       fallbackLng: "en",
       supportedLngs: ["en", "ur"],
       interpolation: { escapeValue: false },

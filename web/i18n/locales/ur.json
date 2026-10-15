@@ -1,4 +1,7 @@
 {
+  "brand": {
+    "tagline": "وکلاء اور قانونی مشیرین"
+  },
   "nav": {
     "home": "ہوم",
     "dashboard": "ڈیش بورڈ",
@@ -15,6 +18,9 @@
     "runningCases": "جاری مقدمات"
   },
   "auth": {
+    "configTitle": "Supabase ترتیب نہیں دیا گیا",
+    "configAddKeys": "ضروری کلیدیں یہاں شامل کریں",
+    "configRestart": "پھر ایپ دوبارہ شروع کریں۔",
     "signIn": "لاگ ان",
     "signOut": "لاگ آؤٹ",
     "email": "ای میل",
@@ -71,6 +77,10 @@
     "decided": "فیصل شدہ مقدمات",
     "running": "جاری مقدمات",
     "caseNo": "مقدمہ نمبر",
+    "searchRunningPlaceholder": "فریق کا نام، مقدمہ نمبر یا موکل تلاش کریں…",
+    "emptyRunningResults": "آپ کے فلٹرز کے مطابق کوئی جاری مقدمہ نہیں ملا۔",
+    "hearingDate": "سماعت کی تاریخ",
+    "caseReference": "مقدمہ نمبر",
     "caseType": "قسم",
     "court": "عدالت",
     "courtNo": "عدالت نمبر",
@@ -96,18 +106,41 @@
     "whatsapp": "واٹس ایپ",
     "email": "ای میل",
     "address": "پتہ",
-    "city": "شہر"
+    "city": "شہر",
+    "namePlaceholder": "مثلاً محمد اسلم خان یا فاطمہ بی بی",
+    "sameAsPhone": "فون نمبر جیسا ہی",
+    "selectCity": "شہر منتخب کریں",
+    "addressPlaceholder": "گلی، محلہ، ضلع…",
+    "saveContinue": "محفوظ کریں اور جاری رکھیں"
   },
   "hearings": {
     "serialNo": "سیریل نمبر",
+    "updateHearing": "سماعت اپ ڈیٹ کریں",
+    "previousDate": "پچھلی تاریخ",
+    "nextDateLabel": "اگلی تاریخ",
+    "hearingCount": "{{count}} سماعتیں",
     "currentProceeding": "موجودہ کارروائی",
     "nextProceeding": "اگلی کارروائی",
     "nextDate": "اگلی تاریخ",
     "judge": "جج",
     "courtNo": "عدالت نمبر"
   },
+  "causeList": {
+    "noHearingsToExport": "برآمد کرنے کے لیے کوئی سماعت نہیں۔",
+    "pdfDownloaded": "پی ڈی ایف ڈاؤن لوڈ ہو گئی!",
+    "exportFailed": "برآمد ناکام ہوئی",
+    "noHearingsToShare": "شیئر کرنے کے لیے کوئی سماعت نہیں۔",
+    "shared": "کلپ بورڈ پر نقل یا شیئر کر دیا گیا!",
+    "shareFailed": "شیئر ناکام ہوا۔",
+    "noHearingsOnDate": "{{date}} کو کوئی سماعت نہیں۔"
+  },
   "documents": {
     "upload": "دستاویز اپلوڈ",
+    "uploaded": "دستاویزات اپ لوڈ ہو گئیں!",
+    "uploadFailed": "کچھ دستاویزات اپ لوڈ نہیں ہو سکیں۔",
+    "uploadTitle": "دستاویزات اپ لوڈ کریں",
+    "skip": "چھوڑیں",
+    "done": "مکمل",
     "download": "ڈاؤنلوڈ",
     "delete": "حذف"
   },
@@ -239,6 +272,40 @@
     "confirm": "کیا آپ کو یقین ہے؟",
     "addNew": "نیا شامل کریں",
     "offline": "آپ آف لائن ہیں۔ کچھ خصوصیات دستیاب نہیں۔",
-    "optional": "اختیاری"
+    "optional": "اختیاری",
+    "close": "بند کریں",
+    "backOnline": "انٹرنیٹ بحال ہے",
+    "tryAgain": "دوبارہ کوشش کریں",
+    "goHome": "گھر واپس جائیں",
+    "errorTitle": "کچھ غلط ہو گیا",
+    "errorDescription": "غیر متوقع خرابی پیش آئی۔ براہ کرم صفحہ تازہ کریں یا دوبارہ کوشش کریں۔",
+    "confirmTitle": "تصدیق",
+    "confirmAction": "تصدیق کریں",
+    "dismiss": "بند کریں",
+    "mainNavigation": "مرکزی نیویگیشن",
+    "filters": "فلٹرز",
+    "clearFilters": "فلٹرز صاف کریں",
+    "clear": "صاف کریں",
+    "all": "سب",
+    "allCourts": "تمام عدالتیں",
+    "allJudges": "تمام جج صاحبان",
+    "allTypes": "تمام اقسام",
+    "nextDateFrom": "اگلی تاریخ، از",
+    "nextDateTo": "اگلی تاریخ، تا",
+    "ascending": "صعودی",
+    "descending": "نزولی",
+    "previousPage": "پچھلا",
+    "nextPage": "اگلا",
+    "previousDay": "پچھلا دن",
+    "nextDay": "اگلا دن",
+    "backToToday": "آج پر واپس جائیں",
+    "today": "آج",
+    "print": "پرنٹ",
+    "share": "شیئر",
+    "pdf": "پی ڈی ایف",
+    "update": "اپ ڈیٹ",
+    "quickEdit": "فوری ترمیم",
+    "vs": "بمقابلہ",
+    "parties": "فریقین"
   }
 }

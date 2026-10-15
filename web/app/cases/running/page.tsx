@@ -18,16 +18,14 @@ import { useCauseListFilterOptions } from "@/hooks/useHearings";
 import { useDebounce }        from "@/hooks/useDebounce";
 import type { CauseListFilter } from "@/hooks/useHearings";
 
-// Sort options
-const SORT_OPTIONS = [
-  { value: "serial_no",    label: "Serial No." },
-  { value: "hearing_date", label: "Hearing Date" },
-  { value: "next_date",    label: "Next Date" },
-  { value: "case_ref_no",  label: "Case Ref" },
-];
-
 function RunningCasesPage({ updateCaseId }: { updateCaseId: string | null }) {
   const { t }  = useTranslation();
+  const sortOptions = [
+    { value: "serial_no", label: t("hearings.serialNo") },
+    { value: "hearing_date", label: t("cases.hearingDate") },
+    { value: "next_date", label: t("hearings.nextDate") },
+    { value: "case_ref_no", label: t("cases.caseReference") },
+  ];
   const { data: opts, isError: optionsError, refetch: refetchOptions } = useCauseListFilterOptions();
 
   const [search,       setSearch]       = useState("");
@@ -76,7 +74,7 @@ function RunningCasesPage({ updateCaseId }: { updateCaseId: string | null }) {
   const caseTypeOptions = (opts?.caseTypes ?? []).map(t => ({ value: t.id, label: t.name }));
 
   return (
-    <AppShell pageTitle="All Running Cases">
+    <AppShell pageTitle={t("cases.running")}>
       <div className="space-y-4">
         {optionsError && <QueryErrorState onRetry={() => void refetchOptions()} />}
 
@@ -84,12 +82,12 @@ function RunningCasesPage({ updateCaseId }: { updateCaseId: string | null }) {
         <div className="flex items-center gap-3">
           <div className="flex-1">
             <Input
-              placeholder="Search party name, case ref, client…"
+              placeholder={t("cases.searchRunningPlaceholder")}
               value={search}
               onChange={e => { setSearch(e.target.value); setPage(1); }}
               leftElement={<Search className="w-4 h-4" />}
               rightElement={search ? (
-                <button onClick={() => { setSearch(""); setPage(1); }} aria-label="Clear">
+                <button onClick={() => { setSearch(""); setPage(1); }} aria-label={t("common.clear")}>
                   <X className="w-4 h-4" />
                 </button>
               ) : undefined}
@@ -102,7 +100,7 @@ function RunningCasesPage({ updateCaseId }: { updateCaseId: string | null }) {
             leftIcon={<Filter className="w-4 h-4" />}
             rightIcon={filtersOpen ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
           >
-            Filters
+            {t("common.filters")}
             {activeFilterCount > 0 && (
               <Badge variant="danger" size="sm" className="-me-1">{activeFilterCount}</Badge>
             )}
@@ -116,26 +114,26 @@ function RunningCasesPage({ updateCaseId }: { updateCaseId: string | null }) {
               <Select
                 label="Court"
                 options={courtOptions}
-                placeholder="All courts"
+                placeholder={t("common.allCourts")}
                 value={courtNo}
                 onChange={e => { setCourtNo(e.target.value); setPage(1); }}
               />
               <Select
                 label="Judge"
                 options={judgeOptions}
-                placeholder="All judges"
+                placeholder={t("common.allJudges")}
                 value={judgeFilter}
                 onChange={e => { setJudgeFilter(e.target.value); setPage(1); }}
               />
               <Select
                 label="Case Type"
                 options={caseTypeOptions}
-                placeholder="All types"
+                placeholder={t("common.allTypes")}
                 value={caseType}
                 onChange={e => { setCaseType(e.target.value); setPage(1); }}
               />
               <div className="space-y-1.5">
-                <label className="label">Representing</label>
+                <label className="label">{t("cases.representing")}</label>
                 <div className="flex rounded-xl overflow-hidden border border-navy-100">
                   {(["", "plaintiff", "defendant"] as const).map(r => (
                     <button key={r} type="button"
@@ -146,18 +144,18 @@ function RunningCasesPage({ updateCaseId }: { updateCaseId: string | null }) {
                           : "bg-white text-navy-400 hover:bg-navy-50"
                       }`}
                     >
-                      {r === "" ? "All" : r === "plaintiff" ? "Plaintiff" : "Defendant"}
+                      {r === "" ? t("common.all") : r === "plaintiff" ? t("cases.plaintiff") : t("cases.defendant")}
                     </button>
                   ))}
                 </div>
               </div>
               <DatePicker
-                label="Next Date From"
+                label={t("common.nextDateFrom")}
                 value={nextDateFrom}
                 onChange={e => { setNextDateFrom(e.target.value); setPage(1); }}
               />
               <DatePicker
-                label="Next Date To"
+                label={t("common.nextDateTo")}
                 value={nextDateTo}
                 onChange={e => { setNextDateTo(e.target.value); setPage(1); }}
               />
@@ -168,7 +166,7 @@ function RunningCasesPage({ updateCaseId }: { updateCaseId: string | null }) {
               <div className="flex items-center gap-2">
                 <Select
                   label=""
-                  options={SORT_OPTIONS}
+                  options={sortOptions}
                   value={sortBy}
                   onChange={e => setSortBy(e.target.value as CauseListFilter["sortBy"])}
                   containerClassName="mb-0"
@@ -177,14 +175,14 @@ function RunningCasesPage({ updateCaseId }: { updateCaseId: string | null }) {
                 <Button size="sm" variant="secondary"
                   onClick={() => setSortDir(v => v === "asc" ? "desc" : "asc")}
                 >
-                  {sortDir === "asc" ? "↑ Asc" : "↓ Desc"}
+                  {sortDir === "asc" ? `↑ ${t("common.ascending")}` : `↓ ${t("common.descending")}`}
                 </Button>
               </div>
               {activeFilterCount > 0 && (
                 <Button size="sm" variant="ghost" onClick={resetFilters}
                   leftIcon={<X className="w-3.5 h-3.5" />}
                 >
-                  Clear Filters
+                  {t("common.clearFilters")}
                 </Button>
               )}
             </div>
@@ -198,7 +196,7 @@ function RunningCasesPage({ updateCaseId }: { updateCaseId: string | null }) {
           showQuickEdit={false}
           showUpdateHearing
           autoOpenUpdateCaseId={updateCaseId}
-          emptyMessage="No running cases match your filters."
+          emptyMessage={t("cases.emptyRunningResults")}
         />
 
       </div>

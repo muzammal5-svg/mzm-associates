@@ -50,7 +50,7 @@ export function OfflineBanner() {
       )}
     >
       {online ? (
-        <><Wifi className="w-4 h-4" /> Back online</>
+        <><Wifi className="w-4 h-4" /> {t("common.backOnline")}</>
       ) : (
         <><WifiOff className="w-4 h-4" /> {t("common.offline")}</>
       )}

@@ -6,6 +6,7 @@ import {
 } from "react";
 import { X, CheckCircle, AlertCircle, Info, AlertTriangle } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 export type ToastType = "success" | "error" | "warning" | "info";
@@ -105,6 +106,7 @@ function ToastItem({
   item:      ToastItem;
   onDismiss: (id: string) => void;
 }) {
+  const { t } = useTranslation();
   const { bg, icon } = TOAST_STYLES[item.type];
 
   return (
@@ -125,7 +127,7 @@ function ToastItem({
       </div>
       <button
         onClick={() => onDismiss(item.id)}
-        aria-label="Dismiss"
+        aria-label={t("common.dismiss")}
         className="w-6 h-6 flex items-center justify-center rounded text-navy-300 hover:text-navy hover:bg-navy-50 transition-colors flex-shrink-0"
       >
         <X className="w-3.5 h-3.5" />
