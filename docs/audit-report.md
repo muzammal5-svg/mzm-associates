@@ -1,6 +1,19 @@
 # Phases 1–7 Audit Report
 
-**Last updated:** 2026-10-14  
+## Current requested logo / Urdu / requirements pass (2026-10-15)
+
+| Item | Status | Evidence |
+|---|---|---|
+| Supplied logo integrated into shared logo, PDF export, and generated PWA assets | DONE | `logoadv.jpeg` identified as JPEG 858×1279; generated `brand-mark.png`; manifest check confirms every icon has its declared dimensions. Firm logo URL remains preferred in PDF export and existing firm upload branches remain present. |
+| Requirements trace and mockup confirmation list | DONE | `docs/requirements-trace.md` maps the listed requirements to routes/source; subscription, payments, admin web panel, and OTP are listed for client confirmation. |
+| Locale resource parity and unused-key validation | DONE | `npm run i18n:check`: EN_KEYS 214, UR_KEYS 214, MISSING_IN_UR 0, EXTRA_IN_UR 0, UNUSED_KEYS 0. |
+| Urdu visual verification | PARTIAL | Playwright `/auth/sign-in` returned 200 with `dir=rtl`; screenshot saved at `web/e2e/screenshots/ur/sign-in.png`. Authenticated screens were not verified. |
+| Inline hardcoded-string migration | PARTIAL | Expanded scan reports 116 JSX matches, 84 toast matches, and 9 error-constructor matches (209 raw matches; overlapping categories possible). No claim of zero remaining strings. |
+| Typecheck, lint, build, and unit smoke test | DONE | All exited 0; Vitest reports 1 file and 1 test passed. |
+
+**Current pass counts:** DONE 4 / PARTIAL 2 / MISSING 0 / BROKEN 0.
+
+**Last updated:** 2026-10-15  
 **Scope:** Stage 1 audit, verified Stage 2 Part 1 (P0/P1 items C–J), and the accepted Stage 2 Part 2 Chunk 2 work (Documents, query errors, uploads, generated types, filter-option pagination). P2 items outside this chunk, Stages 3–4, and Phase 8 remain out of scope.
 
 ## Verification commands and results
