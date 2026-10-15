@@ -38,7 +38,7 @@ export async function exportCauseListPdf(opts: PdfExportOptions): Promise<void> 
 
   // Use the firm upload when present and the real brand mark as the fallback.
   try {
-    const response = await fetch(firmLogoUrl || "/logo/logoadv.jpeg");
+    const response = await fetch(firmLogoUrl || "/logo/brand-mark.png");
     if (response.ok) {
       const logo = await response.blob();
       const dataUrl = await new Promise<string>((resolve, reject) => {
@@ -47,7 +47,7 @@ export async function exportCauseListPdf(opts: PdfExportOptions): Promise<void> 
         reader.onerror = reject;
         reader.readAsDataURL(logo);
       });
-      doc.addImage(dataUrl, "JPEG", 14, 7, 15, 15);
+      doc.addImage(dataUrl, dataUrl.startsWith("data:image/png") ? "PNG" : "JPEG", 14, 7, 30, 19);
     }
   } catch { /* The text header remains available if the image cannot be loaded. */ }
 
