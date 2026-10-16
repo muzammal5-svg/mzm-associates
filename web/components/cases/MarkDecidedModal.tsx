@@ -60,12 +60,12 @@ export function MarkDecidedModal({
     const file = e.target.files?.[0];
     if (!file) return;
     if (file.size > MAX_FILE_SIZE) {
-      toast.warning("File skipped", `${file.name} exceeds the ${formatFileSize(MAX_FILE_SIZE)} limit.`);
+      toast.warning(t("common.fileSkipped"), `${file.name} ${t("common.fileTooLarge", { size: formatFileSize(MAX_FILE_SIZE) })}`);
       e.target.value = "";
       return;
     }
     if (!(ALLOWED_MIME_TYPES as readonly string[]).includes(file.type)) {
-      toast.warning("File skipped", `${file.name} has an unsupported type. Allowed types: PDF, JPEG, PNG, WebP, DOC, DOCX.`);
+      toast.warning(t("common.fileSkipped"), `${file.name} ${t("common.unsupportedType")}`);
       e.target.value = "";
       return;
     }
@@ -73,7 +73,7 @@ export function MarkDecidedModal({
       const compressed = await compressImage(file);
       setDocFile(compressed);
     } catch (error) {
-      toast.error("Unable to process file", error instanceof Error ? error.message : file.name);
+      toast.error(t("common.unableToProcess"), error instanceof Error ? error.message : file.name);
     }
   }
 
@@ -102,7 +102,7 @@ export function MarkDecidedModal({
         document,
       });
 
-      toast.success("Case decided!", `${caseRef} moved to Decided Cases.`);
+      toast.success(t("common.caseDecided"), `${caseRef} ${t("common.movedToDecided", { ref: caseRef })}`);
       reset();
       setDocFile(null);
       setUploading(false);
@@ -132,37 +132,37 @@ export function MarkDecidedModal({
       </div>
 
       <DatePicker
-        label="Decision Date"
+        label={t("common.decisionDate")}
         required
         error={errors.decision_date?.message}
         {...register("decision_date")}
       />
 
       <Select
-        label="Outcome"
+        label={t("common.outcome")}
         required
         options={[
-          { value: "won",       label: "Won" },
-          { value: "lost",      label: "Lost" },
-          { value: "dismissed", label: "Dismissed" },
-          { value: "settled",   label: "Settled (Compromise)" },
-          { value: "withdrawn", label: "Withdrawn" },
+          { value: "won",       label: t("common.outcomeWon") },
+          { value: "lost",      label: t("common.outcomeLost") },
+          { value: "dismissed", label: t("common.outcomeDismissed") },
+          { value: "settled",   label: t("common.outcomeSettled") },
+          { value: "withdrawn", label: t("common.outcomeWithdrawn") },
         ]}
         error={errors.outcome?.message}
         {...register("outcome")}
       />
 
       <Textarea
-        label="Decision Notes"
+        label={t("common.decisionNotes")}
         rows={3}
-        placeholder="Summary of judgment, order details…"
+        placeholder={t("common.decisionNotesPlaceholder")}
         {...register("decision_notes")}
       />
 
       {/* Optional final order upload */}
       <div className="space-y-1.5">
         <label className="label">
-          Final Order Document <span className="text-navy-300 text-xs">(Optional)</span>
+          {t("common.finalOrderDocument")} <span className="text-navy-300 text-xs">{t("common.finalOrderOptional")}</span>
         </label>
         {docFile ? (
           <div className="flex items-center gap-2 p-3 bg-green-50 border border-success/30 rounded-xl">
@@ -171,7 +171,7 @@ export function MarkDecidedModal({
               <p className="text-xs font-medium text-navy truncate">{docFile.name}</p>
               <p className="text-[11px] text-navy-400">{formatFileSize(docFile.size)}</p>
             </div>
-            {uploading && <progress className="w-full" max={100} value={uploadProgress} aria-label={`Upload progress ${uploadProgress}%`} />}
+            {uploading &&             <progress className="w-full" max={100} value={uploadProgress} aria-label={t("common.uploadProgress", { progress: uploadProgress })} />}
             <button
               type="button"
               onClick={() => { setDocFile(null); if (fileRef.current) fileRef.current.value = ""; }}
@@ -187,7 +187,7 @@ export function MarkDecidedModal({
             className="w-full flex items-center gap-2 p-3 border-2 border-dashed border-navy-100 rounded-xl hover:border-gold hover:bg-gold-50/30 transition-colors text-sm text-navy-400"
           >
             <Upload className="w-4 h-4 flex-shrink-0" />
-            Upload final order / judgment
+            {t("common.uploadFinalOrder")}
           </button>
         )}
         <input
@@ -200,8 +200,7 @@ export function MarkDecidedModal({
       </div>
 
       <p className="text-[11px] text-navy-400 bg-yellow-50 border border-yellow-100 rounded-lg px-3 py-2">
-        All open reminders for this case will be automatically dismissed.
-        This case will move from Running Cases to Decided Cases.
+        {t("common.decidedMoveNote")}
       </p>
 
       <div className="flex gap-3">
@@ -214,7 +213,7 @@ export function MarkDecidedModal({
           leftIcon={<CheckSquare className="w-4 h-4" />}
           className="flex-1"
         >
-          Mark as Decided
+          {t("common.markAsDecided")}
         </Button>
       </div>
     </form>
@@ -222,10 +221,10 @@ export function MarkDecidedModal({
 
   return (
     <>
-      <BottomSheet open={open} onClose={onClose} title="Mark as Decided" snapPoints="auto" className="md:hidden">
+      <BottomSheet open={open} onClose={onClose} title={t("common.markAsDecided")} snapPoints="auto" className="md:hidden">
         {formContent}
       </BottomSheet>
-      <Modal open={open} onClose={onClose} title="Mark as Decided" size="md" className="hidden md:flex">
+      <Modal open={open} onClose={onClose} title={t("common.markAsDecided")} size="md" className="hidden md:flex">
         {formContent}
       </Modal>
     </>

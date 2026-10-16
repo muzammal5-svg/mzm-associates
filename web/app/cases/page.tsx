@@ -17,7 +17,7 @@ export default function CasesPage() {
         headerActions={
           <Link href="/cases/running">
             <Button size="sm" variant="secondary" leftIcon={<List className="w-4 h-4" />}>
-              Cause List View
+              {t("nav.causeList")}
             </Button>
           </Link>
         }

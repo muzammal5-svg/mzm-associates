@@ -42,7 +42,7 @@ export function Header({ title, showBack = false, actions, className }: HeaderPr
         {showBack ? (
           <button
             onClick={() => router.back()}
-            aria-label="Go back"
+            aria-label={t("common.back")}
             className="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-navy-50 transition-colors -ms-2"
           >
             <ArrowLeft className="w-5 h-5 text-navy" />

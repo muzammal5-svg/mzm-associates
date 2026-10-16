@@ -69,6 +69,7 @@ function Pagination({
 }: {
   page: number; totalPages: number; onChange: (p: number) => void;
 }) {
+  const { t } = useTranslation();
   if (totalPages <= 1) return null;
   return (
     <div className="flex items-center justify-center gap-2 mt-6">
@@ -77,7 +78,7 @@ function Pagination({
         disabled={page === 1}
         onClick={() => onChange(page - 1)}
       >
-        ← Prev
+        ← {t("common.previousPage")}
       </Button>
       <span className="text-sm text-navy-400">
         {page} / {totalPages}
@@ -87,7 +88,7 @@ function Pagination({
         disabled={page === totalPages}
         onClick={() => onChange(page + 1)}
       >
-        Next →
+        {t("common.nextPage")} →
       </Button>
     </div>
   );
@@ -160,15 +161,15 @@ function ClientsPage() {
 
         {/* ── Filter pills ── */}
         <div className="flex gap-2 flex-wrap">
-          <FilterPill value="all"      current={activeFilter} label="All"      count={allData?.total}    onClick={() => handleFilter("all")} />
-          <FilterPill value="active"   current={activeFilter} label="Active"   count={activeData?.total} onClick={() => handleFilter("active")} />
-          <FilterPill value="inactive" current={activeFilter} label="Inactive"                           onClick={() => handleFilter("inactive")} />
+          <FilterPill value="all"      current={activeFilter} label={t("common.all")}      count={allData?.total}    onClick={() => handleFilter("all")} />
+          <FilterPill value="active"   current={activeFilter} label={t("common.active")}   count={activeData?.total} onClick={() => handleFilter("active")} />
+          <FilterPill value="inactive" current={activeFilter} label={t("common.deactivate")}                           onClick={() => handleFilter("inactive")} />
         </div>
 
         {/* ── Result count ── */}
         {!isLoading && data && (
           <p className="text-xs text-navy-400">
-            {data.total} {data.total === 1 ? "client" : "clients"} found
+            {data.total} {data.total === 1 ? t("common.client") : t("common.clients")} {t("common.found")}
             {search && ` for "${search}"`}
           </p>
         )}
@@ -188,7 +189,7 @@ function ClientsPage() {
             <EmptyState
               icon={Users}
               title={t("common.noData")}
-              message={search ? `No clients match "${search}"` : "Add your first client to get started."}
+              message={search ? t("common.noClientsMatch", { search }) : t("common.getStarted")}
               action={
                 <Link href="/clients/new">
                   <Button leftIcon={<Plus className="w-4 h-4" />}>{t("clients.new")}</Button>
@@ -212,7 +213,7 @@ function ClientsPage() {
             <EmptyState
               icon={Users}
               title={t("common.noData")}
-              message={search ? `No clients match "${search}"` : "Add your first client to get started."}
+              message={search ? t("common.noClientsMatch", { search }) : t("common.getStarted")}
               action={
                 <Link href="/clients/new">
                   <Button leftIcon={<Plus className="w-4 h-4" />}>{t("clients.new")}</Button>
@@ -260,15 +261,15 @@ function ClientsPage() {
                 },
                 {
                   key: "cases",
-                  header: "Cases",
+                  header: t("cases.cases"),
                   render: (c) => <CaseCountCell clientId={c.id} />,
                 },
                 {
                   key: "status",
                   header: t("cases.status"),
                   render: (c) => c.is_active
-                    ? <Badge variant="success" dot>Active</Badge>
-                    : <Badge variant="neutral">Inactive</Badge>,
+                    ? <Badge variant="success" dot>{t("common.active")}</Badge>
+                    : <Badge variant="neutral">{t("common.deactivate")}</Badge>,
                 },
                 {
                   key: "actions",
@@ -305,17 +306,18 @@ function ClientsPage() {
 
 // Inline case count cell for the table (avoids prop drilling)
 function CaseCountCell({ clientId }: { clientId: string }) {
+  const { t } = useTranslation();
   const { data } = useClientCaseCounts(clientId);
   if (!data) return <span className="text-navy-300 text-xs">—</span>;
   return (
     <div className="flex items-center gap-1.5">
       {data.running > 0 && (
-        <Badge variant="info" size="sm">{data.running} running</Badge>
+        <Badge variant="info" size="sm">{data.running} {t("cases.running")}</Badge>
       )}
       {data.decided > 0 && (
-        <Badge variant="neutral" size="sm">{data.decided} decided</Badge>
+        <Badge variant="neutral" size="sm">{data.decided} {t("cases.decided")}</Badge>
       )}
-      {data.total === 0 && <span className="text-navy-300 text-xs">None</span>}
+      {data.total === 0 && <span className="text-navy-300 text-xs">{t("common.noData")}</span>}
     </div>
   );
 }

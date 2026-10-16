@@ -7,7 +7,6 @@ import { Eye, EyeOff, Phone, Mail, ArrowRight, AlertCircle } from "lucide-react"
 import { supabase, IS_SUPABASE_CONFIGURED } from "@/lib/supabase/client";
 import { Logo }   from "@/components/shared/Logo";
 import { LangSwitcher } from "@/components/shared/LangSwitcher";
-import { BRAND }  from "@/lib/brand";
 import { cn }     from "@/lib/utils";
 
 // Feature flag: show OTP tab only when SMS provider is configured
@@ -298,7 +297,7 @@ export default function SignInPage() {
       </div>
 
       {/* Version note */}
-      <p className="mt-6 text-navy-400 text-xs">{BRAND.name} &copy; {new Date().getFullYear()}</p>
+      <p className="mt-6 text-navy-400 text-xs">{t("brand.name")} &copy; {new Date().getFullYear()}</p>
     </div>
   );
 }

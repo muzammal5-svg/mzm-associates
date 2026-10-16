@@ -30,7 +30,7 @@ function SettingsPage() {
             </Link>
             <Link href="/settings/notifications" className="flex items-center gap-3 px-4 py-4 hover:bg-navy-50/50 transition-colors">
               <BellRing className="w-4 h-4 text-navy-400" />
-              <span className="flex-1 text-sm font-medium text-navy">Notification preferences</span>
+              <span className="flex-1 text-sm font-medium text-navy">{t("settings.notificationPreferences")}</span>
               <ChevronRight className="w-4 h-4 text-navy-300" />
             </Link>
           </Card>
@@ -48,19 +48,19 @@ function SettingsPage() {
         {isAdminOrAbove && (
           <section>
             <p className="text-xs font-semibold uppercase tracking-wider text-navy-400 mb-2 px-1 flex items-center gap-1">
-              <Shield className="w-3.5 h-3.5" /> Admin Configuration
+              <Shield className="w-3.5 h-3.5" /> {t("settings.adminConfig")}
             </p>
             <Card padding="none" className="divide-y divide-navy-50">
               <Link href="/settings/case-types"
                 className="flex items-center gap-3 px-4 py-4 hover:bg-navy-50/50 transition-colors">
                 <Tag className="w-4 h-4 text-navy-400" />
-                <span className="flex-1 text-sm font-medium text-navy">Case Types</span>
+                <span className="flex-1 text-sm font-medium text-navy">{t("common.caseTypes")}</span>
                 <ChevronRight className="w-4 h-4 text-navy-300" />
               </Link>
               <Link href="/settings/courts"
                 className="flex items-center gap-3 px-4 py-4 hover:bg-navy-50/50 transition-colors">
                 <Scale className="w-4 h-4 text-navy-400" />
-                <span className="flex-1 text-sm font-medium text-navy">Courts</span>
+                <span className="flex-1 text-sm font-medium text-navy">{t("common.courts")}</span>
                 <ChevronRight className="w-4 h-4 text-navy-300" />
               </Link>
             </Card>

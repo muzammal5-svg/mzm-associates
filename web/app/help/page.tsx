@@ -13,11 +13,11 @@ export default function HelpPage() {
           <Card className="flex flex-col items-center gap-4 py-10 text-center">
             <HelpCircle className="w-12 h-12 text-navy-300" />
             <div>
-              <p className="font-semibold text-navy text-lg">Help & Support</p>
+              <p className="font-semibold text-navy text-lg">{t("more.helpTitle")}</p>
               <p className="text-sm text-navy-400 mt-1">{t("more.helpText")}</p>
             </div>
             <a href="mailto:support@mzm.pk" className="btn-primary px-6">
-              Email Support
+              {t("more.emailSupport")}
             </a>
           </Card>
         </div>

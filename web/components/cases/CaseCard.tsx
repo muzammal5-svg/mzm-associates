@@ -34,7 +34,7 @@ export function CaseCard({ case_: c, className }: CaseCardProps) {
             dir={isUrdu(c.plaintiff_name) || isUrdu(c.defendant_name) ? "rtl" : "ltr"}
           >
             {c.plaintiff_name}
-            <span className="text-navy-300 font-normal mx-1 text-xs">vs</span>
+            <span className="text-navy-300 font-normal mx-1 text-xs">{t("cases.vs")}</span>
             {c.defendant_name}
           </p>
           <div className="flex items-center gap-1.5 mt-1.5 flex-wrap">

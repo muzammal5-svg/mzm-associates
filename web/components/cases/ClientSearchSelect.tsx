@@ -7,6 +7,7 @@ import { useClients } from "@/hooks/useClients";
 import { QueryErrorState } from "@/components/ui/QueryErrorState";
 import { cn, isUrdu, textDir } from "@/lib/utils";
 import type { Client } from "@/types/supabase";
+import { useTranslation } from "react-i18next";
 
 interface ClientSearchSelectProps {
   value?:     Client | null;
@@ -20,6 +21,7 @@ interface ClientSearchSelectProps {
 export function ClientSearchSelect({
   value, onChange, error, disabled, className, newClientHref = "/clients/new",
 }: ClientSearchSelectProps) {
+  const { t } = useTranslation();
   const [open,   setOpen]   = useState(false);
   const [search, setSearch] = useState("");
   const wrapRef = useRef<HTMLDivElement>(null);
@@ -74,13 +76,13 @@ export function ClientSearchSelect({
             )}
           </span>
         ) : (
-          <span className="flex-1 text-navy-300 text-sm">Search client…</span>
+          <span className="flex-1 text-navy-300 text-sm">{t("common.searchClient")}</span>
         )}
         <span className="flex items-center gap-1 flex-shrink-0">
           {value && (
             <span onClick={clear}
               className="text-navy-300 hover:text-danger p-0.5 rounded"
-              aria-label="Clear">
+              aria-label={t("common.clear")}>
               <X className="w-3.5 h-3.5" />
             </span>
           )}
@@ -105,7 +107,7 @@ export function ClientSearchSelect({
                 autoFocus
                 value={search}
                 onChange={e => setSearch(e.target.value)}
-                placeholder="Name, CNIC or phone…"
+                placeholder={t("common.nameCnicPhone")}
                 className="input ps-8 py-1.5 text-xs h-8"
               />
             </div>
@@ -138,7 +140,7 @@ export function ClientSearchSelect({
               </button>
             ))}
             {data?.clients.length === 0 && (
-              <p className="px-3 py-3 text-xs text-navy-400 text-center">No clients found</p>
+              <p className="px-3 py-3 text-xs text-navy-400 text-center">{t("common.noClientsFound")}</p>
             )}
           </div>
 
@@ -149,7 +151,7 @@ export function ClientSearchSelect({
               onClick={() => setOpen(false)}
               className="flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium text-gold hover:bg-gold-50 transition-colors"
             >
-              <UserPlus className="w-3.5 h-3.5" /> Add New Client
+              <UserPlus className="w-3.5 h-3.5" /> {t("common.addNewClient")}
             </Link>
           </div>
         </div>

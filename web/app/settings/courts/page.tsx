@@ -47,7 +47,7 @@ function CourtsAdmin() {
     try {
       await createCourt.mutateAsync({ firm_id: profile.firm_id, name: newName.trim() });
       setNewName(""); setAdding(false);
-      toast.success("Court added.");
+      toast.success(t("common.courtAdded"));
     } catch { toast.error(t("common.error")); }
   }
 
@@ -55,7 +55,7 @@ function CourtsAdmin() {
     if (!editId || !editName.trim()) return;
     try {
       await updateCourt.mutateAsync({ id: editId, name: editName.trim() });
-      setEditId(null); toast.success("Court updated.");
+      setEditId(null);       toast.success(t("common.courtUpdated"));
     } catch { toast.error(t("common.error")); }
   }
 
@@ -63,7 +63,7 @@ function CourtsAdmin() {
     if (!confirmId) return;
     try {
       await deleteCourt.mutateAsync(confirmId);
-      toast.success("Court deleted.");
+      toast.success(t("common.courtDeleted"));
     } catch (err: unknown) {
       toast.error(t("common.error"), err instanceof Error ? err.message : "");
     }
@@ -71,31 +71,31 @@ function CourtsAdmin() {
   }
 
   return (
-    <AppShell pageTitle="Courts" showBack>
+    <AppShell pageTitle={t("common.courts")} showBack>
       <div className="max-w-xl mx-auto space-y-4">
 
         <div className="flex justify-end">
           <Button size="sm" leftIcon={<Plus className="w-4 h-4"/>} onClick={() => setAdding(true)}>
-            Add Court
+            {t("common.addNew")}
           </Button>
         </div>
 
         {adding && (
           <Card className="space-y-3">
-            <Input label="Court Name" value={newName} onChange={e => setNewName(e.target.value)}
-              placeholder="e.g. Lahore High Court" required autoFocus />
+            <Input label={t("common.courtName")} value={newName} onChange={e => setNewName(e.target.value)}
+              placeholder={t("cases.court")} required autoFocus />
             <div className="flex gap-2">
               <Button size="sm" onClick={handleAdd} loading={createCourt.isPending}
-                leftIcon={<Check className="w-4 h-4"/>}>Save</Button>
+                leftIcon={<Check className="w-4 h-4"/>}>{t("common.save")}</Button>
               <Button size="sm" variant="secondary" onClick={() => { setAdding(false); setNewName(""); }}
-                leftIcon={<X className="w-4 h-4"/>}>Cancel</Button>
+                leftIcon={<X className="w-4 h-4"/>}>{t("common.cancel")}</Button>
             </div>
           </Card>
         )}
 
         {isError ? <QueryErrorState onRetry={() => void refetch()} /> :
          isLoading ? Array.from({length:3}).map((_,i)=><SkeletonCard key={i}/>) :
-          courts.length === 0 ? <EmptyState icon={Scale} title="No courts yet" /> :
+          courts.length === 0 ? <EmptyState icon={Scale} title={t("common.noData")} /> :
           <Card padding="none" className="divide-y divide-navy-50">
             {courts.map(ct => (
               <div key={ct.id} className="px-4 py-3">
@@ -104,9 +104,9 @@ function CourtsAdmin() {
                     <Input value={editName} onChange={e => setEditName(e.target.value)} required />
                     <div className="flex gap-2">
                       <Button size="xs" onClick={handleUpdate} loading={updateCourt.isPending}
-                        leftIcon={<Check className="w-3.5 h-3.5"/>}>Save</Button>
+                        leftIcon={<Check className="w-3.5 h-3.5"/>}>{t("common.save")}</Button>
                       <Button size="xs" variant="secondary" onClick={() => setEditId(null)}
-                        leftIcon={<X className="w-3.5 h-3.5"/>}>Cancel</Button>
+                        leftIcon={<X className="w-3.5 h-3.5"/>}>{t("common.cancel")}</Button>
                     </div>
                   </div>
                 ) : (
@@ -131,9 +131,9 @@ function CourtsAdmin() {
         }
 
         <ConfirmDialog open={!!confirmId} onClose={() => setConfirmId(null)}
-          onConfirm={handleDelete} title="Delete Court"
-          message="Delete this court? Existing cases linked to it will not be affected."
-          confirmLabel="Delete" confirmVariant="danger" loading={deleteCourt.isPending}
+          onConfirm={handleDelete} title={t("common.delete")}
+          message={t("common.deleteCourtConfirm")}
+          confirmLabel={t("common.delete")} confirmVariant="danger" loading={deleteCourt.isPending}
         />
       </div>
     </AppShell>

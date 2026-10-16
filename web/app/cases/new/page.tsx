@@ -139,7 +139,7 @@ function NewCasePage() {
 
         {/* ── Client ── */}
         <Card>
-          <h2 className="text-sm font-semibold text-navy-400 uppercase tracking-wider mb-3">Client</h2>
+          <h2 className="text-sm font-semibold text-navy-400 uppercase tracking-wider mb-3">{t("clients.title")}</h2>
           <div className="space-y-1.5">
             <label className="label">{t("clients.title")} <span className="text-danger ms-0.5">*</span></label>
             <Controller
@@ -158,7 +158,7 @@ function NewCasePage() {
 
         {/* ── Case Details ── */}
         <Card>
-          <h2 className="text-sm font-semibold text-navy-400 uppercase tracking-wider mb-3">Case Details</h2>
+          <h2 className="text-sm font-semibold text-navy-400 uppercase tracking-wider mb-3">{t("cases.caseDetails")}</h2>
           <div className="space-y-4">
 
             <Input
@@ -180,7 +180,7 @@ function NewCasePage() {
             <Select
               label={t("cases.caseType")} required
               options={caseTypeOptions}
-              placeholder="Select case type"
+              placeholder={t("common.allTypes")}
               error={errors.case_type_id?.message}
               {...register("case_type_id")}
             />
@@ -236,7 +236,7 @@ function NewCasePage() {
               <Select
                 label={t("cases.court")}
                 options={courtOptions}
-                placeholder="Select court"
+                placeholder={t("common.allCourts")}
                 {...register("court_no")}
               />
               <Input
@@ -258,7 +258,7 @@ function NewCasePage() {
         {/* ── First Hearing ── */}
         <Card>
           <h2 className="text-sm font-semibold text-navy-400 uppercase tracking-wider mb-3">
-            First Hearing Entry <span className="text-navy-300 font-normal">(Optional)</span>
+            {t("cases.firstHearing")} <span className="text-navy-300 font-normal">{t("common.optional")}</span>
           </h2>
           <div className="space-y-4">
             <div className="grid md:grid-cols-2 gap-4">
@@ -276,11 +276,11 @@ function NewCasePage() {
             <Textarea
               label={t("hearings.nextProceeding")}
               rows={2}
-              placeholder="What is expected at the next hearing…"
+              placeholder={t("common.nextProceedingPlaceholder")}
               {...register("next_proceeding")}
             />
             <p className="text-xs text-navy-400">
-              A reminder will be auto-generated 10 days before the next hearing date.
+              {t("common.reminderAutoNote")}
             </p>
           </div>
         </Card>

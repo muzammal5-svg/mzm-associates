@@ -1,5 +1,6 @@
 import { Check } from "lucide-react";
 import { cn }    from "@/lib/utils";
+import { useTranslation } from "react-i18next";
 
 interface Step {
   label:    string;
@@ -13,8 +14,9 @@ interface StepIndicatorProps {
 }
 
 export function StepIndicator({ steps, current, className }: StepIndicatorProps) {
+  const { t } = useTranslation();
   return (
-    <div className={cn("flex items-center", className)} aria-label="Progress">
+    <div className={cn("flex items-center", className)}         aria-label={t("common.progress")}>
       {steps.map((step, i) => {
         const done   = i < current;
         const active = i === current;
@@ -38,7 +40,7 @@ export function StepIndicator({ steps, current, className }: StepIndicatorProps)
                 active ? "text-gold" : done ? "text-navy-400" : "text-navy-300"
               )}>
                 {step.label}
-                {step.optional && <span className="text-navy-300"> (opt)</span>}
+                {step.optional && <span className="text-navy-300">{t("common.optional")}</span>}
               </span>
             </div>
             {/* Connector */}

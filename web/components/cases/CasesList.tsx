@@ -26,12 +26,13 @@ interface CasesListProps {
 function Pagination({ page, totalPages, onChange }: {
   page: number; totalPages: number; onChange: (p: number) => void;
 }) {
+  const { t } = useTranslation();
   if (totalPages <= 1) return null;
   return (
     <div className="flex items-center justify-center gap-2 mt-6">
-      <Button size="sm" variant="secondary" disabled={page === 1} onClick={() => onChange(page - 1)}>← Prev</Button>
+      <Button size="sm" variant="secondary" disabled={page === 1} onClick={() => onChange(page - 1)}>← {t("common.previousPage")}</Button>
       <span className="text-sm text-navy-400">{page} / {totalPages}</span>
-      <Button size="sm" variant="secondary" disabled={page === totalPages} onClick={() => onChange(page + 1)}>Next →</Button>
+      <Button size="sm" variant="secondary" disabled={page === totalPages} onClick={() => onChange(page + 1)}>{t("common.nextPage")} →</Button>
     </div>
   );
 }
@@ -62,7 +63,7 @@ export function CasesList({ status, title }: CasesListProps) {
             onChange={e => handleSearch(e.target.value)}
             leftElement={<Search className="w-4 h-4" />}
             rightElement={search ? (
-              <button onClick={() => handleSearch("")} aria-label="Clear">
+              <button onClick={() => handleSearch("")} aria-label={t("common.clear")}>
                 <X className="w-4 h-4" />
               </button>
             ) : undefined}
@@ -117,11 +118,11 @@ export function CasesList({ status, title }: CasesListProps) {
                 },
                 {
                   key: "parties",
-                  header: "Parties",
+                  header: t("common.parties"),
                   render: c => (
                     <span className="text-sm font-medium text-navy"
                       dir={isUrdu(c.plaintiff_name) ? "rtl" : "ltr"}>
-                      {c.plaintiff_name} <span className="text-navy-300 text-xs">vs</span> {c.defendant_name}
+                      {c.plaintiff_name} <span className="text-navy-300 text-xs">{t("cases.vs")}</span> {c.defendant_name}
                     </span>
                   ),
                 },

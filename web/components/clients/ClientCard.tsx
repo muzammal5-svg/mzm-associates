@@ -67,7 +67,7 @@ export function ClientCard({ client, caseCount, className }: ClientCardProps) {
         {/* Right side */}
         <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
           {!client.is_active && (
-            <Badge variant="neutral" size="sm">Inactive</Badge>
+            <Badge variant="neutral" size="sm">{t("common.deactivate")}</Badge>
           )}
           {caseCount !== undefined && caseCount > 0 && (
             <span className="flex items-center gap-1 text-xs font-semibold text-gold">

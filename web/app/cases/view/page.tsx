@@ -55,10 +55,11 @@ const EVENT_COLORS: Record<string, string> = {
 };
 
 function ActivityTab({ caseId }: { caseId: string }) {
+  const { t } = useTranslation();
   const { data: log, isLoading, isError, refetch } = useActivityLog(caseId);
   if (isLoading) return <div className="space-y-2">{[1,2,3].map(i=><SkeletonCard key={i}/>)}</div>;
   if (isError) return <QueryErrorState onRetry={() => void refetch()} />;
-  if (!log?.length) return <EmptyState icon={Activity} title="No activity yet" className="py-8" />;
+  if (!log?.length) return <EmptyState icon={Activity} title={t("common.noData")} className="py-8" />;
   return (
     <div className="space-y-2">
       {log.map((entry: CaseActivityLog) => {
@@ -72,7 +73,7 @@ function ActivityTab({ caseId }: { caseId: string }) {
             <div className="flex-1 min-w-0 pt-0.5">
               <p className="text-sm text-navy leading-snug">{entry.summary}</p>
               <p className="text-[11px] text-navy-300 mt-0.5">
-                {entry.actor_name ?? "System"} · {fmtDate(entry.created_at)}
+                {entry.actor_name ?? t("common.system")} · {fmtDate(entry.created_at)}
               </p>
             </div>
           </div>
@@ -84,12 +85,13 @@ function ActivityTab({ caseId }: { caseId: string }) {
 
 // ─── Hearing timeline ─────────────────────────────────────────────────────────
 function HearingTimeline({ caseId }: { caseId: string }) {
+  const { t } = useTranslation();
   const { data: hearings, isLoading, isError, refetch } = useCaseHearings(caseId);
   if (isLoading) return <div className="space-y-3">{[1,2,3].map(i=><SkeletonCard key={i}/>)}</div>;
   if (isError) return <QueryErrorState onRetry={() => void refetch()} />;
   if (!hearings?.length) return (
-    <EmptyState icon={Gavel} title="No hearings yet"
-      action={<Link href={`/cases/running?updateCaseId=${caseId}`}><Button size="sm" leftIcon={<Plus className="w-4 h-4"/>}>Add Hearing</Button></Link>}
+    <EmptyState icon={Gavel} title={t("common.noData")}
+      action={<Link href={`/cases/running?updateCaseId=${caseId}`}><Button size="sm" leftIcon={<Plus className="w-4 h-4"/>}>{t("cases.new")}</Button></Link>}
     />
   );
   return (
@@ -106,13 +108,13 @@ function HearingTimeline({ caseId }: { caseId: string }) {
                 <p className="text-sm font-semibold text-navy">{fmtDate(h.hearing_date)}</p>
                 {h.serial_no && <span className="text-xs text-gold font-mono">#{h.serial_no}</span>}
               </div>
-              {idx === 0 && <Badge variant="gold" size="sm">Latest</Badge>}
+              {idx === 0 && <Badge variant="gold" size="sm">{t("common.update")}</Badge>}
             </div>
             {h.current_proceeding && <p className="text-xs text-navy-400 mt-1.5">{h.current_proceeding}</p>}
             {h.next_date && (
               <div className="mt-2 pt-2 border-t border-navy-50 flex items-center gap-1.5 text-xs text-navy-400">
                 <CalendarPlus className="w-3.5 h-3.5 text-gold" />
-                Next: <strong className="text-navy">{fmtDate(h.next_date)}</strong>
+                {t("hearings.nextDate")}: <strong className="text-navy">{fmtDate(h.next_date)}</strong>
                 {h.next_proceeding && <span> — {h.next_proceeding}</span>}
               </div>
             )}
@@ -155,15 +157,15 @@ function NotesTab({ caseId, readOnly = false }: { caseId: string; readOnly?: boo
         <form onSubmit={submitNote} className="flex gap-2 items-end">
           <div className="flex-1">
             <textarea value={body} onChange={e => setBody(e.target.value)}
-              placeholder="Add a note…" rows={2} className="input resize-none" />
+              placeholder={t("cases.description")} rows={2} className="input resize-none" />
           </div>
           <Button type="submit" size="sm" loading={saving} leftIcon={<Send className="w-4 h-4"/>} disabled={!body.trim()}>
-            Add
+            {t("common.save")}
           </Button>
         </form>
       )}
       {isLoading ? <SkeletonCard /> :
-        !notes?.length ? <EmptyState icon={FileText} title="No notes yet" className="py-8" /> :
+        !notes?.length ? <EmptyState icon={FileText} title={t("common.noData")} className="py-8" /> :
         <div className="space-y-2">
           {notes.map(n => (
             <div key={n.id} className="bg-white rounded-xl border border-navy-50 p-3 space-y-1">
@@ -185,7 +187,7 @@ function NotesTab({ caseId, readOnly = false }: { caseId: string; readOnly?: boo
       }
       <ConfirmDialog open={!!confirmNote} onClose={() => setConfirmNote(null)}
         onConfirm={async () => { if (confirmNote) await deleteNote.mutateAsync(confirmNote); setConfirmNote(null); }}
-        title="Delete Note" message="Delete this note permanently?" confirmLabel="Delete" confirmVariant="danger"
+        title={t("common.delete")} message="Delete this note permanently?" confirmLabel={t("common.delete")} confirmVariant="danger"
       />
     </div>
   );
@@ -213,14 +215,14 @@ function OverviewTab({ caseId }: { caseId: string }) {
       {/* Decision summary for decided cases */}
       {c.status === "decided" && (
         <div className="bg-navy-50 rounded-xl border border-navy-100 p-4 space-y-2">
-          <p className="text-xs font-semibold text-navy-400 uppercase tracking-wider">Decision Summary</p>
+          <p className="text-xs font-semibold text-navy-400 uppercase tracking-wider">{t("cases.decisionSummary")}</p>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <p className="text-xs text-navy-400">Date</p>
+              <p className="text-xs text-navy-400">{t("cases.decidedDate")}</p>
               <p className="text-sm font-semibold text-navy">{c.decision_date ? fmtDate(c.decision_date) : "—"}</p>
             </div>
             <div>
-              <p className="text-xs text-navy-400">Outcome</p>
+              <p className="text-xs text-navy-400">{t("cases.outcome")}</p>
               {c.outcome ? <OutcomeBadge outcome={c.outcome} /> : <span className="text-navy-300 text-sm">—</span>}
             </div>
           </div>
@@ -247,7 +249,7 @@ function OverviewTab({ caseId }: { caseId: string }) {
               <User className="w-4 h-4 text-gold" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-xs text-navy-400">Client</p>
+              <p className="text-xs text-navy-400">{t("clients.title")}</p>
               <p className="text-sm font-semibold text-navy truncate" dir={textDir(c.client.full_name)}>
                 {c.client.full_name}
               </p>
@@ -278,7 +280,7 @@ function CaseActionsMenu({
   async function handleDelete() {
     try {
       await softDelete.mutateAsync(caseId);
-      toast.success("Case deleted.");
+      toast.success(t("common.caseDeleted"));
       if (typeof window !== "undefined") window.location.href = "/cases";
     } catch { toast.error(t("common.error")); }
     setConfirm(false);
@@ -289,7 +291,7 @@ function CaseActionsMenu({
       <div className="relative">
         <Button size="sm" variant="secondary" onClick={() => setOpen(v=>!v)}
           leftIcon={<MoreVertical className="w-4 h-4"/>}>
-          Actions
+          {t("common.actions")}
         </Button>
         {open && (
           <>
@@ -299,23 +301,23 @@ function CaseActionsMenu({
                 <>
                   <Link href={`/cases/running?updateCaseId=${caseId}`} onClick={() => setOpen(false)}
                     className="flex items-center gap-2.5 px-4 py-3 text-sm text-navy hover:bg-navy-50 transition-colors">
-                    <CalendarPlus className="w-4 h-4 text-navy-300" /> Update Hearing
+                    <CalendarPlus className="w-4 h-4 text-navy-300" /> {t("common.updateHearing")}
                   </Link>
                   <Link href={`/cases/edit?id=${caseId}`} onClick={() => setOpen(false)}
                     className="flex items-center gap-2.5 px-4 py-3 text-sm text-navy hover:bg-navy-50 transition-colors">
                     <Edit className="w-4 h-4 text-navy-300" /> {t("common.edit")}
                   </Link>
-                  <button onClick={() => { setOpen(false); onDecide(); }}
-                    className="flex items-center gap-2.5 w-full px-4 py-3 text-sm text-navy hover:bg-navy-50 transition-colors">
-                    <CheckSquare className="w-4 h-4 text-navy-300" /> Mark as Decided
-                  </button>
+                    <button onClick={() => { setOpen(false); onDecide(); }}
+                      className="flex items-center gap-2.5 w-full px-4 py-3 text-sm text-navy hover:bg-navy-50 transition-colors">
+                      <CheckSquare className="w-4 h-4 text-navy-300" /> {t("common.markAsDecided")}
+                    </button>
                 </>
               )}
               {status === "decided" && isAdminOrAbove && (
-                <button onClick={() => { setOpen(false); onReopen(); }}
-                  className="flex items-center gap-2.5 w-full px-4 py-3 text-sm text-navy hover:bg-navy-50 transition-colors">
-                  <RefreshCw className="w-4 h-4 text-navy-300" /> Reopen Case
-                </button>
+                  <button onClick={() => { setOpen(false); onReopen(); }}
+                    className="flex items-center gap-2.5 w-full px-4 py-3 text-sm text-navy hover:bg-navy-50 transition-colors">
+                    <RefreshCw className="w-4 h-4 text-navy-300" /> {t("common.reopenCase")}
+                  </button>
               )}
               {canDelete && (
                 <>
@@ -331,8 +333,8 @@ function CaseActionsMenu({
         )}
       </div>
       <ConfirmDialog open={confirm} onClose={() => setConfirm(false)} onConfirm={handleDelete}
-        title="Delete Case" confirmLabel="Delete" confirmVariant="danger" loading={softDelete.isPending}
-        message="Soft-delete this case? Records are preserved but hidden from all views."
+        title={t("common.delete")} confirmLabel={t("common.delete")} confirmVariant="danger" loading={softDelete.isPending}
+        message={t("common.softDeleteConfirm")}
       />
     </>
   );
@@ -351,10 +353,10 @@ function CaseViewPage() {
 
   if (isLoading) return <AppShell showBack><PageLoader /></AppShell>;
   if (isError) return <AppShell showBack><QueryErrorState onRetry={() => void refetch()} /></AppShell>;
-  if (!c) return <AppShell showBack><EmptyState title="Case not found" /></AppShell>;
+  if (!c) return <AppShell showBack><EmptyState title={t("common.caseNotFound")} /></AppShell>;
 
   const isDecided = c.status === "decided";
-  const parties   = `${c.plaintiff_name} vs ${c.defendant_name}`;
+  const parties   = `${c.plaintiff_name} ${t("cases.vs")} ${c.defendant_name}`;
 
   return (
     <AppShell
@@ -380,7 +382,7 @@ function CaseViewPage() {
               <h1 className="text-base font-heading font-bold text-navy mt-0.5 leading-snug"
                 dir={isUrdu(c.plaintiff_name) || isUrdu(c.defendant_name) ? "rtl" : "ltr"}>
                 {c.plaintiff_name}
-                <span className="text-navy-300 font-normal mx-1.5 text-sm">vs</span>
+                <span className="text-navy-300 font-normal mx-1.5 text-sm">{t("cases.vs")}</span>
                 {c.defendant_name}
               </h1>
               <div className="flex items-center gap-2 flex-wrap mt-2">
@@ -407,11 +409,11 @@ function CaseViewPage() {
         {/* Tabs */}
         <Tabs defaultValue="overview">
           <TabList>
-            <TabTrigger value="overview">Overview</TabTrigger>
-            <TabTrigger value="hearings">Hearings</TabTrigger>
-            <TabTrigger value="documents">Documents</TabTrigger>
-            <TabTrigger value="notes">Notes</TabTrigger>
-            <TabTrigger value="activity">Activity</TabTrigger>
+            <TabTrigger value="overview">{t("common.tabOverview")}</TabTrigger>
+            <TabTrigger value="hearings">{t("common.tabHearings")}</TabTrigger>
+            <TabTrigger value="documents">{t("common.tabDocuments")}</TabTrigger>
+            <TabTrigger value="notes">{t("common.tabNotes")}</TabTrigger>
+            <TabTrigger value="activity">{t("common.tabActivity")}</TabTrigger>
           </TabList>
 
           <TabPanel value="overview">

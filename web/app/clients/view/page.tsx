@@ -65,7 +65,7 @@ function CasesTab({ clientId }: { clientId: string }) {
               sub === s ? "bg-navy text-white" : "bg-white text-navy-400 hover:bg-navy-50"
             }`}
           >
-            {s === "running" ? "Running" : "Decided"}
+            {s === "running" ? t("cases.running") : t("cases.decided")}
           </button>
         ))}
       </div>
@@ -75,7 +75,7 @@ function CasesTab({ clientId }: { clientId: string }) {
       ) : !data?.length ? (
         <EmptyState
           icon={Briefcase}
-          title={`No ${sub} cases`}
+          title={`${t(sub === "running" ? "cases.running" : "cases.decided")} cases`}
           action={
             sub === "running" ? (
               <Link href={`/cases/new?clientId=${clientId}`}>
@@ -98,7 +98,7 @@ function CasesTab({ clientId }: { clientId: string }) {
                     dir={textDir(c.plaintiff_name)}
                   >
                     {c.plaintiff_name}{" "}
-                    <span className="text-navy-300 text-xs">vs</span>{" "}
+                    <span className="text-navy-300 text-xs">{t("cases.vs")}</span>{" "}
                     {c.defendant_name}
                   </p>
                   <div className="flex items-center gap-1.5 mt-1 flex-wrap">
@@ -160,7 +160,7 @@ function ClientViewPage() {
     }
     try {
       await toggleActive.mutateAsync(!client.is_active);
-      toast.success(client.is_active ? "Client deactivated." : "Client activated.");
+      toast.success(client.is_active ? t("common.deactivate") : t("common.activate"));
     } catch {
       toast.error(t("common.error"));
     }
@@ -170,7 +170,7 @@ function ClientViewPage() {
   if (isLoading) return <AppShell showBack><PageLoader /></AppShell>;
   if (isError) return <AppShell showBack><QueryErrorState onRetry={() => void refetch()} /></AppShell>;
   if (countsError) return <AppShell showBack><QueryErrorState onRetry={() => void refetchCounts()} /></AppShell>;
-  if (!client)   return <AppShell showBack><EmptyState title="Client not found" /></AppShell>;
+if (!client) return <AppShell showBack><EmptyState title={t("common.clientNotFound")} /></AppShell>;
 
   return (
     <AppShell
@@ -206,25 +206,25 @@ function ClientViewPage() {
             {client.city && <p className="text-sm text-navy-400">{client.city}</p>}
             <div className="flex items-center gap-2 mt-1 flex-wrap">
               {client.is_active
-                ? <Badge variant="success" dot>Active</Badge>
-                : <Badge variant="neutral">Inactive</Badge>
+                ? <Badge variant="success" dot>{t("common.active")}</Badge>
+                : <Badge variant="neutral">{t("common.deactivate")}</Badge>
               }
               {counts && counts.running > 0 && (
-                <Badge variant="info">{counts.running} running</Badge>
+                <Badge variant="info">{counts.running} {t("cases.running")}</Badge>
               )}
               {counts && counts.decided > 0 && (
-                <Badge variant="neutral">{counts.decided} decided</Badge>
+                <Badge variant="neutral">{counts.decided} {t("cases.decided")}</Badge>
               )}
             </div>
           </div>
           <div className="flex flex-col items-end gap-2 flex-shrink-0">
             <Link href={`/cases/new?clientId=${client.id}`}>
-              <Button size="xs" leftIcon={<Plus className="w-3.5 h-3.5" />}>Case</Button>
+              <Button size="xs" leftIcon={<Plus className="w-3.5 h-3.5" />}>{t("common.case")}</Button>
             </Link>
             {canDelete && (
               <button
                 onClick={handleToggleActive}
-                aria-label={client.is_active ? "Deactivate" : "Activate"}
+                aria-label={client.is_active ? t("common.deactivate") : t("common.activate")}
                 className="text-navy-300 hover:text-navy transition-colors"
               >
                 {client.is_active
@@ -239,9 +239,9 @@ function ClientViewPage() {
         {/* Tabs */}
         <Tabs defaultValue="details">
           <TabList>
-            <TabTrigger value="details">Details</TabTrigger>
-            <TabTrigger value="cases" count={counts?.total}>Cases</TabTrigger>
-            <TabTrigger value="documents">Documents</TabTrigger>
+            <TabTrigger value="details">{t("settings.about")}</TabTrigger>
+            <TabTrigger value="cases" count={counts?.total}>{t("common.tabCases")}</TabTrigger>
+            <TabTrigger value="documents">{t("common.tabDocuments")}</TabTrigger>
           </TabList>
 
           <TabPanel value="details">
@@ -281,9 +281,9 @@ function ClientViewPage() {
           open={confirmDeactivate}
           onClose={() => setConfirmDeactivate(false)}
           onConfirm={handleToggleActive}
-          title="Deactivate Client"
-          message={`This client has ${counts?.total} case(s). Deactivating will hide them from active views. Continue?`}
-          confirmLabel="Deactivate"
+          title={t("common.deactivate")}
+          message={t("common.deactivateConfirm", { count: counts?.total })}
+          confirmLabel={t("common.deactivate")}
           confirmVariant="danger"
           loading={toggleActive.isPending}
         />

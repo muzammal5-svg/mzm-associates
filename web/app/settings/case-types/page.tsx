@@ -57,7 +57,7 @@ function CaseTypesAdmin() {
         requires_offence: newOffence,
       });
       setNewName(""); setNewOffence(false); setAdding(false);
-      toast.success("Case type added.");
+      toast.success(t("common.caseTypeAdded"));
     } catch { toast.error(t("common.error")); }
   }
 
@@ -65,7 +65,7 @@ function CaseTypesAdmin() {
     if (!editId || !editName.trim()) return;
     try {
       await updateType.mutateAsync({ id: editId, name: editName.trim(), requires_offence: editOffence });
-      setEditId(null); toast.success("Case type updated.");
+      setEditId(null);       toast.success(t("common.caseTypeUpdated"));
     } catch { toast.error(t("common.error")); }
   }
 
@@ -73,7 +73,7 @@ function CaseTypesAdmin() {
     if (!confirmId) return;
     try {
       await deleteType.mutateAsync(confirmId);
-      toast.success("Case type deleted.");
+      toast.success(t("common.caseTypeDeleted"));
     } catch (err: unknown) {
       toast.error(t("common.error"), err instanceof Error ? err.message : "");
     }
@@ -85,38 +85,38 @@ function CaseTypesAdmin() {
   }
 
   return (
-    <AppShell pageTitle="Case Types" showBack>
+    <AppShell pageTitle={t("common.caseTypes")} showBack>
       <div className="max-w-xl mx-auto space-y-4">
 
         <div className="flex justify-end">
           <Button size="sm" leftIcon={<Plus className="w-4 h-4"/>} onClick={() => setAdding(true)}>
-            Add Case Type
+            {t("common.addNew")}
           </Button>
         </div>
 
         {/* Add form */}
         {adding && (
           <Card className="space-y-3">
-            <Input label="Name" value={newName} onChange={e => setNewName(e.target.value)}
-              placeholder="e.g. Criminal" required autoFocus />
+            <Input label={t("common.name")} value={newName} onChange={e => setNewName(e.target.value)}
+              placeholder={t("cases.caseType")} required autoFocus />
             <label className="flex items-center gap-2 cursor-pointer">
               <input type="checkbox" checked={newOffence}
                 onChange={e => setNewOffence(e.target.checked)}
                 className="w-4 h-4 accent-gold rounded" />
-              <span className="text-sm text-navy">Requires Offence field</span>
+              <span className="text-sm text-navy">{t("common.requiresOffence")}</span>
             </label>
             <div className="flex gap-2">
               <Button size="sm" onClick={handleAdd} loading={createType.isPending}
-                leftIcon={<Check className="w-4 h-4"/>}>Save</Button>
+                leftIcon={<Check className="w-4 h-4"/>}>{t("common.save")}</Button>
               <Button size="sm" variant="secondary" onClick={() => { setAdding(false); setNewName(""); }}
-                leftIcon={<X className="w-4 h-4"/>}>Cancel</Button>
+                leftIcon={<X className="w-4 h-4"/>}>{t("common.cancel")}</Button>
             </div>
           </Card>
         )}
 
         {isError ? <QueryErrorState onRetry={() => void refetch()} /> :
          isLoading ? Array.from({length:3}).map((_,i)=><SkeletonCard key={i}/>) :
-          types.length === 0 ? <EmptyState title="No case types yet" /> :
+          types.length === 0 ? <EmptyState title={t("common.noData")} /> :
           <Card padding="none" className="divide-y divide-navy-50">
             {types.map(ct => (
               <div key={ct.id} className="px-4 py-3">
@@ -127,13 +127,13 @@ function CaseTypesAdmin() {
                       <input type="checkbox" checked={editOffence}
                         onChange={e => setEditOffence(e.target.checked)}
                         className="w-4 h-4 accent-gold rounded" />
-                      <span className="text-sm text-navy">Requires Offence</span>
+                      <span className="text-sm text-navy">{t("common.requiresOffence")}</span>
                     </label>
                     <div className="flex gap-2">
                       <Button size="xs" onClick={handleUpdate} loading={updateType.isPending}
-                        leftIcon={<Check className="w-3.5 h-3.5"/>}>Save</Button>
+                        leftIcon={<Check className="w-3.5 h-3.5"/>}>{t("common.save")}</Button>
                       <Button size="xs" variant="secondary" onClick={() => setEditId(null)}
-                        leftIcon={<X className="w-3.5 h-3.5"/>}>Cancel</Button>
+                        leftIcon={<X className="w-3.5 h-3.5"/>}>{t("common.cancel")}</Button>
                     </div>
                   </div>
                 ) : (
@@ -141,7 +141,7 @@ function CaseTypesAdmin() {
                     <div className="flex-1">
                       <span className="text-sm font-medium text-navy">{ct.name}</span>
                       {ct.requires_offence && (
-                        <Badge variant="warning" size="sm" className="ms-2">Requires Offence</Badge>
+                        <Badge variant="warning" size="sm" className="ms-2">{t("common.requiresOffence")}</Badge>
                       )}
                     </div>
                     <div className="flex gap-1">
@@ -162,9 +162,9 @@ function CaseTypesAdmin() {
         }
 
         <ConfirmDialog open={!!confirmId} onClose={() => setConfirmId(null)}
-          onConfirm={handleDelete} title="Delete Case Type"
-          message="Delete this case type? Existing cases will not be affected, but you can no longer select it for new cases."
-          confirmLabel="Delete" confirmVariant="danger" loading={deleteType.isPending}
+          onConfirm={handleDelete} title={t("common.delete")}
+          message={t("common.deleteCaseTypeConfirm")}
+          confirmLabel={t("common.delete")} confirmVariant="danger" loading={deleteType.isPending}
         />
       </div>
     </AppShell>

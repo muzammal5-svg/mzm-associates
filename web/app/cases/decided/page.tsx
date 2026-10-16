@@ -24,15 +24,6 @@ import { useDebounce }        from "@/hooks/useDebounce";
 import { fmtDate, isUrdu, textDir } from "@/lib/utils";
 import type { Case, CaseOutcome } from "@/types/supabase";
 
-const OUTCOME_OPTIONS = [
-  { value: "",          label: "All Outcomes" },
-  { value: "won",       label: "Won" },
-  { value: "lost",      label: "Lost" },
-  { value: "dismissed", label: "Dismissed" },
-  { value: "settled",   label: "Settled" },
-  { value: "withdrawn", label: "Withdrawn" },
-];
-
 const YEAR_OPTIONS = Array.from({ length: 10 }, (_, i) => {
   const y = new Date().getFullYear() - i;
   return { value: String(y), label: String(y) };
@@ -41,13 +32,14 @@ const YEAR_OPTIONS = Array.from({ length: 10 }, (_, i) => {
 function Pagination({ page, total, pageSize, onChange }: {
   page: number; total: number; pageSize: number; onChange: (p: number) => void;
 }) {
+  const { t } = useTranslation();
   const totalPages = Math.ceil(total / pageSize);
   if (totalPages <= 1) return null;
   return (
     <div className="flex items-center justify-center gap-2 mt-6">
-      <Button size="sm" variant="secondary" disabled={page === 1} onClick={() => onChange(page - 1)}>← Prev</Button>
+      <Button size="sm" variant="secondary" disabled={page === 1} onClick={() => onChange(page - 1)}>← {t("common.previousPage")}</Button>
       <span className="text-sm text-navy-400">{page} / {totalPages}</span>
-      <Button size="sm" variant="secondary" disabled={page === totalPages} onClick={() => onChange(page + 1)}>Next →</Button>
+      <Button size="sm" variant="secondary" disabled={page === totalPages} onClick={() => onChange(page + 1)}>{t("common.nextPage")} →</Button>
     </div>
   );
 }
@@ -97,7 +89,7 @@ function DecidedCasesPage() {
         <div className="flex items-center gap-3">
           <div className="flex-1">
             <Input
-              placeholder="Search parties, case ref…"
+              placeholder={t("cases.searchRunningPlaceholder")}
               value={search}
               onChange={e => { setSearch(e.target.value); setPage(1); }}
               leftElement={<Search className="w-4 h-4" />}
@@ -109,7 +101,7 @@ function DecidedCasesPage() {
           <Button size="md" variant={showFilters ? "primary" : "secondary"}
             onClick={() => setShowFilters(v => !v)}
             leftIcon={<Filter className="w-4 h-4" />}>
-            Filters {activeCount > 0 && <Badge variant="danger" size="sm">{activeCount}</Badge>}
+            {t("common.filters")} {activeCount > 0 && <Badge variant="danger" size="sm">{activeCount}</Badge>}
           </Button>
         </div>
 
@@ -117,20 +109,30 @@ function DecidedCasesPage() {
         {showFilters && (
           <div className="bg-white rounded-xl border border-navy-100 p-4 animate-slide-down">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-              <Select label="Outcome" options={OUTCOME_OPTIONS}
+              <Select label={t("common.outcomeFilter")}
+                options={[
+                  { value: "", label: t("common.allOutcomes") },
+                  { value: "won", label: t("common.won") },
+                  { value: "lost", label: t("common.lost") },
+                  { value: "dismissed", label: t("common.dismissed") },
+                  { value: "settled", label: t("common.settled") },
+                  { value: "withdrawn", label: t("common.withdrawn") },
+                ]}
                 value={outcome} onChange={e => { setOutcome(e.target.value as CaseOutcome | ""); setPage(1); }} />
-              <Select label="Year" options={[{ value: "", label: "All Years" }, ...YEAR_OPTIONS]}
+              <Select label={t("common.yearFilter")}
+                options={[{ value: "", label: t("common.allYears") }, ...YEAR_OPTIONS]}
                 value={year} onChange={e => { setYear(e.target.value); setPage(1); }} />
-              <Select label="Case Type" options={caseTypeOptions}
+              <Select label={t("common.caseTypeFilter")}
+                options={caseTypeOptions}
                 value={caseType} onChange={e => { setCaseType(e.target.value); setPage(1); }} />
-              <Input label="Court / No." placeholder="Filter by court"
+              <Input label={t("common.courtNoPlaceholder")} placeholder={t("common.filterCourtPlaceholder")}
                 value={courtNo} onChange={e => { setCourtNo(e.target.value); setPage(1); }} />
             </div>
             {activeCount > 0 && (
               <div className="mt-3 flex justify-end">
                 <Button size="sm" variant="ghost" leftIcon={<X className="w-3.5 h-3.5" />}
                   onClick={() => { setOutcome(""); setYear(""); setCaseType(""); setCourtNo(""); setPage(1); }}>
-                  Clear Filters
+                  {t("common.clearFilters")}
                 </Button>
               </div>
             )}
@@ -140,8 +142,8 @@ function DecidedCasesPage() {
         {/* Count */}
         {!isLoading && data && (
           <p className="text-xs text-navy-400">
-            {data.total} decided {data.total === 1 ? "case" : "cases"}
-            {debouncedSearch && ` matching "${debouncedSearch}"`}
+            {t("common.decidedCount", { total: data.total, count: data.total === 1 ? 1 : 2 })}
+            {debouncedSearch && ` ${t("common.searching", { search: debouncedSearch })}`}
           </p>
         )}
 
@@ -153,7 +155,7 @@ function DecidedCasesPage() {
           {isLoading
             ? Array.from({length:5}).map((_,i)=><SkeletonCard key={i}/>)
             : filtered.length === 0
-            ? <EmptyState icon={CheckSquare} title="No decided cases" message="Cases marked as decided will appear here." />
+            ? <EmptyState icon={CheckSquare} title={t("common.noDecidedCases")} message={t("common.decidedCasesMessage")} />
             : <div className="space-y-2">
                 {filtered.map(c => (
                   <Link key={c.id} href={`/cases/view?id=${c.id}`}>
@@ -162,7 +164,7 @@ function DecidedCasesPage() {
                         <p className="text-xs font-mono text-gold font-semibold">{c.case_ref_no}</p>
                         <p className="text-sm font-medium text-navy mt-0.5 line-clamp-2"
                           dir={isUrdu(c.plaintiff_name) ? "rtl" : "ltr"}>
-                          {c.plaintiff_name} <span className="text-navy-300 text-xs">vs</span> {c.defendant_name}
+                          {c.plaintiff_name} <span className="text-navy-300 text-xs">{t("cases.vs")}</span> {c.defendant_name}
                         </p>
                         <div className="flex items-center gap-1.5 mt-1 flex-wrap">
                           {c.outcome && <OutcomeBadge outcome={c.outcome} />}
@@ -184,7 +186,7 @@ function DecidedCasesPage() {
           {isLoading
             ? <SkeletonTable rows={8} />
             : filtered.length === 0
-            ? <EmptyState icon={CheckSquare} title="No decided cases" />
+            ? <EmptyState icon={CheckSquare} title={t("common.noDecidedCases")} />
             : <Table
                 columns={[
                   {
@@ -195,11 +197,11 @@ function DecidedCasesPage() {
                   },
                   {
                     key: "parties",
-                    header: "Parties",
+                    header: t("common.parties"),
                     render: c => (
                       <span className="text-sm font-medium text-navy"
                         dir={isUrdu(c.plaintiff_name) ? "rtl" : "ltr"}>
-                        {c.plaintiff_name} <span className="text-navy-300 text-xs">vs</span> {c.defendant_name}
+                        {c.plaintiff_name} <span className="text-navy-300 text-xs">{t("cases.vs")}</span> {c.defendant_name}
                       </span>
                     ),
                   },

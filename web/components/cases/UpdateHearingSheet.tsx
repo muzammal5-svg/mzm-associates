@@ -75,10 +75,10 @@ export function UpdateHearingSheet({ row, onClose }: UpdateHearingSheetProps) {
         judgeChange:       data.judge_change || undefined,
         courtChange:       data.court_change || undefined,
       });
-      toast.success("Hearing updated!", "New hearing row created with next date.");
+      toast.success(t("common.updated"), t("common.newHearingRow"));
       onClose();
     } catch (err: unknown) {
-      toast.error(t("common.error"), err instanceof Error ? err.message : "Failed to save.");
+      toast.error(t("common.error"), err instanceof Error ? err.message : t("common.saveFailed"));
     }
   }
 
@@ -92,21 +92,21 @@ export function UpdateHearingSheet({ row, onClose }: UpdateHearingSheetProps) {
         <div className="bg-navy-50 rounded-xl px-3 py-2.5">
           <p className="text-xs font-mono text-gold font-semibold">{row.case_ref_no}</p>
           <p className="text-sm text-navy font-medium truncate mt-0.5">
-            {row.plaintiff_name} vs {row.defendant_name}
+            {row.plaintiff_name} {t("cases.vs")} {row.defendant_name}
           </p>
         </div>
       )}
 
       <Input
         label={t("hearings.serialNo")}
-        placeholder="14"
+        placeholder={t("common.serialPlaceholder")}
         {...register("serial_no")}
       />
 
       <Textarea
         label={`${t("hearings.currentProceeding")} *`}
         rows={3}
-        placeholder="What happened at today's hearing…"
+        placeholder={t("common.currentProceedingPlaceholder")}
         error={errors.current_proceeding?.message}
         required
         {...register("current_proceeding")}
@@ -122,26 +122,25 @@ export function UpdateHearingSheet({ row, onClose }: UpdateHearingSheetProps) {
       <Textarea
         label={t("hearings.nextProceeding")}
         rows={2}
-        placeholder="What is expected at the next hearing…"
+        placeholder={t("common.nextProceedingPlaceholder")}
         {...register("next_proceeding")}
       />
 
       <div className="grid grid-cols-2 gap-3">
         <Input
           label={t("hearings.judge")}
-          placeholder="Judge name"
+          placeholder={t("common.judgeNamePlaceholder")}
           {...register("judge_change")}
         />
         <Input
           label={t("hearings.courtNo")}
-          placeholder="Court no."
+          placeholder={t("common.courtNoPlaceholder")}
           {...register("court_change")}
         />
       </div>
 
       <p className="text-[11px] text-navy-400 bg-gold-50 border border-gold-100 rounded-lg px-3 py-2">
-        A new hearing row will be created. Previous date will be derived automatically.
-        A reminder will be set 10 days before the next date.
+        {t("common.hearingUpdateNote")}
       </p>
 
       <div className="flex gap-3">
@@ -154,7 +153,7 @@ export function UpdateHearingSheet({ row, onClose }: UpdateHearingSheetProps) {
           leftIcon={<CalendarPlus className="w-4 h-4" />}
           className="flex-1"
         >
-          Save Update
+          {t("common.saveUpdate")}
         </Button>
       </div>
     </form>
@@ -166,7 +165,7 @@ export function UpdateHearingSheet({ row, onClose }: UpdateHearingSheetProps) {
       <BottomSheet
         open={isOpen}
         onClose={onClose}
-        title="Update Hearing"
+        title={t("common.updateHearing")}
         snapPoints="auto"
         className="md:hidden"
       >
@@ -177,7 +176,7 @@ export function UpdateHearingSheet({ row, onClose }: UpdateHearingSheetProps) {
       <Modal
         open={isOpen}
         onClose={onClose}
-        title="Update Hearing"
+        title={t("common.updateHearing")}
         size="md"
         className="hidden md:flex"
       >

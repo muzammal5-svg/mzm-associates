@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { DocumentUploader } from "./DocumentUploader";
 import { DocumentList }     from "./DocumentList";
 import { Input } from "@/components/ui/Input";
@@ -23,6 +24,7 @@ interface DocumentsModuleProps {
  *   - Decided cases  → pass caseId
  */
 export function DocumentsModule({ clientId, caseId, className, firmWide = false }: DocumentsModuleProps) {
+  const { t } = useTranslation();
   const [search, setSearch] = useState("");
   const [filterClientId, setFilterClientId] = useState("");
   const [filterCaseId, setFilterCaseId] = useState("");
@@ -34,8 +36,8 @@ export function DocumentsModule({ clientId, caseId, className, firmWide = false 
       {firmWide && (
         <div className="mb-4 space-y-3 rounded-xl border border-navy-100 bg-white p-4">
           <Input
-            label="Search documents"
-            placeholder="Search by document name"
+            label={t("common.searchDocuments")}
+            placeholder={t("common.documentName")}
             value={search}
             onChange={event => setSearch(event.target.value)}
           />
@@ -44,30 +46,30 @@ export function DocumentsModule({ clientId, caseId, className, firmWide = false 
           ) : (
             <div className="grid gap-3 sm:grid-cols-3">
               <Select
-                label="Client"
+                label={t("clients.title")}
                 value={filterClientId}
                 onChange={event => setFilterClientId(event.target.value)}
-                placeholder="All clients"
+                placeholder={t("common.allClients")}
                 options={(filters.data?.clients ?? []).map(client => ({
                   value: client.id, label: client.full_name,
                 }))}
               />
               <Select
-                label="Case"
+                label={t("cases.caseReference")}
                 value={filterCaseId}
                 onChange={event => setFilterCaseId(event.target.value)}
-                placeholder="All cases"
+                placeholder={t("common.allCases")}
                 options={(filters.data?.cases ?? []).map(case_ => ({
                   value: case_.id, label: case_.case_ref_no,
                 }))}
               />
               <Select
-                label="Type"
+                label={t("cases.caseType")}
                 value={documentType}
                 onChange={event => setDocumentType(event.target.value)}
-                placeholder="All types"
+                placeholder={t("common.allTypes")}
                 options={[
-                  { value: "pdf", label: "PDF" },
+                  { value: "pdf", label: t("common.pdf") },
                   { value: "image", label: "Images" },
                   { value: "other", label: "Other" },
                 ]}

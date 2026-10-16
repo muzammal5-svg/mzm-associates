@@ -67,18 +67,18 @@ export function DocumentUploader({
 
     for (const file of files) {
       if (file.size > MAX_FILE_SIZE) {
-        toast.warning("File skipped", `${file.name} exceeds the ${formatFileSize(MAX_FILE_SIZE)} limit.`);
+        toast.warning(t("common.fileSkipped"), `${file.name} ${t("common.fileTooLarge", { size: formatFileSize(MAX_FILE_SIZE) })}`);
         continue;
       }
       if (!(ALLOWED_MIME_TYPES as readonly string[]).includes(file.type)) {
-        toast.warning("File skipped", `${file.name} has an unsupported type. Allowed types: PDF, JPEG, PNG, WebP, DOC, DOCX.`);
+        toast.warning(t("common.fileSkipped"), `${file.name} ${t("common.unsupportedType")}`);
         continue;
       }
       let compressed: File;
       try {
         compressed = await compressImage(file);
       } catch (error) {
-        toast.error("Unable to process file", `${file.name}: ${error instanceof Error ? error.message : "File processing failed."}`);
+        toast.error(t("common.unableToProcess"), `${file.name}: ${error instanceof Error ? error.message : t("common.couldNotDelete")}`);
         continue;
       }
       const preview = compressed.type.startsWith("image/")
@@ -195,7 +195,7 @@ export function DocumentUploader({
         <Upload className="w-8 h-8 text-navy-300" />
         <div className="text-center">
           <p className="text-sm font-medium text-navy">{t("documents.upload")}</p>
-          <p className="text-xs text-navy-400 mt-0.5">PDF, Images, Word — max 50 MB each</p>
+          <p className="text-xs text-navy-400 mt-0.5">{t("common.fileTypeHint")}</p>
         </div>
         <div className="flex gap-2">
           <button
@@ -203,14 +203,14 @@ export function DocumentUploader({
             onClick={e => { e.stopPropagation(); fileRef.current?.click(); }}
             className="btn-secondary text-xs px-3 py-1.5 min-h-0"
           >
-            Browse Files
+            {t("common.browseFiles")}
           </button>
           <button
             type="button"
             onClick={e => { e.stopPropagation(); cameraRef.current?.click(); }}
             className="btn-secondary text-xs px-3 py-1.5 min-h-0 flex items-center gap-1"
           >
-            <Camera className="w-3.5 h-3.5" /> Camera
+            <Camera className="w-3.5 h-3.5" /> {t("common.camera")}
           </button>
         </div>
       </div>
@@ -266,7 +266,7 @@ export function DocumentUploader({
                     type="text"
                     value={entry.name}
                     onChange={e => updateName(entry.id, e.target.value)}
-                    placeholder="Document name"
+                    placeholder={t("common.documentName")}
                     className="input text-xs py-1 px-2 h-7 mb-1"
                   />
                 ) : (
@@ -284,8 +284,8 @@ export function DocumentUploader({
                 )}
 
                 {entry.status === "done" && (
-                  <p className="text-[10px] text-success flex items-center gap-1 mt-0.5">
-                    <CheckCircle className="w-3 h-3" /> Uploaded · {formatFileSize(entry.file.size)}
+                    <p className="text-[10px] text-success flex items-center gap-1 mt-0.5">
+                      <CheckCircle className="w-3 h-3" /> {t("common.uploaded")} · {formatFileSize(entry.file.size)}
                   </p>
                 )}
                 {entry.status === "error" && (
@@ -302,7 +302,7 @@ export function DocumentUploader({
               <button
                 type="button"
                 onClick={() => removeEntry(entry.id)}
-                aria-label="Remove"
+                aria-label={t("common.remove")}
                 className="w-6 h-6 flex items-center justify-center rounded-full hover:bg-navy-100 transition-colors text-navy-300 hover:text-danger flex-shrink-0"
               >
                 <X className="w-3.5 h-3.5" />

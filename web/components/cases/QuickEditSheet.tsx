@@ -49,7 +49,7 @@ export function QuickEditSheet({ row, onClose }: QuickEditSheetProps) {
         serialNo:          data.serial_no,
         currentProceeding: data.current_proceeding ?? undefined,
       });
-      toast.success("Saved!");
+      toast.success(t("common.saved"));
       onClose();
     } catch { toast.error(t("common.error")); }
   }
@@ -60,12 +60,12 @@ export function QuickEditSheet({ row, onClose }: QuickEditSheetProps) {
       {row && (
         <div className="bg-navy-50 rounded-xl px-3 py-2.5">
           <p className="text-xs font-mono text-gold font-semibold">{row.case_ref_no}</p>
-          <p className="text-sm text-navy truncate">{row.plaintiff_name} vs {row.defendant_name}</p>
+          <p className="text-sm text-navy truncate">{row.plaintiff_name} {t("cases.vs")} {row.defendant_name}</p>
         </div>
       )}
-      <Input label="Serial No." placeholder="14" {...register("serial_no")} />
-      <Textarea label="Current Proceeding" rows={3}
-        placeholder="What happened today…" {...register("current_proceeding")} />
+      <Input label={t("hearings.serialNo")} placeholder={t("common.serialPlaceholder")} {...register("serial_no")} />
+      <Textarea label={t("hearings.currentProceeding")} rows={3}
+        placeholder={t("common.currentProceedingPlaceholder")} {...register("current_proceeding")} />
       <div className="flex gap-3">
         <Button type="button" variant="secondary" onClick={onClose} className="flex-1">
           {t("common.cancel")}
@@ -79,10 +79,10 @@ export function QuickEditSheet({ row, onClose }: QuickEditSheetProps) {
 
   return (
     <>
-      <BottomSheet open={isOpen} onClose={onClose} title="Quick Edit" className="md:hidden">
+      <BottomSheet open={isOpen} onClose={onClose} title={t("common.quickEdit")} className="md:hidden">
         {content}
       </BottomSheet>
-      <Modal open={isOpen} onClose={onClose} title="Quick Edit" size="sm" className="hidden md:flex">
+      <Modal open={isOpen} onClose={onClose} title={t("common.quickEdit")} size="sm" className="hidden md:flex">
         {content}
       </Modal>
     </>

@@ -109,7 +109,7 @@ function EditClientPage() {
 
   if (isLoading) return <AppShell showBack><PageLoader /></AppShell>;
   if (isError) return <AppShell showBack><QueryErrorState onRetry={() => void refetch()} /></AppShell>;
-  if (!client)   return <AppShell showBack><p className="text-danger text-sm">Client not found.</p></AppShell>;
+  if (!client)   return <AppShell showBack><p className="text-danger text-sm">{t("common.clientNotFound")}</p></AppShell>;
 
   return (
     <AppShell pageTitle={t("clients.edit")} showBack>
@@ -147,7 +147,7 @@ function EditClientPage() {
             <label className="flex items-center gap-2.5 cursor-pointer select-none">
               <input type="checkbox" className="w-4 h-4 rounded border-navy-200 accent-gold"
                 {...register("whatsapp_same")} />
-              <span className="text-sm text-navy">{t("clients.whatsapp")} same as phone</span>
+              <span className="text-sm text-navy">{t("clients.whatsapp")} {t("clients.sameAsPhone")}</span>
             </label>
 
             {!whatsappSame && (
@@ -166,7 +166,7 @@ function EditClientPage() {
             <Input label={t("clients.email")} type="email" error={errors.email?.message}
               {...register("email")} />
 
-            <Select label={t("clients.city")} options={PK_CITY_OPTIONS} placeholder="Select city"
+            <Select label={t("clients.city")} options={PK_CITY_OPTIONS}               placeholder={t("clients.selectCity")}
               {...register("city")} />
 
             <Textarea label={t("clients.address")} rows={2} {...register("address")} />

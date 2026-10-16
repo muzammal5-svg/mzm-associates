@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
 
 interface LogoProps {
   size?: "xs" | "sm" | "md" | "lg";
@@ -17,12 +18,13 @@ const sizeMap = {
 };
 
 export function Logo({ size = "md", variant = "full", className }: LogoProps) {
+  const { t } = useTranslation();
   const s = sizeMap[size];
   return (
     <div data-variant={variant} className={cn("flex items-center gap-2.5 select-none", className)}>
       <Image
         src="/logo/brand-mark.png"
-        alt="MZM & Associates"
+        alt={t("brand.name")}
         width={s.pixels}
         height={s.height}
         className={cn("object-contain flex-shrink-0 bg-white", s.mark)}

@@ -86,16 +86,16 @@ function EditCasePage() {
         judge_name:     data.judge_name || null,
         description:    data.description || null,
       });
-      toast.success("Case updated.");
+      toast.success(t("common.caseUpdated"));
       router.push(`/cases/view?id=${id}`);
     } catch (err: unknown) {
-      toast.error(t("common.error"), err instanceof Error ? err.message : "Save failed.");
+      toast.error(t("common.error"), err instanceof Error ? err.message : t("common.saveFailed"));
     }
   }
 
   if (isLoading) return <AppShell showBack><PageLoader /></AppShell>;
   if (caseError) return <AppShell showBack><QueryErrorState onRetry={() => void refetchCase()} /></AppShell>;
-  if (!c) return <AppShell showBack><p className="text-danger text-sm">Case not found.</p></AppShell>;
+  if (!c) return <AppShell showBack><p className="text-danger text-sm">{t("common.caseNotFound")}</p></AppShell>;
 
   const caseTypeOptions = caseTypes.map(ct => ({ value: ct.id, label: ct.name }));
   const courtOptions    = courts.map(ct => ({ value: ct.name, label: ct.name }));
@@ -146,7 +146,7 @@ function EditCasePage() {
 
             <div className="grid md:grid-cols-2 gap-4">
               <Select label={t("cases.court")} options={courtOptions}
-                placeholder="Select court" {...register("court_no")} />
+                placeholder={t("common.allCourts")} {...register("court_no")} />
               <Input label={t("cases.judge")} {...register("judge_name")} />
             </div>
 

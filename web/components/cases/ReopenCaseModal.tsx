@@ -37,7 +37,7 @@ export function ReopenCaseModal({ caseId, caseRef, open, onClose }: ReopenCaseMo
   async function onSubmit(data: FormData) {
     try {
       await reopen.mutateAsync({ caseId, reason: data.reason });
-      toast.success("Case reopened!", `${caseRef} moved back to Running Cases.`);
+      toast.success(t("common.caseReopened"), `${caseRef} ${t("common.movedBackToRunning", { ref: caseRef })}`);
       reset();
       onClose();
     } catch (err: unknown) {
@@ -46,17 +46,16 @@ export function ReopenCaseModal({ caseId, caseRef, open, onClose }: ReopenCaseMo
   }
 
   return (
-    <Modal open={open} onClose={onClose} title="Reopen Case" size="sm">
+    <Modal open={open} onClose={onClose} title={t("common.reopenCase")} size="sm">
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <p className="text-sm text-navy-400">
-          This will move <strong className="text-navy">{caseRef}</strong> back to Running Cases.
-          A note will be added to the activity log.
+          {t("common.reopenNote")}
         </p>
         <Textarea
-          label="Reason for Reopening"
+          label={t("common.reasonForReopen")}
           required
           rows={3}
-          placeholder="e.g. Appeal filed against judgment, case recalled…"
+          placeholder={t("common.reasonPlaceholder")}
           error={errors.reason?.message}
           {...register("reason")}
         />
@@ -70,7 +69,7 @@ export function ReopenCaseModal({ caseId, caseRef, open, onClose }: ReopenCaseMo
             leftIcon={<RefreshCw className="w-4 h-4" />}
             className="flex-1"
           >
-            Reopen Case
+            {t("common.reopenCase")}
           </Button>
         </div>
       </form>

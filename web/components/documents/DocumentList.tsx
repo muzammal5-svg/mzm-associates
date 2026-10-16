@@ -37,12 +37,13 @@ function DocIcon({ mime }: { mime: string | null }) {
 }
 
 function DocPreviewModal({ url, mime, onClose }: { url: string; mime: string | null; onClose: () => void }) {
+  const { t } = useTranslation();
   return (
     <div
       className="fixed inset-0 z-[80] bg-navy/80 flex items-center justify-center p-4"
       onClick={onClose}
       role="dialog"
-      aria-label="Document preview"
+      aria-label={t("common.view")}
     >
       <div
         className="max-w-3xl max-h-[90dvh] w-full bg-white rounded-2xl overflow-hidden shadow-modal"
@@ -51,18 +52,18 @@ function DocPreviewModal({ url, mime, onClose }: { url: string; mime: string | n
         {mime?.startsWith("image/") ? (
           <Image
             src={url}
-            alt="Document preview"
+            alt={t("documents.pdfPreview")}
             width={1200}
             height={900}
             unoptimized
             className="w-full h-full object-contain"
           />
         ) : mime === "application/pdf" ? (
-          <iframe src={url} title="PDF preview" className="w-full h-[80dvh]" />
+          <iframe src={url} title={t("documents.pdfPreview")} className="w-full h-[80dvh]" />
         ) : (
           <div className="p-8 text-center">
-            <p className="text-navy-400 text-sm mb-4">Preview not available for this file type.</p>
-            <a href={url} download className="btn-primary">Download</a>
+            <p className="text-navy-400 text-sm mb-4">{t("common.noPreview")}</p>
+            <a href={url} download className="btn-primary">{t("common.download")}</a>
           </div>
         )}
       </div>
@@ -88,7 +89,7 @@ export function DocumentList({
 
   async function handleDownload(doc: Document) {
     const url = await getDocumentUrl(doc.file_path);
-    if (!url) { toast.error("Error", "Could not generate download link."); return; }
+    if (!url) { toast.error(t("common.error"), t("common.downloadLinkError")); return; }
     const a = document.createElement("a");
     a.href     = url;
     a.download = doc.name;
@@ -97,7 +98,7 @@ export function DocumentList({
 
   async function handlePreview(doc: Document) {
     const url = await getDocumentUrl(doc.file_path);
-    if (!url) { toast.error("Error", "Could not load preview."); return; }
+    if (!url) { toast.error(t("common.error"), t("common.previewLoadError")); return; }
     setPreviewUrl(url);
     setPreviewMime(doc.mime);
   }
@@ -106,9 +107,9 @@ export function DocumentList({
     if (!confirmDoc) return;
     try {
       await deleteMut.mutateAsync({ doc: confirmDoc });
-      toast.success(t("documents.delete"), "Document deleted.");
+      toast.success(t("common.documentDeleted"));
     } catch {
-      toast.error(t("common.error"), "Could not delete document.");
+      toast.error(t("common.error"), t("common.couldNotDelete"));
     } finally {
       setConfirmDoc(null);
     }
@@ -130,8 +131,8 @@ export function DocumentList({
     return (
       <EmptyState
         icon={FileText}
-        title="No documents"
-        message="Upload documents using the uploader above."
+        title={t("common.noDocuments")}
+        message={t("common.uploadDocsHint")}
         className={className}
       />
     );
