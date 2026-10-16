@@ -1,6 +1,6 @@
 # Phases 1–7 Audit Report
 
-## Current requested logo / Urdu / requirements pass (2026-10-15)
+## Current requested logo / Urdu / requirements pass (2026-10-16)
 
 | Item | Status | Evidence |
 |---|---|---|
@@ -29,9 +29,13 @@
 | `generate_reminders()` (remote dev) | **PASS**; processed 21 cases, created 34 reminders, closed 0; total/upcoming counts were 34/34. |
 | `node supabase/scripts/verify-filter-options.mjs` | **PASS**; inserted 620 temporary hearings, lawyer JWT returned all 620 distinct test courts and judges, missing values 0/0, cleanup left 0 temporary rows and restored total hearings to 30. |
 | `npx supabase gen types typescript --project-id zxxpsvhlekemgccrcwtg --schema public` | Passed against the remote project. Output was not allowed to overwrite application aliases; generated typed relationships remain in `web/types/supabase.ts`. |
-| `npx tsc --noEmit` (serial run) | Passed. A first concurrent run overlapped `next build` regenerating `.next/types` and failed transiently; serial rerun passed. |
-| `npm run lint` | Passed. |
-| `npm run build` (`next build`) | Passed; all 32 static pages generated. |
+| `npx tsc --noEmit` | Passed (2026-10-16). |
+| `npm run lint` | Passed (2026-10-16). |
+| `npm run build` (`next build`) | Passed; all 32 static pages generated (2026-10-16). |
+| `npm test` (vitest) | 1 file, 1 test passed (2026-10-16). |
+| `npx cap add android` | Android platform added; `appId=com.mzmassociates.cms`, `webDir=out`. |
+| `npx cap add ios` | iOS platform added (cannot build on Windows; needs macOS + Xcode). |
+| `.\gradlew assembleDebug` | BLOCKED — `JAVA_HOME` not set; no JDK/Android SDK on this machine. |
 | Current handoff verification (2026-10-14) | `npm ci` in `web/` passed; `npx tsc --noEmit`, `npm run lint`, and `npm run build` all exited 0; build generated 32 static pages. `supabase/scripts/npm ci`, reset-demo, seed verification (including final 34/34 reminders), Stage 2 Part 1 (9/9), and document-delete real-JWT verification passed. Clerk storage/row deletes denied; own-firm lawyer and admin storage/row deletes succeeded; second-firm lawyer storage/row deletes denied. Cleanup: 0 temp document rows, 0 temp objects, temp firm/user removed. Root migration list: 8 local = 8 remote. No Phase 8 work started. |
 | Generated Supabase types | `supabase gen types typescript --project-id zxxpsvhlekemgccrcwtg --schema public` completed; 1,272 generated lines were written to a temporary file, leaving application types untouched. |
 | `supabase db reset` | Not run; Docker is unavailable and the approved verification target is the remote dev project. No reset or destructive operation was performed. |
@@ -168,3 +172,54 @@ Status definitions: `[DONE]` verified complete; `[PARTIAL]` implemented but inco
 
 **Chunk 3 subtotal:** DONE 9 / PARTIAL 0 / MISSING 0 / BROKEN 0.  
 **Tag:** `chunk3-verified` was not created because M1 remains partial.
+
+## Chunk 4 — Web Push, Android, iOS, mobile docs (2026-10-16)
+
+| Chunk 4 item | Status | Evidence / remaining work |
+|---|---|---|
+| W1 VAPID key pair generated | DONE | `NEXT_PUBLIC_VAPID_PUBLIC_KEY` added to `web/.env.local`. Private key NOT printed (secret). |
+| W2 `VAPID_PRIVATE_KEY` as Edge Function secret | MISSING | Supabase access token lacks `edge_functions_secrets_write` permission. Must be set manually in Supabase Dashboard → Edge Functions → send-push → Secrets. |
+| W3 device_tokens on login / removal on logout | DONE | `web/providers/AuthProvider.tsx`: registers device token on sign-in (via `enableWebPush` + upsert to `device_tokens`), removes on sign-out. |
+| W4 send-push Edge Function deployed | MISSING | Docker Desktop unavailable on this machine; `npx supabase functions deploy` cannot bundle. Must be deployed manually after Docker is installed. |
+| W5 DB trigger on notification insert | DONE (migration) | `supabase/migrations/20261016000000_push_dispatch_trigger.sql` created with pg_net trigger. Must be applied manually in Supabase SQL Editor (pg_net extension + `<SUPABASE_SERVICE_ROLE_KEY>` placeholder). |
+| W6 Push end-to-end test | MISSING | Cannot test without W2+W4 completed. Function log + push payload verification pending manual setup. |
+| A1 Android platform added | DONE | `npx cap add android` succeeded; `web/android/` created with 7 Capacitor plugins. |
+| A2 Capacitor config | DONE | `appId=com.mzmassociates.cms`, `appName=MZM & Associates`, `webDir=out`, PushNotifications plugin configured. |
+| A3 Android plugins & scripts | DONE | `@capacitor/push-notifications`, `@capacitor/camera`, `@capacitor/filesystem` installed. `build:mobile` and `open:android` scripts added to `package.json`. |
+| A4 Debug APK build | BLOCKED | `.\gradlew assembleDebug` fails: `JAVA_HOME is not set`. JDK/Android SDK not installed. |
+| A5 Android install requirements | DOCUMENTED | JDK 17/21, Android Studio/SDK, `ANDROID_HOME` env var, SDK license acceptance required (see below). |
+| I1 iOS platform added | DONE | `npx cap add ios` succeeded; `web/ios/` created (CocoaPods/xcodebuild unavailable on Windows). |
+| I2 docs/ios.md | DONE | Documents Mac + Apple Developer account requirement. |
+| M1 docs/mobile.md | DONE | Firebase/FCM setup, release AAB signing, Play Console checklist, privacy policy, in-app account deletion. |
+| Final checks | DONE | `tsc --noEmit` (0), `eslint` (0), `next build` (32 pages), `vitest` (1/1). |
+
+### Android SDK/JDK install requirements (blocker for A4)
+
+The following must be installed before `.\gradlew assembleDebug` can succeed:
+
+1. **JDK 17 or 21** — Download from https://adoptium.net/ or Oracle. Set `JAVA_HOME` to the JDK installation directory.
+2. **Android Studio** (recommended) — Includes Android SDK, build tools, platform-tools, emulator. Or install **Android SDK Command-line Tools** separately.
+3. **ANDROID_HOME** environment variable — Set to the Android SDK root (e.g. `C:\Users\HP\AppData\Local\Android\Sdk`).
+4. **SDK components** — Via Android Studio SDK Manager: Android SDK Platform (API 34+), Android SDK Build-Tools, Android Emulator, Google Play Services.
+5. **SDK licenses** — Run `.\gradlew` or `sdkmanager --licenses` to accept all Android SDK licenses.
+6. **Gradle** — The wrapper (`gradlew.bat`) is already present in `web/android/`.
+
+After installation, re-run:
+```bash
+cd web
+npm run build
+npx cap copy android
+npx cap sync android
+cd android
+.\gradlew assembleDebug
+```
+Expected output: `web/android/app/build/outputs/apk/debug/app-debug.apk`.
+
+### Manual dashboard steps summary (Web Push)
+
+1. Install Docker Desktop, then: `npx supabase functions deploy send-push`
+2. Supabase Dashboard → Edge Functions → send-push → Secrets → add `VAPID_PRIVATE_KEY` (the generated private key).
+3. Supabase Dashboard → Edge Functions → send-push → Secrets → add `SUPABASE_SERVICE_ROLE_KEY`.
+4. Supabase Dashboard → SQL Editor → run `supabase/migrations/20261016000000_push_dispatch_trigger.sql` (replace `<SUPABASE_SERVICE_ROLE_KEY>` placeholder with actual key, or better: configure the Edge Function to read it from its own secrets).
+5. Test: create a reminder notification for the lawyer, check the Edge Function log, confirm a push payload was sent and tapping it opens the related case (`/cases/view?id=<ref_id>`).
+
