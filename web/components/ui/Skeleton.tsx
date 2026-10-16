@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
 
 interface SkeletonProps {
   className?: string;
@@ -21,8 +22,9 @@ export function Skeleton({ className }: { className?: string }) {
 
 /** Stacked text-line skeletons */
 export function SkeletonText({ lines = 3, className }: SkeletonProps) {
+  const { t } = useTranslation();
   return (
-    <div className={cn("space-y-2", className)} aria-busy="true" aria-label="Loading…">
+    <div className={cn("space-y-2", className)} aria-busy="true" aria-label={t("common.loading")}>
       {Array.from({ length: lines }).map((_, i) => (
         <Skeleton
           key={i}

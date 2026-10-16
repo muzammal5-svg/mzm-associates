@@ -145,7 +145,7 @@ function ClientsPage() {
               onChange={e => handleSearch(e.target.value)}
               leftElement={<Search className="w-4 h-4" />}
               rightElement={search ? (
-                <button onClick={() => handleSearch("")} aria-label="Clear search">
+                <button onClick={() => handleSearch("")} aria-label={t("common.clearSearch")}>
                   <X className="w-4 h-4" />
                 </button>
               ) : undefined}
