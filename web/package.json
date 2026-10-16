@@ -11,6 +11,8 @@
     "cap:sync": "npx cap sync",
     "cap:android": "npx cap open android",
     "cap:ios": "npx cap open ios",
+    "build:mobile": "npm run build && npx cap copy android && npx cap sync android",
+    "open:android": "npx cap open android",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -20,10 +22,15 @@
     "icons:check": "node scripts/check-manifest-icons.mjs"
   },
   "dependencies": {
+    "@capacitor/android": "^6.2.2",
     "@capacitor/app": "^6.0.1",
+    "@capacitor/camera": "^6.0.1",
     "@capacitor/core": "^6.1.2",
+    "@capacitor/filesystem": "^6.0.1",
     "@capacitor/haptics": "^6.0.1",
+    "@capacitor/ios": "^6.2.2",
     "@capacitor/keyboard": "^6.0.2",
+    "@capacitor/push-notifications": "^6.0.1",
     "@capacitor/status-bar": "^6.0.1",
     "@hookform/resolvers": "^3.9.0",
     "@supabase/supabase-js": "^2.45.4",
@@ -48,21 +55,21 @@
   },
   "devDependencies": {
     "@capacitor/cli": "^6.1.2",
+    "@playwright/test": "^1.56.1",
     "@tailwindcss/typography": "^0.5.15",
+    "@testing-library/react": "^16.3.0",
     "@types/node": "^20.16.11",
     "@types/react": "^18.3.11",
     "@types/react-dom": "^18.3.1",
+    "@vitest/coverage-v8": "^2.1.9",
     "autoprefixer": "^10.4.20",
     "eslint": "^8.57.1",
     "eslint-config-next": "14.2.29",
     "postcss": "^8.4.47",
+    "sharp": "^0.34.5",
     "supabase": "^1.207.9",
     "tailwindcss": "^3.4.14",
     "typescript": "5.9.3",
-    "sharp": "^0.34.5",
-    "vitest": "^2.1.9",
-    "@vitest/coverage-v8": "^2.1.9",
-    "@playwright/test": "^1.56.1",
-    "@testing-library/react": "^16.3.0"
+    "vitest": "^2.1.9"
   }
 }

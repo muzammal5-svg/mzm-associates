@@ -1,7 +1,7 @@
 import type { CapacitorConfig } from "@capacitor/cli";
 
 const config: CapacitorConfig = {
-  appId:    "pk.mzm.casemanagement",
+  appId:    "com.mzmassociates.cms",
   appName:  "MZM & Associates",
   webDir:   "out",          // Next.js static export output directory
 
@@ -18,6 +18,7 @@ const config: CapacitorConfig = {
       backgroundColor:       "#0B1B3A",
       androidSplashResourceName: "splash",
       showSpinner:           false,
+      iosShowOnLaunch:       true,
     },
     StatusBar: {
       style:           "DARK",
@@ -25,6 +26,8 @@ const config: CapacitorConfig = {
     },
     PushNotifications: {
       presentationOptions: ["badge", "sound", "alert"],
+      // FCM is configured in android/app/google-services.json (native Android).
+      // VAPID public key is used for web push (NEXT_PUBLIC_VAPID_PUBLIC_KEY).
     },
   },
 
