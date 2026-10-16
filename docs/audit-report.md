@@ -33,9 +33,17 @@
 | `npm run lint` | Passed (2026-10-16). |
 | `npm run build` (`next build`) | Passed; all 32 static pages generated (2026-10-16). |
 | `npm test` (vitest) | 1 file, 1 test passed (2026-10-16). |
+| `npx supabase functions deploy send-push --use-api` | BLOCKED — `Missing required permission(s): edge_functions_write`. |
+| `npx supabase migration list` | BLOCKED — `Missing required permission(s): database_write`. |
+| `npx supabase db push --dry-run` | BLOCKED — `Missing required permission(s): database_write`. |
 | `npx cap add android` | Android platform added; `appId=com.mzmassociates.cms`, `webDir=out`. |
 | `npx cap add ios` | iOS platform added (cannot build on Windows; needs macOS + Xcode). |
 | `.\gradlew assembleDebug` | BLOCKED — `JAVA_HOME` not set; no JDK/Android SDK on this machine. |
+| `node scripts/check-manifest-icons.mjs` | 10/10 OK (all icons match declared dimensions). |
+| `node scripts/scan-hardcoded-strings.mjs` | 134 candidates; 2 real UI strings fixed ("Clear search", "Loading…"); rest are brand names/technical identifiers/examples. |
+| Playwright logo screenshots | 4 screenshots saved: `logo-splash.png`, `logo-signin.png`, `logo-desktop-header.png`, `logo-mobile-header.png`. |
+| Playwright Urdu public screenshots | 6 screenshots saved under `web/e2e/screenshots/ur/`. |
+| Playwright Urdu authenticated screenshots | 7 screenshots saved under `web/e2e/screenshots/ur-auth/`. |
 | Current handoff verification (2026-10-14) | `npm ci` in `web/` passed; `npx tsc --noEmit`, `npm run lint`, and `npm run build` all exited 0; build generated 32 static pages. `supabase/scripts/npm ci`, reset-demo, seed verification (including final 34/34 reminders), Stage 2 Part 1 (9/9), and document-delete real-JWT verification passed. Clerk storage/row deletes denied; own-firm lawyer and admin storage/row deletes succeeded; second-firm lawyer storage/row deletes denied. Cleanup: 0 temp document rows, 0 temp objects, temp firm/user removed. Root migration list: 8 local = 8 remote. No Phase 8 work started. |
 | Generated Supabase types | `supabase gen types typescript --project-id zxxpsvhlekemgccrcwtg --schema public` completed; 1,272 generated lines were written to a temporary file, leaving application types untouched. |
 | `supabase db reset` | Not run; Docker is unavailable and the approved verification target is the remote dev project. No reset or destructive operation was performed. |
@@ -180,8 +188,8 @@ Status definitions: `[DONE]` verified complete; `[PARTIAL]` implemented but inco
 | W1 VAPID key pair generated | DONE | `NEXT_PUBLIC_VAPID_PUBLIC_KEY` added to `web/.env.local`. Private key NOT printed (secret). |
 | W2 `VAPID_PRIVATE_KEY` as Edge Function secret | MISSING | Supabase access token lacks `edge_functions_secrets_write` permission. Must be set manually in Supabase Dashboard → Edge Functions → send-push → Secrets. |
 | W3 device_tokens on login / removal on logout | DONE | `web/providers/AuthProvider.tsx`: registers device token on sign-in (via `enableWebPush` + upsert to `device_tokens`), removes on sign-out. |
-| W4 send-push Edge Function deployed | MISSING | Docker Desktop unavailable on this machine; `npx supabase functions deploy` cannot bundle. Must be deployed manually after Docker is installed. |
-| W5 DB trigger on notification insert | DONE (migration) | `supabase/migrations/20261016000000_push_dispatch_trigger.sql` created with pg_net trigger. Must be applied manually in Supabase SQL Editor (pg_net extension + `<SUPABASE_SERVICE_ROLE_KEY>` placeholder). |
+| W4 send-push Edge Function deployed | BLOCKED | `npx supabase functions deploy send-push --use-api --project-ref zxxpsvhlekemgccrcwtg` → `Missing required permission(s): edge_functions_write`. Must be deployed manually via Supabase Dashboard or with a token that has `edge_functions_write`. |
+| W5 DB trigger on notification insert | DONE (migration, not applied remotely) | `supabase/migrations/20261016000000_push_dispatch_trigger.sql` created. `supabase migration list` and `supabase db push --dry-run` both fail: `Missing required permission(s): database_write`. Must be applied manually in Supabase Dashboard → SQL Editor. |
 | W6 Push end-to-end test | MISSING | Cannot test without W2+W4 completed. Function log + push payload verification pending manual setup. |
 | A1 Android platform added | DONE | `npx cap add android` succeeded; `web/android/` created with 7 Capacitor plugins. |
 | A2 Capacitor config | DONE | `appId=com.mzmassociates.cms`, `appName=MZM & Associates`, `webDir=out`, PushNotifications plugin configured. |
@@ -191,7 +199,12 @@ Status definitions: `[DONE]` verified complete; `[PARTIAL]` implemented but inco
 | I1 iOS platform added | DONE | `npx cap add ios` succeeded; `web/ios/` created (CocoaPods/xcodebuild unavailable on Windows). |
 | I2 docs/ios.md | DONE | Documents Mac + Apple Developer account requirement. |
 | M1 docs/mobile.md | DONE | Firebase/FCM setup, release AAB signing, Play Console checklist, privacy policy, in-app account deletion. |
-| Final checks | DONE | `tsc --noEmit` (0), `eslint` (0), `next build` (32 pages), `vitest` (1/1). |
+| L1 Logo check — real logo as main brand | DONE | `logoadv.jpeg` (858×1279 JPEG) used for splash/sign-in/PDF (`web/components/shared/Logo.tsx`, `web/lib/exportPdf.ts`). `mzm-monogram.png` (512×512) cropped from `mzm-mark.svg` for icons/favicon/small headers. TopBar and Header use `variant="mark"` at xs size. |
+| L2 PWA icons regenerated from monogram | DONE | `web/scripts/generate-icons.mjs` uses `mzm-monogram.png` as source. All 10 manifest icon checks pass (72–512px + 512 maskable + 64 favicon). |
+| L3 Logo screenshot evidence | DONE | Playwright screenshots: `web/e2e/screenshots/logo-splash.png`, `logo-signin.png`, `logo-desktop-header.png`, `logo-mobile-header.png`. |
+| U1 Urdu authenticated screenshots | DONE | Playwright login as `lawyer@mzm.pk`/`Lawyer1234!`, Urdu via `i18nextLng=ur`. Screenshots: `web/e2e/screenshots/ur-auth/{cause-list,running-cases,clients,documents,reminders,notifications,settings}.png`. |
+| U2 Hardcoded string fixes | DONE | Fixed `aria-label="Clear search"` → `t("common.clearSearch")` in `web/app/clients/page.tsx`; `aria-label="Loading…"` → `t("common.loading")` in `web/components/ui/Skeleton.tsx`. |
+| Final checks | DONE | `tsc --noEmit` (0), `eslint` (0), `next build` (32 pages), `vitest` (1/1), `i18n:check` (416/416, 0 missing, 0 unknown). |
 
 ### Android SDK/JDK install requirements (blocker for A4)
 
