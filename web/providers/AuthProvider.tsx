@@ -6,6 +6,7 @@ import {
 } from "react";
 import type { User, Session } from "@supabase/supabase-js";
 import { supabase, IS_SUPABASE_CONFIGURED } from "@/lib/supabase/client";
+import { canUseWebPush, enableWebPush, disableWebPush, getWebPushSubscriptionEndpoint } from "@/lib/push";
 import type { Profile, Firm } from "@/types/supabase";
 
 interface AuthContextValue {
@@ -107,6 +108,41 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (user) await fetchProfile(user.id);
   }, [user, fetchProfile]);
 
+  // ── Register / remove device token (push) on sign-in / sign-out ───────────
+  const registerDeviceToken = useCallback(async (userId: string) => {
+    if (!IS_SUPABASE_CONFIGURED || !canUseWebPush()) return;
+    try {
+      const endpoint = await getWebPushSubscriptionEndpoint();
+      if (!endpoint) {
+        // Try to subscribe (requires user to have granted notification permission
+        // and the VAPID public key to be configured).
+        await enableWebPush(userId);
+        const ep = await getWebPushSubscriptionEndpoint();
+        if (!ep) return;
+      }
+      // Upsert into device_tokens (platform 'web') so the send-push Edge Function
+      // can target this device via FCM/device-token path as well.
+      const { error } = await supabase.from("device_tokens").upsert({
+        user_id: userId,
+        token: await getWebPushSubscriptionEndpoint() ?? "",
+        platform: "web",
+      }, { onConflict: "token" });
+      if (error) console.error("[device_token] upsert:", error.message);
+    } catch (error) {
+      // Non-fatal: push registration is optional.
+      console.error("[device_token] register:", error);
+    }
+  }, []);
+
+  const removeDeviceToken = useCallback(async (userId: string) => {
+    if (!IS_SUPABASE_CONFIGURED) return;
+    try {
+      await supabase.from("device_tokens").delete().eq("user_id", userId);
+    } catch (error) {
+      console.error("[device_token] remove:", error);
+    }
+  }, []);
+
   // ── Auth state listener ───────────────────────────────────────────────────
   useEffect(() => {
     if (!IS_SUPABASE_CONFIGURED) {
@@ -124,6 +160,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (data.session?.user) {
           await fetchProfile(data.session.user.id);
           await refreshCounts();
+          await registerDeviceToken(data.session.user.id);
         } else {
           setProfile(null);
           setFirm(null);
@@ -146,6 +183,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           setLoading(false);
           void fetchProfile(newSession.user.id)
             .then(refreshCounts)
+            .then(() => registerDeviceToken(newSession.user.id))
             .catch(error => console.error("[auth] profile load:", error));
         } else {
           setProfile(null);
@@ -154,12 +192,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           setReminderCount(0);
           setProfileLoading(false);
           setLoading(false);
+          void removeDeviceToken(newSession?.user?.id ?? "");
         }
       }
     );
 
     return () => subscription.unsubscribe();
-  }, [fetchProfile, refreshCounts]);
+  }, [fetchProfile, refreshCounts, registerDeviceToken, removeDeviceToken]);
 
   // ── Poll unread count every 60 s when user is active ─────────────────────
   useEffect(() => {
@@ -189,12 +228,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [user, refreshCounts]);
 
   const signOut = useCallback(async () => {
+    if (user) await removeDeviceToken(user.id);
     await supabase.auth.signOut();
     setProfile(null);
     setFirm(null);
     setUnreadCount(0);
     setReminderCount(0);
-  }, []);
+  }, [user, removeDeviceToken]);
 
   return (
     <AuthContext.Provider value={{
