@@ -48,7 +48,7 @@ export function Header({ title, showBack = false, actions, className }: HeaderPr
             <ArrowLeft className="w-5 h-5 text-navy" />
           </button>
         ) : (
-          <Logo size="xs" variant="full" />
+          <Logo size="xs" variant="mark" />
         )}
       </div>
 

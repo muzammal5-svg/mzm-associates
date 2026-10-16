@@ -17,7 +17,7 @@ export function TopBar({ title }: TopBarProps) {
     <header className="md:hidden sticky top-0 z-20 bg-white border-b border-navy-50 px-4 flex items-center justify-between"
       style={{ paddingTop: "env(safe-area-inset-top, 0px)", minHeight: "56px" }}
     >
-      <Logo size="xs" variant="full" />
+      <Logo size="xs" variant="mark" />
 
       {title && (
         <span className="absolute start-1/2 -translate-x-1/2 text-sm font-semibold text-navy truncate max-w-[40vw]">

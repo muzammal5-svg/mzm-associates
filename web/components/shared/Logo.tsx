@@ -23,7 +23,7 @@ export function Logo({ size = "md", variant = "full", className }: LogoProps) {
   return (
     <div data-variant={variant} className={cn("flex items-center gap-2.5 select-none", className)}>
       <Image
-        src="/logo/brand-mark.png"
+        src={variant === "full" ? "/logo/logoadv.jpeg" : "/logo/mzm-mark.svg"}
         alt={t("brand.name")}
         width={s.pixels}
         height={s.height}
