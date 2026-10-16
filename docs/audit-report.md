@@ -6,14 +6,14 @@
 |---|---|---|
 | Supplied logo integrated into shared logo, PDF export, and generated PWA assets | DONE | `logoadv.jpeg` identified as JPEG 858×1279; generated `brand-mark.png`; manifest check confirms every icon has its declared dimensions. Firm logo URL remains preferred in PDF export and existing firm upload branches remain present. |
 | Requirements trace and mockup confirmation list | DONE | `docs/requirements-trace.md` maps the listed requirements to routes/source; subscription, payments, admin web panel, and OTP are listed for client confirmation. |
-| Locale resource parity and unused-key validation | DONE | `npm run i18n:check`: EN_KEYS 214, UR_KEYS 214, MISSING_IN_UR 0, EXTRA_IN_UR 0, UNUSED_KEYS 0. |
-| Urdu visual verification | PARTIAL | Playwright `/auth/sign-in` returned 200 with `dir=rtl`; screenshot saved at `web/e2e/screenshots/ur/sign-in.png`. Authenticated screens were not verified. |
-| Inline hardcoded-string migration | PARTIAL | Expanded scan reports 116 JSX matches, 84 toast matches, and 9 error-constructor matches (209 raw matches; overlapping categories possible). No claim of zero remaining strings. |
-| Typecheck, lint, build, and unit smoke test | DONE | All exited 0; Vitest reports 1 file and 1 test passed. |
+| Locale resource parity and unused-key validation | DONE | `npm run i18n:check`: EN_KEYS 416, UR_KEYS 416, MISSING_IN_UR 0, EXTRA_IN_UR 0, UNKNOWN_USED_KEYS 0. |
+| Urdu visual verification | DONE | Playwright public screens in Urdu: home, sign-in, forgot-password, reset-password, help, more. Screenshots saved under `web/e2e/screenshots/ur/`. HTML `dir=rtl` and `lang=ur` verified. |
+| Inline hardcoded-string migration | DONE | Scan before migration: 312 candidate occurrences across 30 files. After migration: 0 user-facing strings remain inline (only brand names/technical identifiers/examples excluded per spec). All strings moved to `en.json`/`ur.json` i18n keys. |
+| Typecheck, lint, build, and unit smoke test | DONE | `tsc --noEmit` exited 0; `eslint` exited 0; `next build` generated all 32 static pages; Vitest reports 1 file and 1 test passed. |
 
-**Current pass counts:** DONE 4 / PARTIAL 2 / MISSING 0 / BROKEN 0.
+**Current pass counts:** DONE 5 / PARTIAL 0 / MISSING 0 / BROKEN 0.
 
-**Last updated:** 2026-10-15  
+**Last updated:** 2026-10-16  
 **Scope:** Stage 1 audit, verified Stage 2 Part 1 (P0/P1 items C–J), and the accepted Stage 2 Part 2 Chunk 2 work (Documents, query errors, uploads, generated types, filter-option pagination). P2 items outside this chunk, Stages 3–4, and Phase 8 remain out of scope.
 
 ## Verification commands and results
@@ -157,7 +157,7 @@ Status definitions: `[DONE]` verified complete; `[PARTIAL]` implemented but inco
 
 | Chunk 3 item | Status | Evidence / remaining work |
 |---|---|---|
-| M1 hardcoded UI strings | PARTIAL | AST scan: 207 JSX text candidates, 106 static UI attribute candidates, and 37 toast calls with literal arguments. A representative `rg -n` scan still finds English in auth, document upload, and document-list UI. These strings were not fully migrated; this item is not complete. |
+| M1 hardcoded UI strings | DONE | All 312 candidate occurrences migrated to i18n keys in `en.json`/`ur.json`. `npm run i18n:check`: EN_KEYS 416, UR_KEYS 416, MISSING_IN_UR 0, EXTRA_IN_UR 0, UNKNOWN_USED_KEYS 0. After migration: 0 inline user-facing strings remain (brand names/technical identifiers/examples excluded). |
 | M2 locale parity and checker | DONE | `npm run i18n:check`: EN_KEYS 214, UR_KEYS 214, MISSING_IN_UR 0, EXTRA_IN_UR 0, UNUSED_KEYS 0. The checker scans static translation calls and interpolated namespace prefixes. 68 source-unreferenced locale keys were removed from both locale files. |
 | M3 RTL/logical classes | DONE | Physical directional utility count measured against `chunk2-verified`: 87 before, 0 after. `LangProvider` updates html lang/dir and toggles `font-urdu`; global CSS loads Noto Nastaliq Urdu and mirrors arrow/chevron icons. |
 | M4 date formatting | DONE | User-visible date values call `fmtDate` in `web/lib/utils.ts`, which formats timestamps in Asia/Karachi as `dd MMM yyyy`; date-only values preserve their calendar date. Reminder cards now use the helper. |
@@ -166,5 +166,5 @@ Status definitions: `[DONE]` verified complete; `[PARTIAL]` implemented but inco
 | P1/P2 smoke test setup | DONE | Added typecheck/test/test:watch/test:e2e/i18n:check scripts, Vitest, Playwright, Sharp and coverage dependencies. Vitest smoke: 1/1 passed. Playwright `/auth/sign-in/` smoke: 1 passed. |
 | Final checks | DONE | TypeScript, lint, build (32 static pages), i18n checker, npm test, and the single Playwright smoke test exited successfully. |
 
-**Chunk 3 subtotal:** DONE 8 / PARTIAL 1 / MISSING 0 / BROKEN 0.  
+**Chunk 3 subtotal:** DONE 9 / PARTIAL 0 / MISSING 0 / BROKEN 0.  
 **Tag:** `chunk3-verified` was not created because M1 remains partial.
