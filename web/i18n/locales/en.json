@@ -219,7 +219,11 @@
     "passwordMatch": "Passwords do not match.",
     "passwordMin": "Password must be at least 8 characters.",
     "saved": "Profile saved.",
-    "passwordChanged": "Password changed successfully."
+    "passwordChanged": "Password changed successfully.",
+    "photoUploadError": "Photo upload failed",
+    "photoUploaded": "Profile photo updated.",
+    "invalidFileType": "Only JPEG, PNG, and WebP images are allowed.",
+    "fileTooLarge": "File must be smaller than 5 MB."
   },
   "settings": {
     "title": "Settings",

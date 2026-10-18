@@ -99,6 +99,19 @@ function ProfilePage() {
   async function handlePhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file || !profile) return;
+
+    // ── Client-side validation ────────────────────────────────────────────
+    const MAX_SIZE = 5 * 1024 * 1024; // 5 MB (matches avatars bucket limit)
+    const ALLOWED = ["image/jpeg", "image/png", "image/webp"];
+    if (!ALLOWED.includes(file.type)) {
+      toast.error(t("profile.photoUploadError"), t("profile.invalidFileType"));
+      return;
+    }
+    if (file.size > MAX_SIZE) {
+      toast.error(t("profile.photoUploadError"), t("profile.fileTooLarge"));
+      return;
+    }
+
     setUploadingPhoto(true);
     try {
       const ext  = (file.name.split(".").pop() ?? "jpg").replace(/[^a-zA-Z0-9]/g, "");
@@ -107,13 +120,13 @@ function ProfilePage() {
       const { error: upErr } = await supabase.storage
         .from("avatars")
         .upload(path, file, { upsert: true, cacheControl: "3600" });
-      if (upErr) { toast.error(t("common.error"), upErr.message); return; }
+      if (upErr) { toast.error(t("profile.photoUploadError"), upErr.message); return; }
 
       const { data: urlData } = supabase.storage.from("avatars").getPublicUrl(path);
       const { error: updateErr } = await update.profile(profile.id, { photo_url: urlData.publicUrl });
 
-      if (updateErr) toast.error(t("common.error"), updateErr.message);
-      else { await refreshProfile(); toast.success(t("profile.saved")); }
+      if (updateErr) toast.error(t("profile.photoUploadError"), updateErr.message);
+      else { await refreshProfile(); toast.success(t("profile.photoUploaded")); }
     } finally { setUploadingPhoto(false); }
   }
 

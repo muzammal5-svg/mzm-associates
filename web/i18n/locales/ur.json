@@ -219,7 +219,11 @@
     "passwordMatch": "پاس ورڈ مطابقت نہیں۔",
     "passwordMin": "کم از کم 8 حروف۔",
     "saved": "پروفائل محفوظ ہو گئی۔",
-    "passwordChanged": "پاس ورڈ کامیابی سے بدل دیا گیا۔"
+    "passwordChanged": "پاس ورڈ کامیابی سے بدل دیا گیا۔",
+    "photoUploadError": "تصویر اپ لوڈ میں خطا پیش آئی",
+    "photoUploaded": "پروفائل تصویر اپ لوڈ ہو گئی",
+    "invalidFileType": "صرف JPEG, PNG، اور WebP تصاویر اجازت یافتہ ہیں",
+    "fileTooLarge": "فائل کا سائز 5 MB سے کم ہونا چاہئے"
   },
   "settings": {
     "title": "ترتیبات",
