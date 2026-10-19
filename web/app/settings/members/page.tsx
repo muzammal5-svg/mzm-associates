@@ -17,7 +17,7 @@ export default function MembersPage() {
   const [tempPw, setTempPw] = useState("");
   const [msg, setMsg] = useState("");
 
-  const isOwner = profile?.is_owner === true;
+  const isOwner = (profile as any)?.is_owner === true;
 
   async function load() {
     const { data } = await (supabase as any).from("profiles").select("*").eq("firm_id", profile?.firm_id);
@@ -101,3 +101,4 @@ export default function MembersPage() {
     </main>
   );
 }
+
