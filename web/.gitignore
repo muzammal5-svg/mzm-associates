@@ -43,3 +43,6 @@ next-env.d.ts
 # Playwright output
 /test-results/
 /playwright-report/
+# UI polish screenshots
+/e2e/screenshots/ui-before/
+/e2e/screenshots/ui-after/
