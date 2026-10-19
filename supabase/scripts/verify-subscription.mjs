@@ -156,6 +156,28 @@ const superClient = clientFor(superAdmin.token);
   check("renewal reminder idempotent", (data?.length || 0) <= 1, `count=${data?.length}`);
 }
 
+// trial works then expires with p_today
+{
+  const trialOwner = await signIn("owner-trial@demo.test", "Owner1234!");
+  const trialClient = clientFor(trialOwner.token);
+  const trialFirmId = (await trialClient.from("profiles").select("firm_id").eq("id", trialOwner.userId).single()).data.firm_id;
+  // ensure subscription active/trialing
+  const trialEnds = new Date(Date.now() + 7*86400000);
+  await admin.from("subscriptions").update({ status: "trialing", ends_at: trialEnds.toISOString(), grace_until: null }).eq("firm_id", trialFirmId);
+  const { error: insErr } = await trialClient.from("clients").insert({ firm_id: trialFirmId, full_name: "Trial Client" });
+  check("trial works (insert client)", !insErr, insErr?.message);
+  if (!insErr) await admin.from("clients").delete().eq("full_name", "Trial Client").eq("firm_id", trialFirmId);
+  const { data: sub } = await admin.from("subscriptions").select("ends_at").eq("firm_id", trialFirmId).order("ends_at", { ascending: false }).limit(1).single();
+  const future = new Date(new Date(sub.ends_at).getTime() + 10*86400000).toISOString().slice(0,10);
+  await admin.rpc("update_subscription_states", { p_today: future });
+  const { data: sub2 } = await admin.from("subscriptions").select("status").eq("firm_id", trialFirmId).order("ends_at", { ascending: false }).limit(1).single();
+  check("trial expires with p_today", sub2?.status === "expired" || sub2?.status === "grace", sub2?.status);
+  const { error: insErr2 } = await trialClient.from("clients").insert({ firm_id: trialFirmId, full_name: "Trial Client 2" });
+  check("expired trial cannot insert client", !!insErr2, insErr2?.message);
+  // restore
+  await admin.from("subscriptions").update({ status: "trialing", ends_at: trialEnds.toISOString(), grace_until: null }).eq("firm_id", trialFirmId);
+}
+
 // restore active firm subscription
 {
   const firmId = (await activeClient.from("profiles").select("firm_id").eq("id", activeOwner.userId).single()).data.firm_id;
@@ -168,3 +190,4 @@ const superClient = clientFor(superAdmin.token);
 
 console.log(`\nRESULT: ${pass} passed, ${fail} failed`);
 process.exit(fail > 0 ? 1 : 0);
+
