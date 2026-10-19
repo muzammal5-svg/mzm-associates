@@ -1,20 +1,21 @@
-# Chunk 3 handoff status — 2026-10-14
+# Handoff Status — UI Polish Pass
 
-## Completed
+## Done
+- Step 0 before screenshots (15 files) in web/e2e/screenshots/ui-before/
+- Step 1 design tokens in tailwind.config.ts + app/globals.css
+- Step 2 shared components upgraded: Button, Card, Input, Select, Textarea, Badge, Modal/BottomSheet, Toast, Skeleton, EmptyState, Table
+- Step 3 partial: Home, Sign-in, BottomNav, MobileHeader, Sidebar, AppShell
+- Step 4 animations: page transition, stagger, press scale, shimmer, reduced-motion, RTL flips
+- Step 5 a11y: contrast ratios printed, no horizontal overflow on 14 routes (Playwright)
+- Step 6 after screenshots (21 files) in web/e2e/screenshots/ui-after/
+- Verification: tsc 0, lint 0 (source), build 32 pages, i18n 0 missing, vitest 1/1
 
-- Locale parity/unused-key checker: 214 English and 214 Urdu keys, zero missing/extra/unused.
-- RTL direction: Urdu sets document lang/dir and Noto Nastaliq Urdu; 87 measured physical utility classes reduced to zero; directional icon mirroring added.
-- User-facing dates now route through `fmtDate` in Asia/Karachi with `dd MMM yyyy`.
-- Logo-derived PWA icons, maskable icon, favicon, manifest size checker and shared real-logo component.
-- Vitest and Playwright smoke configuration; both requested smoke tests passed.
-- Final TypeScript, lint, production build, i18n check and unit smoke test passed.
+## Not done
+- Screen-level polish for: cause list, running cases, case view, clients, client profile, add client, new case, reminders, notifications, documents, profile, settings (use upgraded components but not individually restyled)
+- Lighthouse before/after on authenticated routes (requires login)
+- Success checkmark draw, bell shake, count-up, gold glow pulse (CSS keyframes defined, not wired to components)
+- Dark-safe pass beyond contrast calc
 
-## Incomplete
-
-- M1 is PARTIAL. The scan still found 207 JSX text candidates, 106 static UI attribute candidates, and 37 toast calls with literal arguments in `web/app` and `web/components`. These have not all been moved to translation keys. A sample grep output is in the Chunk 3 audit evidence.
-- The Playwright smoke test is the only E2E test run. No additional test suites, RLS tests or Phase 8 work were started.
-- `chunk3-verified` was intentionally not tagged because M1 is incomplete.
-
-## Reviewer constraint
-
-Automatic approval review rejected replacing the existing firm-specific logo branches in the mobile and desktop shell. The shared MZM logo is used by SplashScreen, SignInPage, and Header; existing configured firm branding in MobileHeader/Sidebar remains intact.
+## Next command
+- Continue screen-level polish starting with web/app/cause-list/page.tsx and web/app/cases/running/page.tsx
+- Run: npx playwright test e2e/ui-after.spec.ts

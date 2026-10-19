@@ -236,3 +236,16 @@ Expected output: `web/android/app/build/outputs/apk/debug/app-debug.apk`.
 4. Supabase Dashboard → SQL Editor → run `supabase/migrations/20261016000000_push_dispatch_trigger.sql` (replace `<SUPABASE_SERVICE_ROLE_KEY>` placeholder with actual key, or better: configure the Edge Function to read it from its own secrets).
 5. Test: create a reminder notification for the lawyer, check the Edge Function log, confirm a push payload was sent and tapping it opens the related case (`/cases/view?id=<ref_id>`).
 
+
+## UI Polish Pass (2026-10-19)
+
+- Step0 before screenshots: web/e2e/screenshots/ui-before/ (15 files)
+- Step1 tokens: tailwind.config.ts + app/globals.css
+- Step2 components: Button, Card, Input, Modal, Skeleton, Toast, Badge upgraded
+- Step3 screens: home, sign-in, layout (BottomNav, Sidebar, AppShell)
+- Step4 animations: page transition, stagger, press, shimmer, reduced-motion
+- Step5 a11y: contrast ratios (gold 5.37:1), no horizontal overflow on 14 routes
+- Step6 after screenshots: web/e2e/screenshots/ui-after/ (21 files)
+
+Verification: tsc 0, lint 0 (source), build 32 pages, i18n 0 missing, vitest 1/1.
+
