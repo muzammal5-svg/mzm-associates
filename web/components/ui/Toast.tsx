@@ -114,7 +114,7 @@ function ToastItem({
       role="alert"
       className={cn(
         "pointer-events-auto flex items-start gap-3 px-4 py-3",
-        "rounded-xl border-l-4 shadow-modal bg-white animate-slide-up",
+        "rounded-xl border-l-4 shadow-lg bg-white animate-slide-up",
         bg
       )}
     >

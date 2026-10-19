@@ -28,10 +28,10 @@ export function Card({
       role={clickable ? "button" : undefined}
       tabIndex={clickable ? 0 : undefined}
       className={cn(
-        "bg-white rounded-xl border border-navy-50 shadow-card",
-        paddingMap[padding],
-        hover    && "hover:shadow-card-hover transition-shadow duration-150",
-        clickable && "cursor-pointer focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2",
+       "bg-white rounded-lg border border-border shadow-sm",
+       paddingMap[padding],
+       hover    && "hover:shadow-md transition-shadow duration-150",
+       clickable && "cursor-pointer active:scale-[.99] transition-transform focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2",
         className
       )}
       {...props}

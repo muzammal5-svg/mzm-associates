@@ -64,7 +64,9 @@ export function AppShell({
               actions={headerActions}
             />
           )}
-          {children}
+          <div className="animate-slide-down">
+            {children}
+          </div>
         </div>
       </main>
 

@@ -21,7 +21,7 @@ export function BottomNav() {
 
   return (
     <nav
-      className="md:hidden fixed bottom-0 start-0 end-0 z-30 bg-white border-t border-navy-50 shadow-navbar"
+      className="md:hidden fixed bottom-0 start-0 end-0 z-30 bg-white border-t border-border shadow-inner-top"
       style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
       aria-label={t("nav.home")}
     >
@@ -43,17 +43,20 @@ export function BottomNav() {
               key={item.href}
               href={item.href}
               aria-current={isActive ? "page" : undefined}
-              className={cn(
-                "flex-1 flex flex-col items-center justify-center gap-0.5",
-                "min-h-[56px] py-2 text-[10px] font-medium transition-colors",
-                isActive ? "text-gold" : "text-navy-300"
-              )}
-            >
-              <span className="relative">
-                {Icon && (
-                  <Icon className={cn("w-[22px] h-[22px]", isActive ? "text-gold" : "text-navy-300")} />
-                )}
-                {badge > 0 && (
+               className={cn(
+                 "flex-1 flex flex-col items-center justify-center gap-0.5",
+                 "min-h-[56px] py-2 text-[10px] font-medium transition-colors",
+                 isActive ? "text-gold" : "text-muted"
+               )}
+             >
+               <span className="relative">
+                 {Icon && (
+                   <Icon className={cn("w-[22px] h-[22px] transition-transform", isActive && "scale-110 text-gold")} />
+                 )}
+                 {isActive && (
+                   <span className="absolute -bottom-1.5 start-1/2 -translate-x-1/2 w-4 h-1 rounded-full bg-gold" aria-hidden="true" />
+                 )}
+                 {badge > 0 && (
                   <span
                     aria-hidden="true"
                     className="absolute -top-1 -end-1.5 min-w-[14px] h-3.5 px-0.5 rounded-full bg-danger text-white text-[9px] font-bold flex items-center justify-center leading-none"

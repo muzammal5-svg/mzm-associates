@@ -10,7 +10,7 @@ import { Button } from "./Button";
 function Overlay({ onClick }: { onClick?: () => void }) {
   return (
     <div
-      className="fixed inset-0 bg-navy/40 backdrop-blur-[2px] z-50 animate-fade-in"
+      className="fixed inset-0 bg-navy/40 backdrop-blur-sm z-50 animate-fade-in"
       aria-hidden="true"
       onClick={onClick}
     />

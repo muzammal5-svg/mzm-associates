@@ -10,6 +10,7 @@ import {
 
 import { AppShell }          from "@/components/layout/AppShell";
 import { RouteGuard }        from "@/components/shared/RouteGuard";
+import { Logo }              from "@/components/shared/Logo";
 import { Card }              from "@/components/ui/Card";
 import { Badge }             from "@/components/ui/Badge";
 import { Skeleton }          from "@/components/ui/Skeleton";
@@ -132,14 +133,28 @@ function DashboardPage() {
   return (
     <AppShell hideTopBar>
       <div className="space-y-6">
-
-        {/* ── Greeting ── */}
-        <div className="flex flex-col gap-0.5">
-          <p className="text-xs text-navy-300 font-medium">{todayLabel}</p>
-          <h1 className="text-xl md:text-2xl font-heading font-bold text-navy">
-            {t("dashboard.greeting", { time: timeOfDay, name: firstName })} 👋
-          </h1>
-          <p className="text-sm text-navy-400">{profile?.email ?? ""}</p>
+        {/* ── Header ── */}
+        <div className="bg-navy-header rounded-2xl p-5 text-white shadow-lg relative overflow-hidden">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Logo size="sm" variant="mark" />
+              <div>
+                <p className="text-xs text-white/70 font-medium">{todayLabel}</p>
+                <h1 className="text-xl md:text-2xl font-heading font-bold text-white">
+                  {t("dashboard.greeting", { time: timeOfDay, name: firstName })}
+                </h1>
+              </div>
+            </div>
+            <Link href="/notifications" className="relative w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
+              <Bell className="w-5 h-5 text-white" />
+              {(counts.data?.unreadNotifications ?? 0) > 0 && (
+                <span className="absolute -top-1 -end-1 min-w-[16px] h-4 px-0.5 rounded-full bg-danger text-white text-[10px] font-bold flex items-center justify-center">
+                  {counts.data?.unreadNotifications}
+                </span>
+              )}
+            </Link>
+          </div>
+          <p className="text-sm text-white/70 mt-2">{profile?.email ?? ""}</p>
         </div>
 
         {/* ── Stat chips (4 key numbers) ── */}
@@ -174,14 +189,14 @@ function DashboardPage() {
           <h2 className="text-sm font-semibold text-navy-400 uppercase tracking-wider mb-3">
             {t("dashboard.services")}
           </h2>
-          <div className="grid grid-cols-2 xs:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+          <div className="grid grid-cols-2 xs:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 stagger-children">
             {services.map(svc => (
               <Link
                 key={svc.key}
                 href={svc.href}
-                className="group flex flex-col items-center gap-2 p-4 bg-white rounded-xl border border-navy-50 shadow-card hover:shadow-card-hover hover:border-gold/30 transition-all duration-150 active:scale-95 focus-visible:ring-2 focus-visible:ring-gold focus-visible:outline-none"
+                className="group flex flex-col items-center gap-2 p-4 bg-white rounded-xl border border-border shadow-sm hover:shadow-md hover:border-gold/30 transition-all duration-150 active:scale-[.98] focus-visible:ring-2 focus-visible:ring-gold focus-visible:outline-none"
               >
-                <div className={`w-11 h-11 rounded-xl flex items-center justify-center ${svc.color} relative`}>
+                <div className={`w-11 h-11 rounded-xl flex items-center justify-center ${svc.color} relative shadow-xs`}>
                   <svc.icon className="w-5 h-5" />
                   {svc.badge > 0 && (
                     <Badge

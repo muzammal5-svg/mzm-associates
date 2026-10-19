@@ -51,7 +51,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             aria-invalid={!!error}
             aria-describedby={error ? `${inputId}-error` : hint ? `${inputId}-hint` : undefined}
             className={cn(
-              "input",
+              "input min-h-[48px]",
               leftElement  && "ps-9",
               rightElement && "pe-9",
               error && "border-danger focus:ring-danger",

@@ -15,18 +15,18 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const variants: Record<ButtonVariant, string> = {
-  primary:   "bg-gold text-white hover:bg-gold-600 active:bg-gold-700 focus-visible:ring-gold",
-  secondary: "bg-white text-navy border border-navy-100 hover:bg-navy-50 active:bg-navy-100 focus-visible:ring-navy",
-  danger:    "bg-danger text-white hover:bg-red-700 active:bg-red-800 focus-visible:ring-red-500",
+  primary:   "bg-gold-cta text-white shadow-gold hover:shadow-md active:shadow-sm focus-visible:ring-gold",
+  secondary: "bg-white text-navy border border-border hover:bg-navy-50 active:bg-navy-100 focus-visible:ring-navy",
+  danger:    "bg-danger text-white shadow-sm hover:bg-red-700 active:bg-red-800 focus-visible:ring-red-500",
   ghost:     "bg-transparent text-navy hover:bg-navy-50 active:bg-navy-100 focus-visible:ring-navy",
   link:      "bg-transparent text-gold underline-offset-2 hover:underline p-0 min-h-0 focus-visible:ring-gold",
 };
 
 const sizes: Record<ButtonSize, string> = {
-  xs: "h-7  px-2.5 text-xs  gap-1",
-  sm: "h-8  px-3   text-sm  gap-1.5",
-  md: "h-10 px-4   text-sm  gap-2",
-  lg: "h-12 px-6   text-base gap-2",
+  xs: "h-8  px-2.5 text-xs  gap-1",
+  sm: "h-9  px-3   text-sm  gap-1.5",
+  md: "h-12 px-4   text-sm  gap-2",
+  lg: "h-14 px-6   text-base gap-2",
 };
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
@@ -54,12 +54,12 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         aria-busy={loading}
         className={cn(
           // Base
-          "inline-flex items-center justify-center font-semibold rounded-lg",
-          "transition-colors duration-150",
+          "inline-flex items-center justify-center font-semibold rounded-md",
+          "transition-all duration-150 active:scale-[.98]",
           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
           "disabled:opacity-50 disabled:cursor-not-allowed",
           "select-none",
-          variant !== "link" && "min-h-[44px] min-w-[44px]",
+          variant !== "link" && "min-h-[48px] min-w-[44px]",
           // Variant + size
           variants[variant],
           sizes[size],

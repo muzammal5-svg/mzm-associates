@@ -42,15 +42,15 @@ export function Sidebar() {
         href={item.href}
         aria-current={isActive ? "page" : undefined}
         className={cn(
-          "group flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors duration-150",
-          isActive
-            ? "bg-gold text-white"
-            : "text-navy-200 hover:bg-white/10 hover:text-white"
+           "group flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors duration-150",
+           isActive
+             ? "bg-gold/15 text-gold border-s-2 border-gold"
+             : "text-navy-200 hover:bg-white/10 hover:text-white"
         )}
       >
         {Icon && (
           <span className="relative flex-shrink-0">
-            <Icon className={cn("w-4.5 h-4.5", isActive ? "text-white" : "text-navy-300 group-hover:text-white")} />
+            <Icon className={cn("w-4.5 h-4.5", isActive ? "text-gold" : "text-navy-300 group-hover:text-white")} />
             {badge > 0 && (
               <span aria-hidden="true" className="absolute -top-1 -end-1 w-2 h-2 rounded-full bg-danger" />
             )}
