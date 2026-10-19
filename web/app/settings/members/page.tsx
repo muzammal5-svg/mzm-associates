@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/lib/supabase/client";
 import { useAuth } from "@/providers/AuthProvider";
 import { useSubscriptionAccess } from "@/hooks/useSubscriptionAccess";
@@ -19,13 +19,13 @@ export default function MembersPage() {
 
   const isOwner = (profile as any)?.is_owner === true;
 
-  async function load() {
+  const load = useCallback(async () => {
     const { data } = await (supabase as any).from("profiles").select("*").eq("firm_id", profile?.firm_id);
     setMembers(data ?? []);
     const { data: d } = await (supabase as any).from("user_devices").select("*").eq("firm_id", profile?.firm_id);
     setDevices(d ?? []);
-  }
-  useEffect(() => { if (profile?.firm_id) load(); }, [profile?.firm_id]);
+    setDevices(d ?? []);
+  }, [profile?.firm_id]);
 
   async function addMember(e: React.FormEvent) {
     e.preventDefault();
@@ -101,4 +101,5 @@ export default function MembersPage() {
     </main>
   );
 }
+
 
