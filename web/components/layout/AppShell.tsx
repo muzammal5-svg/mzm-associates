@@ -1,6 +1,7 @@
 "use client";
 
 import { type ReactNode }  from "react";
+import { SubscriptionBanner } from "@/components/shared/SubscriptionBanner";
 import { Sidebar }         from "./Sidebar";
 import { BottomNav }       from "./BottomNav";
 import { MobileHeader }    from "./MobileHeader";
@@ -64,6 +65,7 @@ export function AppShell({
               actions={headerActions}
             />
           )}
+          <SubscriptionBanner />
           <div className="animate-slide-down">
             {children}
           </div>
