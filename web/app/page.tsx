@@ -1,6 +1,8 @@
 "use client";
 
-import Link               from "next/link";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useTranslation } from "react-i18next";
 import {
   UserPlus, Briefcase, Calendar, List, Bell,
@@ -121,9 +123,11 @@ function useServices(counts: ReturnType<typeof useDashboardCounts>["data"]) {
 // ── Page ─────────────────────────────────────────────────────────────────────
 function DashboardPage() {
   const { t }      = useTranslation();
-  const { profile } = useAuth();
+  const { profile, user, loading, configured } = useAuth();
+  const router = useRouter();
   const counts     = useDashboardCounts();
   const hearings   = useTodayHearings();
+  useEffect(() => { if (!configured || loading) return; if (!user) router.replace("/welcome"); }, [configured, loading, user, router]);
   const services   = useServices(counts.data);
   const timeOfDay  = getTimeOfDay(t);
   const todayLabel = fmtDate(todayKarachi());
@@ -288,3 +292,6 @@ export default function HomePage() {
     </RouteGuard>
   );
 }
+
+
+
