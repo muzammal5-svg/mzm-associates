@@ -178,6 +178,28 @@ const superClient = clientFor(superAdmin.token);
   await admin.from("subscriptions").update({ status: "trialing", ends_at: trialEnds.toISOString(), grace_until: null }).eq("firm_id", trialFirmId);
 }
 
+// remove_member frees a seat
+{
+  const activeOwner2 = await signIn("owner-active@demo.test", "Owner1234!");
+  const activeClient2 = clientFor(activeOwner2.token);
+  const firmId = (await activeClient2.from("profiles").select("firm_id").eq("id", activeOwner2.userId).single()).data.firm_id;
+  const { data: tmpUser } = await admin.auth.admin.createUser({ email: `seat-test-${Date.now()}@demo.test`, password: "SeatTest1234!", email_confirm: true });
+  const memberId = tmpUser.user.id;
+  const { error: insErr } = await admin.from("profiles").insert({ id: memberId, firm_id: firmId, full_name: "Seat Test", email: "seat-test@demo.test", role: "clerk", is_active: true });
+  console.log("insert profile err:", insErr?.message);
+  const usedBefore = (await admin.rpc("seats_used", { p_firm_id: firmId })).data;
+  await activeClient2.rpc("remove_member", { p_user_id: memberId });
+  const usedAfter = (await admin.rpc("seats_used", { p_firm_id: firmId })).data;
+  check("remove_member frees a seat", usedAfter === usedBefore - 1, `${usedBefore} -> ${usedAfter}`);
+  // non-owner cannot remove_member
+  const lawyerUser = await signIn("lawyer@mzm.pk", "Lawyer1234!");
+  const lawyerClient = clientFor(lawyerUser.token);
+  const { error: rmErr } = await lawyerClient.rpc("remove_member", { p_user_id: memberId });
+  check("non-owner cannot remove_member", !!rmErr, rmErr?.message);
+  // cleanup
+  await admin.from("profiles").delete().eq("id", memberId);
+}
+
 // restore active firm subscription
 {
   const firmId = (await activeClient.from("profiles").select("firm_id").eq("id", activeOwner.userId).single()).data.firm_id;
@@ -190,4 +212,7 @@ const superClient = clientFor(superAdmin.token);
 
 console.log(`\nRESULT: ${pass} passed, ${fail} failed`);
 process.exit(fail > 0 ? 1 : 0);
+
+
+
 
