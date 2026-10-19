@@ -200,6 +200,98 @@ const superClient = clientFor(superAdmin.token);
   await admin.from("profiles").delete().eq("id", memberId);
 }
 
+// create-member live proofs (deployed function)
+{
+  const fnUrl = supabaseUrl + "/functions/v1/create-member";
+  const anonKey = env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  async function callCreate(token, body) {
+    const res = await fetch(fnUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token, "apikey": anonKey },
+      body: JSON.stringify(body),
+    });
+    const json = await res.json().catch(() => ({}));
+    return { status: res.status, json };
+  }
+
+  // restore active firm subscription (tests above may have expired it)
+  const nowAct = new Date();
+  await admin.from("subscriptions").delete().eq("firm_id", "f0000000-0000-0000-0000-000000000011");
+  await admin.from("subscriptions").insert({ firm_id: "f0000000-0000-0000-0000-000000000011", plan_id: null, status: "active", starts_at: nowAct.toISOString(), ends_at: new Date(nowAct.getTime()+30*86400000).toISOString() });
+  const ownerActive = await signIn("owner-active@demo.test", "Owner1234!");
+  const firmId = (await (await fetch(supabaseUrl + "/rest/v1/profiles?id=eq." + ownerActive.userId + "&select=firm_id", { headers: { apikey: anonKey, Authorization: "Bearer " + ownerActive.token } })).json())[0].firm_id;
+
+  // reset members (remove any temp clerks) via service role
+  await admin.from("profiles").delete().eq("firm_id", firmId).neq("is_owner", true);
+
+  // add up to limit (max_users 5, owner already 1 -> 4 more)
+  // duplicate email rejected (owner email already exists)
+  const rDup0 = await callCreate(ownerActive.token, { email: "owner-active@demo.test", full_name: "Dup", role: "clerk", temp_password: "TmpPass1234!" });
+  check("duplicate email rejected", rDup0.status === 409 || rDup0.status === 400, "status=" + rDup0.status + " " + JSON.stringify(rDup0.json));
+
+  const created = [];
+  for (let i = 0; i < 4; i++) {
+    const email = "tmp-member-" + i + "-" + Date.now() + "@demo.test";
+    const r = await callCreate(ownerActive.token, { email, full_name: "Tmp " + i, role: "clerk", temp_password: "TmpPass1234!" });
+    check("owner adds member " + (i + 1), r.status === 200, "status=" + r.status + " " + JSON.stringify(r.json));
+    if (r.status === 200) created.push({ email, id: r.json.user_id });
+  }
+  // next should be denied (seat limit)
+  const rLimit = await callCreate(ownerActive.token, { email: "tmp-overflow-" + Date.now() + "@demo.test", full_name: "Overflow", role: "clerk", temp_password: "TmpPass1234!" });
+  check("seat limit denies next member", rLimit.status === 403 || rLimit.status === 409 || rLimit.status === 400, "status=" + rLimit.status + " " + JSON.stringify(rLimit.json));
+
+  // role escalation denied
+  for (const badRole of ["admin", "super_admin", "owner"]) {
+    const r = await callCreate(ownerActive.token, { email: "esc-" + badRole + "-" + Date.now() + "@demo.test", full_name: "Esc", role: badRole, temp_password: "TmpPass1234!" });
+    check("role escalation denied (" + badRole + ")", r.status === 400, "status=" + r.status);
+  }
+
+
+  // lawyer denied
+  const lawyerUser = await signIn("lawyer@mzm.pk", "Lawyer1234!");
+  const rLawyer = await callCreate(lawyerUser.token, { email: "lawyer-add-" + Date.now() + "@demo.test", full_name: "X", role: "clerk", temp_password: "TmpPass1234!" });
+  check("lawyer cannot add member", rLawyer.status === 403, "status=" + rLawyer.status);
+
+  // clerk denied (create a temp clerk? use existing? none in active firm; skip if no clerk token)
+  // non-owner admin denied: create an admin profile in active firm via service role
+  const { data: tmpAdminUser } = await admin.auth.admin.createUser({ email: "tmp-admin-" + Date.now() + "@demo.test", password: "TmpAdmin1234!", email_confirm: true });
+  await admin.from("profiles").insert({ id: tmpAdminUser.user.id, firm_id: firmId, full_name: "Tmp Admin", email: tmpAdminUser.user.email, role: "admin", is_owner: false, is_active: true });
+  const tmpAdminSignIn = await signIn(tmpAdminUser.user.email, "TmpAdmin1234!");
+  const rAdmin = await callCreate(tmpAdminSignIn.token, { email: "admin-add-" + Date.now() + "@demo.test", full_name: "X", role: "clerk", temp_password: "TmpPass1234!" });
+  check("non-owner admin cannot add member", rAdmin.status === 403, "status=" + rAdmin.status);
+
+  // expired firm cannot add
+  const expiredOwner = await signIn("owner-expired@demo.test", "Owner1234!");
+  const rExpired = await callCreate(expiredOwner.token, { email: "expired-add-" + Date.now() + "@demo.test", full_name: "X", role: "clerk", temp_password: "TmpPass1234!" });
+  check("expired firm cannot add member", rExpired.status === 403, "status=" + rExpired.status);
+
+  // owner A cannot add to firm B: function uses caller firm, so passing firm_id is ignored; verify by calling as active owner and checking created member's firm
+  if (created.length > 0) {
+    const { data: prof } = await admin.from("profiles").select("firm_id").eq("email", created[0].email).single();
+    check("owner A cannot add to firm B (firm derived from caller)", prof?.firm_id === firmId, prof?.firm_id);
+  }
+
+  // remove_member frees a seat
+  if (created.length > 0) {
+    const mid = created[0].id;
+    const before = (await admin.rpc("seats_used", { p_firm_id: firmId })).data;
+  await fetch(supabaseUrl + "/rest/v1/rpc/remove_member", { method: "POST", headers: { "Content-Type": "application/json", "Authorization": "Bearer " + ownerActive.token, "apikey": anonKey }, body: JSON.stringify({ p_user_id: mid }) });
+    const after = (await admin.rpc("seats_used", { p_firm_id: firmId })).data;
+    check("remove_member frees a seat (live)", after === before - 1, before + " -> " + after);
+  }
+
+  // cleanup temp users
+  for (const c of created) {
+    const { data: u } = await admin.auth.admin.listUsers({ page: 1, perPage: 1000 });
+    const usr = u.users.find((x) => x.email === c.email);
+    if (usr) await admin.auth.admin.deleteUser(usr.id);
+  }
+  await admin.from("profiles").delete().eq("firm_id", firmId).neq("is_owner", true);
+  await admin.auth.admin.deleteUser(tmpAdminUser.user.id);
+  // restore active firm members none
+  console.log("create-member live proofs done");
+}
+
 // restore active firm subscription
 {
   const firmId = (await activeClient.from("profiles").select("firm_id").eq("id", activeOwner.userId).single()).data.firm_id;
@@ -212,6 +304,10 @@ const superClient = clientFor(superAdmin.token);
 
 console.log(`\nRESULT: ${pass} passed, ${fail} failed`);
 process.exit(fail > 0 ? 1 : 0);
+
+
+
+
 
 
 
