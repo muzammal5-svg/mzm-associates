@@ -46,3 +46,5 @@ next-env.d.ts
 # UI polish screenshots
 /e2e/screenshots/ui-before/
 /e2e/screenshots/ui-after/
+
+/e2e/screenshots/marketing/
