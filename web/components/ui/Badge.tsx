@@ -10,11 +10,11 @@ export type BadgeVariant =
 const VARIANT_STYLES: Record<BadgeVariant, string> = {
   gold:    "bg-gold-100    text-gold-700",
   navy:    "bg-navy-100    text-navy-700",
-  success: "bg-green-100   text-success",
-  danger:  "bg-red-100     text-danger",
-  warning: "bg-yellow-100  text-warning",
-  info:    "bg-blue-100    text-info",
-  neutral: "bg-gray-100    text-gray-600",
+  success: "bg-green-100   text-green-700",
+  danger:  "bg-red-100     text-red-700",
+  warning: "bg-yellow-100  text-yellow-800",
+  info:    "bg-blue-100    text-blue-700",
+  neutral: "bg-gray-100    text-gray-700",
   purple:  "bg-purple-100  text-purple-700",
 };
 

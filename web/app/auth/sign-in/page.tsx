@@ -101,10 +101,10 @@ export default function SignInPage() {
   }
 
   return (
-    <div className="min-h-dvh bg-navy flex flex-col items-center justify-center px-4 py-8">
+    <div className="min-h-dvh bg-navy-header flex flex-col items-center justify-center px-4 py-8">
 
       {/* Card */}
-      <div className="w-full max-w-sm bg-white rounded-2xl shadow-modal overflow-hidden animate-fade-in">
+      <div className="w-full max-w-sm bg-white rounded-2xl shadow-lg overflow-hidden animate-fade-in">
 
         {/* Gold header stripe */}
         <div className="h-1 bg-gold w-full" />
