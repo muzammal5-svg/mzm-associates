@@ -10,3 +10,7 @@
 
 ## Device enforcement limitation
 `is_session_valid()` currently returns TRUE. Device revocation (max 2 active devices) is enforced in `register_device` (revokes oldest) and checked client-side on app start; server-side JWT `session_id` claim validation is NOT enforced in this version. Documented limitation.
+
+## JWT expiry
+- Set Supabase Auth JWT expiry to 1 hour (shortest sensible). A stolen live access token remains valid until expiry; refresh sessions are revoked server-side on device revoke where the Auth admin API permits.
+
