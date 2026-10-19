@@ -2,6 +2,7 @@
 
 import { type ReactNode }  from "react";
 import { SubscriptionBanner } from "@/components/shared/SubscriptionBanner";
+import { GraceBanner } from "@/components/shared/GraceBanner";
 import { Sidebar }         from "./Sidebar";
 import { BottomNav }       from "./BottomNav";
 import { MobileHeader }    from "./MobileHeader";
@@ -66,6 +67,7 @@ export function AppShell({
             />
           )}
           <SubscriptionBanner />
+          <GraceBanner />
           <div className="animate-slide-down">
             {children}
           </div>
@@ -77,3 +79,4 @@ export function AppShell({
     </div>
   );
 }
+

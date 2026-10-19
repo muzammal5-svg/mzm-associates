@@ -5,7 +5,7 @@ import { LoadingSpinner } from "./LoadingSpinner";
 export type ButtonVariant = "primary" | "secondary" | "danger" | "ghost" | "link";
 export type ButtonSize    = "xs" | "sm" | "md" | "lg";
 
-interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?:   ButtonVariant;
   size?:      ButtonSize;
   loading?:   boolean;
