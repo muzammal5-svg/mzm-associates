@@ -35,7 +35,7 @@ test("ui-before mobile EN", async ({ page }) => {
       await page.goto(s.path, { timeout: 30000 });
       await page.waitForTimeout(1500);
       await page.screenshot({ path: `e2e/screenshots/ui-before/${s.name}.png`, fullPage: true });
-    } catch (e) {
+  } catch (e: any) {
       console.log("FAIL", s.name, e.message);
     }
   }
@@ -46,7 +46,7 @@ test("ui-before mobile EN", async ({ page }) => {
     const link = page.locator('a[href*="/cases/view"]').first();
     if (await link.count()) { await link.click(); await page.waitForTimeout(2000); }
     await page.screenshot({ path: "e2e/screenshots/ui-before/case-view.png", fullPage: true });
-  } catch (e) { console.log("case-view fail", e.message); }
+  } catch (e: any) { console.log("case-view fail", e.message); }
   // client profile
   try {
     await page.goto("/clients/", { timeout: 30000 });
@@ -54,11 +54,11 @@ test("ui-before mobile EN", async ({ page }) => {
     const link = page.locator('a[href*="/clients/view"]').first();
     if (await link.count()) { await link.click(); await page.waitForTimeout(2000); }
     await page.screenshot({ path: "e2e/screenshots/ui-before/client-profile.png", fullPage: true });
-  } catch (e) { console.log("client-profile fail", e.message); }
+  } catch (e: any) { console.log("client-profile fail", e.message); }
   // splash
   try {
     await page.goto("/splash/", { timeout: 30000 });
     await page.waitForTimeout(1500);
     await page.screenshot({ path: "e2e/screenshots/ui-before/splash.png", fullPage: true });
-  } catch (e) { console.log("splash fail", e.message); }
+  } catch (e: any) { console.log("splash fail", e.message); }
 });
