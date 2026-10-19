@@ -14,6 +14,7 @@ import { Input }            from "@/components/ui/Input";
 import { Select }           from "@/components/ui/Select";
 import { Textarea }         from "@/components/ui/Textarea";
 import { Button }           from "@/components/ui/Button";
+import { MutatingButton } from "@/components/shared/MutatingButton";
 import { QueryErrorState }  from "@/components/ui/QueryErrorState";
 import { StepIndicator }    from "@/components/clients/StepIndicator";
 import { DocumentUploader } from "@/components/documents/DocumentUploader";
@@ -298,13 +299,13 @@ function AddClientPage() {
                 >
                   {t("common.cancel")}
                 </Button>
-                <Button
+                <MutatingButton
                   type="submit"
                   loading={saving}
                   className="flex-1"
                 >
                   {t("clients.saveContinue")}
-                </Button>
+                </MutatingButton>
               </div>
             </form>
           </Card>
@@ -346,3 +347,4 @@ function AddClientPage() {
 export default function AddClientRoute() {
   return <RouteGuard allowedRoles={["admin", "lawyer", "super_admin"]}><AddClientPage /></RouteGuard>;
 }
+
