@@ -57,6 +57,7 @@ DECLARE
 BEGIN
   DELETE FROM public.reminders WHERE case_id IN (SELECT id FROM public.cases WHERE firm_id = v_firm);
   DELETE FROM public.hearings WHERE firm_id = v_firm;
+  DELETE FROM public.documents WHERE firm_id = v_firm;
   DELETE FROM public.cases WHERE firm_id = v_firm;
   DELETE FROM public.clients WHERE firm_id = v_firm;
   DELETE FROM public.case_types WHERE firm_id = v_firm;
@@ -68,6 +69,10 @@ BEGIN
     SET name = EXCLUDED.name,
         subscription_status = EXCLUDED.subscription_status,
         subscription_valid_till = EXCLUDED.subscription_valid_till;
+  -- Ensure subscription row exists for access control
+  INSERT INTO public.subscriptions (firm_id, plan_id, status, starts_at, ends_at, created_by)
+  VALUES (v_firm, NULL, 'active', NOW(), v_karachi_today + INTERVAL '1 year', v_admin_uid)
+  ON CONFLICT DO NOTHING;
 
   SELECT id INTO v_admin_uid FROM public.profiles WHERE email = 'admin@mzm.pk';
   SELECT id INTO v_lawyer_uid FROM public.profiles WHERE email = 'lawyer@mzm.pk';
@@ -219,3 +224,4 @@ BEGIN
 
   RAISE NOTICE 'Seed completed successfully for firm: MZM & Associates at %', v_karachi_today;
 END $$;
+

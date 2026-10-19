@@ -17,3 +17,11 @@ Verify all three accounts using:
 ```powershell
 node supabase/scripts/test-demo-login.mjs
 ```
+
+## Subscription demo (dev only)
+- super@platform.test / Super1234! (super_admin)
+- owner-trial@demo.test / Owner1234!
+- owner-active@demo.test / Owner1234!
+- owner-grace@demo.test / Owner1234!
+- owner-expired@demo.test / Owner1234!
+

@@ -17,27 +17,8 @@
 --  database_write permission on the access token.)
 -- =============================================================================
 
-CREATE POLICY IF NOT EXISTS "avatars insert own folder" ON storage.objects
-  FOR INSERT TO authenticated
-  WITH CHECK (
-    bucket_id = 'avatars'
-    AND (storage.foldername(name))[1] = auth.uid()::TEXT
-  );
-
-CREATE POLICY IF NOT EXISTS "avatars update own folder" ON storage.objects
-  FOR UPDATE TO authenticated
-  USING (
-    bucket_id = 'avatars'
-    AND (storage.foldername(name))[1] = auth.uid()::TEXT
-  )
-  WITH CHECK (
-    bucket_id = 'avatars'
-    AND (storage.foldername(name))[1] = auth.uid()::TEXT
-  );
-
-CREATE POLICY IF NOT EXISTS "avatars select own folder" ON storage.objects
-  FOR SELECT TO authenticated
-  USING (
-    bucket_id = 'avatars'
-    AND (storage.foldername(name))[1] = auth.uid()::TEXT
-  );
+DO $$ BEGIN
+  BEGIN CREATE POLICY "avatars insert own folder" ON storage.objects FOR INSERT TO authenticated WITH CHECK (bucket_id = 'avatars' AND (storage.foldername(name))[1] = auth.uid()::TEXT); EXCEPTION WHEN duplicate_object THEN NULL; END;
+  BEGIN CREATE POLICY "avatars update own folder" ON storage.objects FOR UPDATE TO authenticated USING (bucket_id = 'avatars' AND (storage.foldername(name))[1] = auth.uid()::TEXT) WITH CHECK (bucket_id = 'avatars' AND (storage.foldername(name))[1] = auth.uid()::TEXT); EXCEPTION WHEN duplicate_object THEN NULL; END;
+  BEGIN CREATE POLICY "avatars select own folder" ON storage.objects FOR SELECT TO authenticated USING (bucket_id = 'avatars' AND (storage.foldername(name))[1] = auth.uid()::TEXT); EXCEPTION WHEN duplicate_object THEN NULL; END;
+END $$;
