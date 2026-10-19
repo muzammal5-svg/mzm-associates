@@ -18,9 +18,31 @@
   --color-success:   #1F7A4D;
   --color-danger:    #C0392B;
 
-  /* Bottom nav safe area on iOS */
-  --safe-bottom: env(safe-area-inset-bottom, 0px);
-  --safe-top:    env(safe-area-inset-top, 0px);
+  /* Design tokens */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
+
+  --color-border: #E7E3D8;
+  --color-muted:  #5B6478;
+  --color-surface: #FFFFFF;
+
+  --shadow-xs: 0 1px 2px rgba(11,27,58,.06);
+  --shadow-sm: 0 1px 3px rgba(11,27,58,.08), 0 1px 2px rgba(11,27,58,.04);
+  --shadow-md: 0 4px 12px rgba(11,27,58,.08), 0 2px 4px rgba(11,27,58,.04);
+  --shadow-lg: 0 12px 28px rgba(11,27,58,.12), 0 4px 8px rgba(11,27,58,.05);
+  --shadow-gold: 0 6px 18px rgba(138,100,20,.28);
+  --shadow-inner-top: 0 -4px 16px rgba(11,27,58,.08);
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
 }
 
 /* ─── Base ──────────────────────────────────────────────────────────────────── */
@@ -91,40 +113,42 @@ button, a, [role="button"] {
 /* ─── Card ──────────────────────────────────────────────────────────────────── */
 @layer components {
   .card {
-    @apply bg-white rounded-xl shadow-card border border-navy-50/60 p-4;
+    @apply bg-white rounded-lg shadow-sm border border-border p-4;
   }
   .card-header {
-    @apply text-sm font-semibold text-navy-400 uppercase tracking-wider mb-3;
+    @apply text-sm font-semibold text-muted uppercase tracking-wider mb-3;
   }
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg
+    @apply inline-flex items-center justify-center gap-2 px-5 py-3 rounded-md
            bg-gold text-white font-semibold text-sm
            hover:bg-gold-600 active:bg-gold-700
            transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2
            disabled:opacity-50 disabled:cursor-not-allowed;
+    background-image: linear-gradient(135deg, #A57A1F 0%, #8A6414 100%);
+    box-shadow: var(--shadow-gold);
   }
   .btn-secondary {
-    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg
-           bg-white text-navy border border-navy-100 font-semibold text-sm
+    @apply inline-flex items-center justify-center gap-2 px-5 py-3 rounded-md
+           bg-white text-navy border border-border font-semibold text-sm
            hover:bg-navy-50 active:bg-navy-100
            transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-navy focus-visible:ring-offset-2
            disabled:opacity-50 disabled:cursor-not-allowed;
   }
   .btn-danger {
-    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg
+    @apply inline-flex items-center justify-center gap-2 px-5 py-3 rounded-md
            bg-danger text-white font-semibold text-sm
            hover:bg-red-700 active:bg-red-800
            transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed;
   }
   .input {
-    @apply w-full rounded-lg border border-navy-100 bg-white px-3.5 py-2.5 text-sm text-navy
+    @apply w-full rounded-md border border-border bg-white px-3.5 py-3 text-sm text-navy
            placeholder:text-navy-300
            focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent
            disabled:bg-navy-50 disabled:cursor-not-allowed
            transition-shadow duration-150;
   }
   .label {
-    @apply block text-sm font-medium text-navy-400 mb-1.5;
+    @apply block text-sm font-medium text-muted mb-1.5;
   }
   .badge {
     @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold;
@@ -138,3 +162,22 @@ button, a, [role="button"] {
 [dir="rtl"] .lucide-arrow-left {
   transform: rotate(180deg);
 }
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+}
+
+/* Shimmer */
+.shimmer { background: linear-gradient(90deg, #f1f1ee 25%, #e7e3d8 50%, #f1f1ee 75%); background-size: 200% 100%; animation: shimmer 1.6s linear infinite; }
+
+/* Staggered fade-in for list children */
+.stagger-children > * { animation: fade-in .2s ease-out both; }
+.stagger-children > *:nth-child(1) { animation-delay: 0ms; }
+.stagger-children > *:nth-child(2) { animation-delay: 40ms; }
+.stagger-children > *:nth-child(3) { animation-delay: 80ms; }
+.stagger-children > *:nth-child(4) { animation-delay: 120ms; }
+.stagger-children > *:nth-child(5) { animation-delay: 160ms; }
+.stagger-children > *:nth-child(6) { animation-delay: 200ms; }
+.stagger-children > *:nth-child(7) { animation-delay: 240ms; }
+.stagger-children > *:nth-child(8) { animation-delay: 280ms; }

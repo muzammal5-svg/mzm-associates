@@ -8,7 +8,6 @@ const config: Config = {
   ],
   theme: {
     extend: {
-      // ── Brand Palette ────────────────────────────────────────────────────
       colors: {
         gold: {
           DEFAULT: "#8A6414",
@@ -41,9 +40,11 @@ const config: Config = {
         danger:   "#C0392B",
         warning:  "#D97706",
         info:     "#2563EB",
+        border:   "#E7E3D8",
+        muted:    "#5B6478",
+        surface:  "#FFFFFF",
       },
 
-      // ── Typography ───────────────────────────────────────────────────────
       fontFamily: {
         heading:   ["var(--font-playfair)",   "Playfair Display", "Georgia", "serif"],
         cormorant: ["var(--font-cormorant)",  "Cormorant Garamond", "Georgia", "serif"],
@@ -52,31 +53,47 @@ const config: Config = {
         mono:      ["ui-monospace",           "SFMono-Regular", "Menlo", "monospace"],
       },
 
-      // ── Spacing / Sizing ─────────────────────────────────────────────────
-      spacing: {
-        "4.5": "1.125rem",
-        "18":  "4.5rem",
-        "22":  "5.5rem",
+      fontSize: {
+        xs:   ["12px", { lineHeight: "1.5" }],
+        sm:   ["14px", { lineHeight: "1.5" }],
+        base: ["16px", { lineHeight: "1.6" }],
+        lg:   ["18px", { lineHeight: "1.5" }],
+        xl:   ["22px", { lineHeight: "1.35" }],
+        "2xl":["28px", { lineHeight: "1.25" }],
+        "3xl":["34px", { lineHeight: "1.15" }],
       },
 
-      // ── Border Radius ────────────────────────────────────────────────────
       borderRadius: {
-        "2xl": "1rem",
-        "3xl": "1.5rem",
-        "4xl": "2rem",
+        sm:   "8px",
+        md:   "12px",
+        lg:   "16px",
+        xl:   "24px",
+        "2xl":"1rem",
+        "3xl":"1.5rem",
+        full: "9999px",
       },
 
-      // ── Shadows ──────────────────────────────────────────────────────────
       boxShadow: {
-        card:    "0 1px 4px 0 rgba(11,27,58,0.08), 0 0 1px 0 rgba(11,27,58,0.06)",
-        "card-hover": "0 4px 16px 0 rgba(11,27,58,0.12), 0 0 1px 0 rgba(11,27,58,0.08)",
-        modal:   "0 8px 32px 0 rgba(11,27,58,0.20), 0 0 1px 0 rgba(11,27,58,0.10)",
-        navbar:  "0 -1px 0 0 rgba(11,27,58,0.08)",
-        sidebar: "1px 0 0 0 rgba(11,27,58,0.08)",
-        input:   "0 0 0 3px rgba(138,100,20,0.15)",
+        xs:          "0 1px 2px rgba(11,27,58,.06)",
+        sm:          "0 1px 3px rgba(11,27,58,.08), 0 1px 2px rgba(11,27,58,.04)",
+        md:          "0 4px 12px rgba(11,27,58,.08), 0 2px 4px rgba(11,27,58,.04)",
+        lg:          "0 12px 28px rgba(11,27,58,.12), 0 4px 8px rgba(11,27,58,.05)",
+        gold:        "0 6px 18px rgba(138,100,20,.28)",
+        "inner-top": "0 -4px 16px rgba(11,27,58,.08)",
+        // legacy aliases (point to scale)
+        card:        "0 1px 3px rgba(11,27,58,.08), 0 1px 2px rgba(11,27,58,.04)",
+        "card-hover":"0 4px 12px rgba(11,27,58,.08), 0 2px 4px rgba(11,27,58,.04)",
+        modal:       "0 12px 28px rgba(11,27,58,.12), 0 4px 8px rgba(11,27,58,.05)",
+        navbar:      "0 -4px 16px rgba(11,27,58,.08)",
+        sidebar:     "1px 0 0 0 rgba(11,27,58,.08)",
+        input:       "0 0 0 3px rgba(138,100,20,.15)",
       },
 
-      // ── Screens ──────────────────────────────────────────────────────────
+      backgroundImage: {
+        "navy-header": "linear-gradient(135deg, #0B1B3A 0%, #13264D 100%)",
+        "gold-cta":    "linear-gradient(135deg, #A57A1F 0%, #8A6414 100%)",
+      },
+
       screens: {
         xs:   "375px",
         sm:   "640px",
@@ -86,33 +103,29 @@ const config: Config = {
         "2xl":"1440px",
       },
 
-      // ── Animation ────────────────────────────────────────────────────────
       keyframes: {
-        "slide-up": {
-          "0%":   { transform: "translateY(100%)", opacity: "0" },
-          "100%": { transform: "translateY(0)",    opacity: "1" },
-        },
-        "slide-down": {
-          "0%":   { transform: "translateY(-8px)", opacity: "0" },
-          "100%": { transform: "translateY(0)",    opacity: "1" },
-        },
-        "fade-in": {
-          "0%":   { opacity: "0" },
-          "100%": { opacity: "1" },
-        },
-        shimmer: {
-          "0%":   { backgroundPosition: "-200% 0" },
-          "100%": { backgroundPosition: "200% 0" },
-        },
+        "slide-up": { "0%": { transform: "translateY(100%)", opacity: "0" }, "100%": { transform: "translateY(0)", opacity: "1" } },
+        "slide-down": { "0%": { transform: "translateY(-8px)", opacity: "0" }, "100%": { transform: "translateY(0)", opacity: "1" } },
+        "fade-in": { "0%": { opacity: "0" }, "100%": { opacity: "1" } },
+        shimmer: { "0%": { backgroundPosition: "-200% 0" }, "100%": { backgroundPosition: "200% 0" } },
+        "press": { "0%": { transform: "scale(1)" }, "50%": { transform: "scale(.98)" }, "100%": { transform: "scale(1)" } },
+        "count-up": { "0%": { opacity: "0", transform: "translateY(4px)" }, "100%": { opacity: "1", transform: "translateY(0)" } },
+        "bell-shake": { "0%,100%": { transform: "rotate(0)" }, "25%": { transform: "rotate(-12deg)" }, "75%": { transform: "rotate(12deg)" } },
+        "glow-pulse": { "0%,100%": { boxShadow: "0 0 0 0 rgba(138,100,20,.4)" }, "50%": { boxShadow: "0 0 0 8px rgba(138,100,20,0)" } },
+        "check-draw": { "0%": { strokeDashoffset: "100" }, "100%": { strokeDashoffset: "0" } },
       },
       animation: {
         "slide-up":   "slide-up 0.25s ease-out",
         "slide-down": "slide-down 0.2s ease-out",
         "fade-in":    "fade-in 0.15s ease-out",
         shimmer:      "shimmer 1.6s linear infinite",
+        press:        "press .15s ease-out",
+        "count-up":   "count-up .6s ease-out",
+        "bell-shake": "bell-shake .5s ease-out",
+        "glow-pulse": "glow-pulse 1.8s ease-in-out infinite",
+        "check-draw": "check-draw .4s ease-out forwards",
       },
 
-      // ── Z-index ──────────────────────────────────────────────────────────
       zIndex: {
         "60": "60",
         "70": "70",
