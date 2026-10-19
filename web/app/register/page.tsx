@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
+import { MarketingShell } from "@/components/marketing/MarketingShell";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -29,18 +30,20 @@ export default function RegisterPage() {
   }
 
   return (
-    <main className="min-h-dvh bg-offwhite flex items-center justify-center px-4">
-      <form onSubmit={submit} className="card w-full max-w-md space-y-4">
-        <h1 className="text-2xl font-heading font-bold">Register</h1>
-        {error && <p className="text-danger text-sm">{error}</p>}
-        <Input label="Email" type="email" value={email} onChange={(e:any)=>setEmail(e.target.value)} required />
-        <Input label="Password" type="password" value={password} onChange={(e:any)=>setPassword(e.target.value)} required />
-        <Input label="Firm name" value={firmName} onChange={(e:any)=>setFirmName(e.target.value)} required />
-        <Input label="Full name" value={fullName} onChange={(e:any)=>setFullName(e.target.value)} required />
-        <Input label="Phone" type="tel" value={phone} onChange={(e:any)=>setPhone(e.target.value)} />
-        <Button type="submit" loading={loading} className="w-full">Register</Button>
-        <p className="text-sm text-muted">Already have an account? <a href="/auth/sign-in" className="text-gold">Sign in</a></p>
-      </form>
-    </main>
+    <MarketingShell>
+      <main className="min-h-dvh bg-offwhite flex items-center justify-center px-4">
+        <form onSubmit={submit} className="card w-full max-w-md space-y-4">
+          <h1 className="text-2xl font-heading font-bold">Register</h1>
+          {error && <p className="text-danger text-sm">{error}</p>}
+          <Input label="Email" type="email" value={email} onChange={(e: any) => setEmail(e.target.value)} required />
+          <Input label="Password" type="password" value={password} onChange={(e: any) => setPassword(e.target.value)} required />
+          <Input label="Firm name" value={firmName} onChange={(e: any) => setFirmName(e.target.value)} required />
+          <Input label="Full name" value={fullName} onChange={(e: any) => setFullName(e.target.value)} required />
+          <Input label="Phone" type="tel" value={phone} onChange={(e: any) => setPhone(e.target.value)} />
+          <Button type="submit" loading={loading} className="w-full">Register</Button>
+          <p className="text-sm text-muted">Already have an account? <a href="/auth/sign-in" className="text-gold">Sign in</a></p>
+        </form>
+      </main>
+    </MarketingShell>
   );
 }
