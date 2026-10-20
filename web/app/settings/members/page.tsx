@@ -3,6 +3,7 @@ import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/lib/supabase/client";
 import { useAuth } from "@/providers/AuthProvider";
 import { useSubscriptionAccess } from "@/hooks/useSubscriptionAccess";
+import { generateTempPassword } from "@/lib/password";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 
@@ -31,7 +32,7 @@ export default function MembersPage() {
     e.preventDefault();
     setMsg("");
     setTempPw("");
-    const password = Math.random().toString(36).slice(-10) + "A1!";
+    const password = generateTempPassword();
     const { data, error } = await (supabase as any).functions.invoke("create-member", {
       body: { email, full_name: fullName, role, temp_password: password },
     });
