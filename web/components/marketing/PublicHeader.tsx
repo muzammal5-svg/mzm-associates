@@ -1,4 +1,3 @@
-"use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/providers/AuthProvider";
@@ -23,7 +22,6 @@ export function PublicHeader() {
     onScroll();
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
-  useEffect(() => { setOpen(false); }, []);
 
   return (
     <header className={`sticky top-0 z-50 transition-colors ${scrolled ? "bg-white/95 shadow-sm backdrop-blur" : "bg-transparent"}`}>
@@ -58,17 +56,17 @@ export function PublicHeader() {
       {open && (
         <div className="fixed inset-0 z-50 md:hidden">
           <div className="absolute inset-0 bg-navy/40" onClick={() => setOpen(false)} />
-          <div className="absolute end-0 top-0 h-full w-72 bg-white p-6 shadow-lg animate-slide-up">
+          <div className="absolute start-0 top-0 h-full w-72 bg-white p-6 shadow-lg">
             <button className="mb-4" onClick={() => setOpen(false)}>Close</button>
             <nav className="flex flex-col gap-4">
-              {NAV.map((n) => <Link key={n.href} href={n.href} onClick={() => setOpen(false)}>{n.label}</Link>)}
+              {NAV.map((n) => <Link key={n.href} href={n.href} onClick={() => setOpen(false)} className="text-navy font-medium">{n.label}</Link>)}
             </nav>
             <div className="mt-6 flex flex-col gap-3">
               <LangSwitcher />
-              {user ? <Link href="/" className="btn-primary">Go to dashboard</Link> : (
+              {user ? <Link href="/" className="btn-primary" onClick={() => setOpen(false)}>Go to dashboard</Link> : (
                 <>
-                  <Link href="/auth/sign-in" className="btn-secondary">Sign in</Link>
-                  <Link href="/register" className="btn-primary">Start free trial</Link>
+                  <Link href="/auth/sign-in" className="btn-secondary" onClick={() => setOpen(false)}>Sign in</Link>
+                  <Link href="/register" className="btn-primary" onClick={() => setOpen(false)}>Start free trial</Link>
                 </>
               )}
             </div>
