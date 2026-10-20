@@ -1,12 +1,15 @@
 "use client";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { supabase } from "@/lib/supabase/client";
 import { useSubscriptionAccess } from "@/hooks/useSubscriptionAccess";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 
-export default function BillingPage() {
+function BillingView() {
   const { state, status, loading } = useSubscriptionAccess();
+  const params = useSearchParams();
+  const preselectCode = params.get("plan") ?? "";
   const [plans, setPlans] = useState<any[]>([]);
   const [accounts, setAccounts] = useState<any[]>([]);
   const [planId, setPlanId] = useState("");
@@ -21,6 +24,13 @@ export default function BillingPage() {
     (supabase as any).from("plans").select("*").eq("is_active", true).then(({ data }: any) => setPlans(data ?? []));
     (supabase as any).from("payment_accounts").select("*").eq("is_active", true).then(({ data }: any) => setAccounts(data ?? []));
   }, []);
+
+  // UI-only: preselect the plan carried over from /register?plan= or /pricing.
+  useEffect(() => {
+    if (!preselectCode || !plans.length || planId) return;
+    const match = plans.find((p) => p.code === preselectCode);
+    if (match) setPlanId(match.id);
+  }, [preselectCode, plans, planId]);
 
   useEffect(() => {
     (supabase as any).from("payments").select("*").order("created_at", { ascending: false }).then(({ data }: any) => setPayments(data ?? []));
@@ -95,5 +105,14 @@ export default function BillingPage() {
         </table>
       </div>
     </main>
+  );
+}
+
+export default function BillingPage() {
+  // useSearchParams must sit behind Suspense for static export prerendering.
+  return (
+    <Suspense fallback={<div className="min-h-dvh bg-offwhite" />}>
+      <BillingView />
+    </Suspense>
   );
 }
