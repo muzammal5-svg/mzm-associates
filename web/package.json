@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint",
+    "lint": "eslint . --ext .ts,.tsx",
     "export": "next build",
     "cap:sync": "npx cap sync",
     "cap:android": "npx cap open android",
