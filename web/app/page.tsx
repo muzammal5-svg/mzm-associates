@@ -1,7 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
 import Link from "next/link";
 import { useTranslation } from "react-i18next";
 import {
@@ -19,6 +18,8 @@ import { Skeleton }          from "@/components/ui/Skeleton";
 import { EmptyState }        from "@/components/ui/EmptyState";
 import { QueryErrorState } from "@/components/ui/QueryErrorState";
 import { useAuth }           from "@/providers/AuthProvider";
+import { useStoredSession }   from "@/hooks/useStoredSession";
+import { Landing }           from "@/components/marketing/Landing";
 import { useDashboardCounts } from "@/hooks/useDashboardCounts";
 import { useTodayHearings }  from "@/hooks/useTodayHearings";
 import { fmtDate, todayKarachi } from "@/lib/utils";
@@ -124,10 +125,8 @@ function useServices(counts: ReturnType<typeof useDashboardCounts>["data"]) {
 function DashboardPage() {
   const { t }      = useTranslation();
   const { profile, user, loading, configured } = useAuth();
-  const router = useRouter();
   const counts     = useDashboardCounts();
   const hearings   = useTodayHearings();
-  useEffect(() => { if (!configured || loading) return; if (!user) router.replace("/welcome"); }, [configured, loading, user, router]);
   const services   = useServices(counts.data);
   const timeOfDay  = getTimeOfDay(t);
   const todayLabel = fmtDate(todayKarachi());
@@ -286,6 +285,29 @@ function DashboardPage() {
 }
 
 export default function HomePage() {
+  const { user, loading, configured } = useAuth();
+  const stored = useStoredSession();
+
+  // Session resolved (or impossible) with no user → landing for everyone,
+  // including stale/revoked stored tokens.
+  const loggedOut = !configured || (!loading && !user);
+  if (!stored || loggedOut) return <Landing />;
+
+  // Visitor has a stored session: show a neutral skeleton while the session
+  // resolves, then hand over to the dashboard.
+  if (!user) {
+    return (
+      <div className="min-h-dvh bg-offwhite flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-12 h-12 rounded-xl bg-navy-header flex items-center justify-center">
+            <span className="text-white font-heading font-bold">M</span>
+          </div>
+          <div className="h-2 w-32 bg-navy-50 rounded animate-shimmer" />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <RouteGuard>
       <DashboardPage />

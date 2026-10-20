@@ -5,6 +5,8 @@ export const SITE = {
   email: "support@mzm.pk",
   trialDays: 7,
   social: { twitter: "", linkedin: "" },
+  /** Set to true only after real reviews are added (see docs/landing-content.md). */
+  SHOW_REVIEWS: false,
 };
 export function whatsappLink(msg = "Hello") {
   const num = SITE.whatsapp.replace(/[^0-9]/g, "");
