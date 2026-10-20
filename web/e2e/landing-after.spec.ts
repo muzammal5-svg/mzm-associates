@@ -101,6 +101,29 @@ test("landing: no horizontal overflow on public routes", async ({ page }) => {
   }
 });
 
+test("landing: logged-out / has no failed requests or console errors", async ({ page }) => {
+  await page.setViewportSize(DESKTOP);
+  await loggedOut(page);
+
+  const consoleErrors: string[] = [];
+  const failedRequests: string[] = [];
+  const badResponses: string[] = [];
+  page.on("console", (m) => { if (m.type() === "error") consoleErrors.push(m.text()); });
+  page.on("pageerror", (e) => consoleErrors.push(`pageerror: ${e.message}`));
+  page.on("requestfailed", (r) => failedRequests.push(`${r.resourceType()} ${r.url()} (${r.failure()?.errorText})`));
+  page.on("response", (r) => { if (r.status() >= 400) badResponses.push(`${r.status()} ${r.request().resourceType()} ${r.url()}`); });
+
+  await page.goto("/", { timeout: 30000 });
+  await page.waitForTimeout(3000);
+
+  console.log("console errors:", JSON.stringify(consoleErrors));
+  console.log("failed requests:", JSON.stringify(failedRequests));
+  console.log("responses >= 400:", JSON.stringify(badResponses));
+  expect(consoleErrors).toEqual([]);
+  expect(failedRequests).toEqual([]);
+  expect(badResponses).toEqual([]);
+});
+
 test("landing: reviews hidden when SHOW_REVIEWS=false", async ({ page }) => {
   await page.setViewportSize(DESKTOP);
   await loggedOut(page);

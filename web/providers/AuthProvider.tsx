@@ -135,7 +135,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const removeDeviceToken = useCallback(async (userId: string) => {
-    if (!IS_SUPABASE_CONFIGURED) return;
+    if (!IS_SUPABASE_CONFIGURED || !userId) return;
     try {
       await supabase.from("device_tokens").delete().eq("user_id", userId);
     } catch (error) {
@@ -192,13 +192,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           setReminderCount(0);
           setProfileLoading(false);
           setLoading(false);
-          void removeDeviceToken(newSession?.user?.id ?? "");
         }
       }
     );
 
     return () => subscription.unsubscribe();
-  }, [fetchProfile, refreshCounts, registerDeviceToken, removeDeviceToken]);
+  }, [fetchProfile, refreshCounts, registerDeviceToken]);
 
   // ── Poll unread count every 60 s when user is active ─────────────────────
   useEffect(() => {
