@@ -66,7 +66,7 @@ SELECT
   c.case_ref_no,
   c.plaintiff_name,
   c.defendant_name,
-  c.representing,
+  c.From,
   c.status              AS case_status,
   c.judge_name          AS case_judge,
   c.court_no            AS case_court_no,

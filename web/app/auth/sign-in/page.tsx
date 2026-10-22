@@ -296,6 +296,14 @@ export default function SignInPage() {
         </div>
       </div>
 
+      {/* Sign-up nudge */}
+      <div className="mt-4 text-center text-xs text-navy-400">
+        {t("marketing.regHaveAccount")}{' '}
+        <a href="/register" className="font-semibold text-gold hover:underline">
+          {t("marketing.signUp")}
+        </a>
+      </div>
+
       {/* Version note */}
       <p className="mt-6 text-navy-400 text-xs">{t("brand.name")} &copy; {new Date().getFullYear()}</p>
     </div>

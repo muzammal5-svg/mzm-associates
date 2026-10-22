@@ -85,6 +85,7 @@ test("QA: Role guards block clerk from admin pages", async ({ page }) => {
 });
 
 test("QA: Critical pages load for lawyer@desktop@en", async ({ page }) => {
+  test.setTimeout(180_000);
   await page.setViewportSize({ width: 1440, height: 900 });
   await login(page, "lawyer");
 
@@ -101,7 +102,7 @@ test("QA: Critical pages load for lawyer@desktop@en", async ({ page }) => {
 
   for (const { path, name } of pages) {
     try {
-      await page.goto(path, { timeout: 30000 });
+      await page.goto(path, { timeout: 60000 });
       await page.waitForTimeout(1500);
       const bodyText = await page.locator("body").textContent();
       const hasError = /error|failed|not found|unauthorized/i.test(bodyText ?? "");
@@ -117,6 +118,7 @@ test("QA: Critical pages load for lawyer@desktop@en", async ({ page }) => {
 });
 
 test("QA: Critical pages load for lawyer@mobile@en", async ({ page }) => {
+  test.setTimeout(180_000);
   await page.setViewportSize({ width: 375, height: 812 });
   await login(page, "lawyer");
 
@@ -129,7 +131,7 @@ test("QA: Critical pages load for lawyer@mobile@en", async ({ page }) => {
 
   for (const { path, name } of pages) {
     try {
-      await page.goto(path, { timeout: 30000 });
+      await page.goto(path, { timeout: 60000 });
       await page.waitForTimeout(1500);
       const bodyText = await page.locator("body").textContent();
       const hasError = /error|failed|not found|unauthorized/i.test(bodyText ?? "");

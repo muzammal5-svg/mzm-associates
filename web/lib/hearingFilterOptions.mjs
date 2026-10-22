@@ -5,7 +5,7 @@ export async function fetchHearingFilterOptions(client) {
   for (let from = 0; ; from += pageSize) {
     const { data, error } = await client
       .from("v_cause_list")
-      .select("hearing_court_no,hearing_judge,case_type_id,case_type_name,representing")
+      .select("hearing_court_no,hearing_judge,case_type_id,case_type_name,From")
       .not("case_ref_no", "is", null)
       .range(from, from + pageSize - 1);
     if (error) throw error;

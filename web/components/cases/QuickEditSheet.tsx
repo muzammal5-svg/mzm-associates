@@ -10,6 +10,7 @@ import { BottomSheet, Modal } from "@/components/ui/Modal";
 import { Input }              from "@/components/ui/Input";
 import { Textarea }           from "@/components/ui/Textarea";
 import { Button }             from "@/components/ui/Button";
+import { MutatingButton }     from "@/components/shared/MutatingButton";
 import { useToast }           from "@/components/ui/Toast";
 import { useQuickUpdateHearing } from "@/hooks/useHearings";
 import type { CauseListRow }  from "@/types/supabase";
@@ -70,9 +71,9 @@ export function QuickEditSheet({ row, onClose }: QuickEditSheetProps) {
         <Button type="button" variant="secondary" onClick={onClose} className="flex-1">
           {t("common.cancel")}
         </Button>
-        <Button type="submit" loading={isSubmitting} className="flex-1">
+        <MutatingButton type="submit" loading={isSubmitting} className="flex-1">
           {t("common.save")}
-        </Button>
+        </MutatingButton>
       </div>
     </form>
   );

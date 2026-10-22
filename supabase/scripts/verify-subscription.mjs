@@ -69,7 +69,7 @@ const superClient = clientFor(superAdmin.token);
   }
   let ct = await activeClient.from("case_types").select("id").eq("firm_id", firmId).limit(1);
   if (!ct.data || !ct.data.length) { await admin.from("case_types").insert({ firm_id: firmId, name: "Civil", requires_offence: false }); ct = await activeClient.from("case_types").select("id").eq("firm_id", firmId).limit(1); }
-  const { error } = await activeClient.from("cases").insert({ firm_id: firmId, case_ref_no: "T1", plaintiff_name: "A", defendant_name: "B", representing: "plaintiff", client_id: cl.data?.[0]?.id, case_type_id: ct.data?.[0]?.id, status: "running" });
+  const { error } = await activeClient.from("cases").insert({ firm_id: firmId, case_ref_no: "T1", plaintiff_name: "A", defendant_name: "B", From: "plaintiff", client_id: cl.data?.[0]?.id, case_type_id: ct.data?.[0]?.id, status: "running" });
   check("active can insert case", !error, error?.message);
   if (!error) await admin.from("cases").delete().eq("case_ref_no", "T1").eq("firm_id", firmId);
 }

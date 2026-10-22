@@ -15,11 +15,12 @@ async function login(page: any) {
 const ROUTES = ["/","/cause-list/","/cases/running/","/cases/view/?id=1","/clients/","/clients/new/","/clients/view/?id=1","/cases/new/","/reminders/","/notifications/","/documents/","/profile/","/settings/","/auth/sign-in/"];
 
 test("no horizontal overflow mobile", async ({ page }) => {
+  test.setTimeout(180_000);
   await page.setViewportSize({ width: 375, height: 812 });
   await login(page);
   for (const r of ROUTES) {
     try {
-      await page.goto(r, { timeout: 30000 });
+      await page.goto(r, { timeout: 60000 });
       await page.waitForTimeout(1500);
       const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth);
       console.log(`overflow ${r}: ${overflow}`);

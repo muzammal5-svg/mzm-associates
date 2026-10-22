@@ -9,6 +9,7 @@ import { RefreshCw }        from "lucide-react";
 import { Modal }            from "@/components/ui/Modal";
 import { Textarea }         from "@/components/ui/Textarea";
 import { Button }           from "@/components/ui/Button";
+import { MutatingButton }   from "@/components/shared/MutatingButton";
 import { useToast }         from "@/components/ui/Toast";
 import { useReopenCase }    from "@/hooks/useActivityLog";
 
@@ -63,14 +64,14 @@ export function ReopenCaseModal({ caseId, caseRef, open, onClose }: ReopenCaseMo
           <Button type="button" variant="secondary" onClick={onClose} className="flex-1">
             {t("common.cancel")}
           </Button>
-          <Button
+          <MutatingButton
             type="submit"
             loading={isSubmitting || reopen.isPending}
             leftIcon={<RefreshCw className="w-4 h-4" />}
             className="flex-1"
           >
             {t("common.reopenCase")}
-          </Button>
+          </MutatingButton>
         </div>
       </form>
     </Modal>

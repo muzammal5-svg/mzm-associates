@@ -1,14 +1,14 @@
 "use client";
 
 import {
-  createContext, useContext, useState, useCallback,
+  createContext, useContext, useState, useCallback, useEffect,
   type ReactNode,
 } from "react";
 import { X, CheckCircle, AlertCircle, Info, AlertTriangle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
+// ─── Context ───────────────────────────────────────────────────────────────────
 export type ToastType = "success" | "error" | "warning" | "info";
 
 interface ToastItem {
@@ -25,6 +25,25 @@ interface ToastCtxValue {
   warning: (title: string, message?: string) => void;
   info:    (title: string, message?: string) => void;
 }
+
+// ─── Imperative singleton ─────────────────────────────────────────────────────
+// Allows `toast.success("...")` from any module (including non-React code)
+// by broadcasting to the mounted ToastProvider.
+type ToastListener = (item: Omit<ToastItem, "id">) => void;
+
+const listeners = new Set<ToastListener>();
+
+function emit(item: Omit<ToastItem, "id">) {
+  listeners.forEach((fn) => fn(item));
+}
+
+export const toast = {
+  toast:   (type: ToastType, title: string, message?: string) => emit({ type, title, message }),
+  success: (title: string, message?: string) => emit({ type: "success", title, message }),
+  error:   (title: string, message?: string) => emit({ type: "error",   title, message }),
+  warning: (title: string, message?: string) => emit({ type: "warning", title, message }),
+  info:    (title: string, message?: string) => emit({ type: "info",    title, message }),
+};
 
 // ─── Context ──────────────────────────────────────────────────────────────────
 const ToastCtx = createContext<ToastCtxValue>({
@@ -53,6 +72,17 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   const error   = useCallback((title: string, msg?: string) => toast("error",   title, msg), [toast]);
   const warning = useCallback((title: string, msg?: string) => toast("warning", title, msg), [toast]);
   const info    = useCallback((title: string, msg?: string) => toast("info",    title, msg), [toast]);
+
+  // Bridge the imperative `toast` singleton to the provider state.
+  useEffect(() => {
+    const listener: ToastListener = (item) => {
+      const id = Math.random().toString(36).slice(2);
+      setToasts((prev) => [...prev, { id, ...item }]);
+      setTimeout(() => dismiss(id), 4500);
+    };
+    listeners.add(listener);
+    return () => { listeners.delete(listener); };
+  }, [dismiss]);
 
   return (
     <ToastCtx.Provider value={{ toast, success, error, warning, info }}>

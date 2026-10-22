@@ -1,12 +1,31 @@
+"use client";
+
+import Link from "next/link";
+import { useTranslation } from "react-i18next";
+import { ArrowLeft } from "lucide-react";
 import { MarketingShell } from "@/components/marketing/MarketingShell";
+import { LegalDocument } from "@/components/marketing/LegalDocument";
 
 export default function TermsPage() {
+  const { t } = useTranslation();
+
   return (
     <MarketingShell>
-      <main className="min-h-dvh bg-offwhite px-6 py-12 max-w-3xl mx-auto">
-        <h1 className="text-2xl font-heading font-bold">Terms of Service</h1>
-        <p className="mt-4 text-muted">Placeholder — review with lawyer before production.</p>
-      </main>
+      <div className="min-h-dvh bg-mesh-surface px-4 py-16 sm:px-6 md:py-24">
+        <div className="mx-auto max-w-4xl">
+          <Link
+            href="/"
+            className="mb-6 inline-flex items-center gap-1.5 text-xs font-medium text-muted transition-colors duration-200 hover:text-navy focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold"
+          >
+            <ArrowLeft className="h-3.5 w-3.5" aria-hidden="true" />
+            <span>{t("legal.backHome")}</span>
+          </Link>
+
+          <div className="rounded-2xl border border-slate-200/80 bg-white p-8 shadow-sm backdrop-blur-md md:p-12">
+            <LegalDocument doc="terms" />
+          </div>
+        </div>
+      </div>
     </MarketingShell>
   );
 }

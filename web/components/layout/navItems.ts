@@ -23,6 +23,7 @@ export const SIDEBAR_NAV: NavItem[] = [
   { key: "runningCases",  href: "/cases/running",  icon: "List",            mobileVisible: false, sidebarSection: "main" },
   { key: "clients",       href: "/clients",        icon: "Users",           mobileVisible: false, sidebarSection: "main" },
   { key: "documents",     href: "/documents",      icon: "FolderOpen",      mobileVisible: false, sidebarSection: "main" },
+  { key: "importantForms",href: "/important-forms",icon: "FileText",        mobileVisible: false, sidebarSection: "main" },
   { key: "reminders",     href: "/reminders",      icon: "Bell",            mobileVisible: false, sidebarSection: "main" },
   { key: "decided",       href: "/cases/decided",  icon: "CheckSquare",     mobileVisible: false, sidebarSection: "more" },
   { key: "notifications", href: "/notifications",  icon: "BellRing",        mobileVisible: false, sidebarSection: "more" },

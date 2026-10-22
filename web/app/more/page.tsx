@@ -5,7 +5,7 @@ import Image              from "next/image";
 import { useTranslation } from "react-i18next";
 import {
   CheckSquare, BellRing, Settings, HelpCircle,
-  LogOut, ChevronRight, User,
+  LogOut, ChevronRight, User, ShieldCheck,
 } from "lucide-react";
 import { AppShell }    from "@/components/layout/AppShell";
 import { RouteGuard }  from "@/components/shared/RouteGuard";
@@ -54,6 +54,14 @@ function MorePage() {
       icon:  HelpCircle,
     },
   ];
+
+  if (profile?.role === "super_admin") {
+    menuItems.unshift({
+      label: "Super Admin Control",
+      href: "/admin",
+      icon: ShieldCheck,
+    });
+  }
 
   return (
     <AppShell pageTitle={t("more.title")}>

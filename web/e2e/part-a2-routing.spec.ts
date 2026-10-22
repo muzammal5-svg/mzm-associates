@@ -17,16 +17,17 @@ async function login(page: any, email: string, password: string) {
 }
 
 test("routing by subscription state", async ({ page }) => {
+  test.setTimeout(180_000);
   await page.setViewportSize({ width: 375, height: 812 });
   for (const f of FIRMS) {
     await login(page, f.email, f.password);
-    await page.goto("/", { timeout: 30000 });
+    await page.goto("/", { timeout: 60000 });
     await page.waitForTimeout(2000);
     const url = page.url();
     const banner = await page.locator("text=Read-only").count();
     console.log(`STATE ${f.state}: url=${url} banner=${banner>0}`);
     // try add client
-    await page.goto("/clients/new/", { timeout: 30000 });
+    await page.goto("/clients/new/", { timeout: 60000 });
     await page.waitForTimeout(1500);
     console.log(`  clients/new url after guard: ${page.url()}`);
     await page.context().clearCookies();

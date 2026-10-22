@@ -80,6 +80,9 @@ export default function ForgotPasswordPage() {
             <Link href="/auth/sign-in" className="flex items-center justify-center gap-1 text-xs text-gold hover:underline">
               <ArrowLeft className="w-3.5 h-3.5" /> {t("auth.backToLogin")}
             </Link>
+            <Link href="/register" className="text-xs text-navy-400 hover:text-gold hover:underline">
+              {t("marketing.signUp")}
+            </Link>
           </div>
         </div>
       </div>

@@ -13,6 +13,11 @@ const sourceText=sources.map(([,s])=>s).join("\n");
 const used=new Set();
 for(const match of sourceText.matchAll(/\bt\s*\(\s*["']([^"']+)["']/g))used.add(match[1].replace(/^.*:/,""));
 const dynamicPrefixes=[...sourceText.matchAll(/\bt\s*\(\s*`([A-Za-z0-9_-]+\.[A-Za-z0-9_.-]*)\$\{/g)].map(m=>m[1]);
+// Keys referenced from structured data objects (e.g. legalDocs bodyKeys/titleKey).
+for(const match of sourceText.matchAll(/\bbodyKeys\s*:\s*\[([\s\S]*?)\]/g)){
+  for(const key of match[1].matchAll(/["']([A-Za-z0-9_.-]+)["']/g))used.add(key[1]);
+}
+for(const match of sourceText.matchAll(/\b(?:titleKey|labelKey|lastUpdatedKey)\s*:\s*["']([A-Za-z0-9_.-]+)["']/g))used.add(match[1]);
 const unused=enKeys.filter(k=>!used.has(k)&&!dynamicPrefixes.some(prefix=>k.startsWith(prefix)));
 const unknownUsed=[...used].filter(k=>!enSet.has(k));
 console.log(`EN_KEYS ${enKeys.length}`);

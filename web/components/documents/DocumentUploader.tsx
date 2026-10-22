@@ -7,6 +7,7 @@ import { Upload, Camera, X, File as FileIcon, CheckCircle, AlertCircle } from "l
 import { supabase, uploadDocument } from "@/lib/supabase/client";
 import { insert }          from "@/lib/supabase/client";
 import { useAuth }         from "@/providers/AuthProvider";
+import { useMutationLock } from "@/components/shared/MutatingButton";
 import { useQueryClient }  from "@tanstack/react-query";
 import {
   compressImage, formatFileSize,
@@ -54,6 +55,7 @@ export function DocumentUploader({
 }: DocumentUploaderProps) {
   const { t }       = useTranslation();
   const { profile } = useAuth();
+  const { canMutate, lock, renewTooltip } = useMutationLock();
   const qc          = useQueryClient();
   const toast       = useToast();
   const fileRef     = useRef<HTMLInputElement>(null);
@@ -62,6 +64,7 @@ export function DocumentUploader({
   const [dragging,  setDragging] = useState(false);
 
   async function addFiles(raw: FileList | File[]) {
+    if (!canMutate) return;
     const files = Array.from(raw);
     const newEntries: FileEntry[] = [];
 
@@ -177,20 +180,24 @@ export function DocumentUploader({
     <div className={cn("space-y-3", className)}>
       {/* Drop zone */}
       <div
-        onDragOver={e => { e.preventDefault(); setDragging(true); }}
-        onDragLeave={() => setDragging(false)}
-        onDrop={onDrop}
+        onDragOver={canMutate ? (e => { e.preventDefault(); setDragging(true); }) : undefined}
+        onDragLeave={canMutate ? () => setDragging(false) : undefined}
+        onDrop={canMutate ? onDrop : undefined}
         className={cn(
-          "border-2 border-dashed rounded-xl p-6 flex flex-col items-center gap-3 transition-colors cursor-pointer",
+          "border-2 border-dashed rounded-xl p-6 flex flex-col items-center gap-3 transition-colors",
+          !canMutate && "opacity-60 cursor-not-allowed",
+          canMutate && "cursor-pointer",
           dragging
             ? "border-gold bg-gold-50"
             : "border-navy-100 hover:border-gold hover:bg-gold-50/30"
         )}
-        onClick={() => fileRef.current?.click()}
+        onClick={canMutate ? (() => fileRef.current?.click()) : undefined}
         role="button"
-        tabIndex={0}
+        tabIndex={canMutate ? 0 : -1}
         aria-label={t("documents.upload")}
-        onKeyDown={e => e.key === "Enter" && fileRef.current?.click()}
+        aria-disabled={!canMutate}
+        title={canMutate ? undefined : renewTooltip}
+        onKeyDown={e => canMutate && e.key === "Enter" && fileRef.current?.click()}
       >
         <Upload className="w-8 h-8 text-navy-300" />
         <div className="text-center">
@@ -201,14 +208,16 @@ export function DocumentUploader({
           <button
             type="button"
             onClick={e => { e.stopPropagation(); fileRef.current?.click(); }}
-            className="btn-secondary text-xs px-3 py-1.5 min-h-0"
+            {...lock}
+            className="btn-secondary text-xs px-3 py-1.5 min-h-0 disabled:opacity-50"
           >
             {t("common.browseFiles")}
           </button>
           <button
             type="button"
             onClick={e => { e.stopPropagation(); cameraRef.current?.click(); }}
-            className="btn-secondary text-xs px-3 py-1.5 min-h-0 flex items-center gap-1"
+            {...lock}
+            className="btn-secondary text-xs px-3 py-1.5 min-h-0 flex items-center gap-1 disabled:opacity-50"
           >
             <Camera className="w-3.5 h-3.5" /> {t("common.camera")}
           </button>
@@ -220,6 +229,7 @@ export function DocumentUploader({
         ref={fileRef} type="file" multiple
         accept={ALLOWED_MIME_ACCEPT}
         className="sr-only"
+        disabled={!canMutate}
         onChange={e => e.target.files && addFiles(e.target.files)}
       />
       <input
@@ -227,6 +237,7 @@ export function DocumentUploader({
         accept="image/*"
         capture="environment"   // opens rear camera on mobile
         className="sr-only"
+        disabled={!canMutate}
         onChange={e => e.target.files && addFiles(e.target.files)}
       />
 

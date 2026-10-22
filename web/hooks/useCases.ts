@@ -160,7 +160,7 @@ export interface NewCasePayload {
   case_ref_no:    string;
   plaintiff_name: string;
   defendant_name: string;
-  representing:   "plaintiff" | "defendant";
+  From:   "plaintiff" | "defendant";
   judge_name?:    string;
   court_no?:      string;
   case_type_id:   string;

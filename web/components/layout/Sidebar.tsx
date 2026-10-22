@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 import {
   LayoutDashboard, Calendar, Briefcase, Users,
   FolderOpen, Bell, CheckSquare, BellRing,
-  Settings, LogOut, ChevronRight, List,
+  Settings, LogOut, ChevronRight, List, ShieldCheck, FileText,
 } from "lucide-react";
 import { Logo }           from "@/components/shared/Logo";
 import { LangSwitcher }   from "@/components/shared/LangSwitcher";
@@ -18,7 +18,7 @@ import { SIDEBAR_NAV }    from "./navItems";
 
 const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
   LayoutDashboard, Calendar, Briefcase, Users,
-  FolderOpen, Bell, CheckSquare, BellRing, Settings, List,
+  FolderOpen, Bell, CheckSquare, BellRing, Settings, List, FileText,
 };
 
 export function Sidebar() {
@@ -95,6 +95,19 @@ export function Sidebar() {
           </p>
         </div>
         {moreItems.map(item => <NavLink key={item.href} item={item} />)}
+
+        {profile?.role === "super_admin" && (
+          <div className="pt-2">
+            <Link
+              href="/admin"
+              className="group flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-colors duration-150 bg-gold/15 text-gold border border-gold/30 hover:bg-gold/25"
+            >
+              <ShieldCheck className="w-4.5 h-4.5 text-gold" />
+              <span className="flex-1 truncate">Admin Control</span>
+              <ChevronRight className="w-3.5 h-3.5 opacity-70" />
+            </Link>
+          </div>
+        )}
       </nav>
 
       {/* Language switcher */}

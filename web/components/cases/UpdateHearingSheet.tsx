@@ -12,6 +12,7 @@ import { Input }              from "@/components/ui/Input";
 import { DatePicker }         from "@/components/ui/DatePicker";
 import { Textarea }           from "@/components/ui/Textarea";
 import { Button }             from "@/components/ui/Button";
+import { MutatingButton }     from "@/components/shared/MutatingButton";
 import { useToast }           from "@/components/ui/Toast";
 import { useUpdateHearing }   from "@/hooks/useHearings";
 import type { CauseListRow }  from "@/types/supabase";
@@ -147,14 +148,14 @@ export function UpdateHearingSheet({ row, onClose }: UpdateHearingSheetProps) {
         <Button type="button" variant="secondary" onClick={onClose} className="flex-1">
           {t("common.cancel")}
         </Button>
-        <Button
+        <MutatingButton
           type="submit"
           loading={isSubmitting || update.isPending}
           leftIcon={<CalendarPlus className="w-4 h-4" />}
           className="flex-1"
         >
           {t("common.saveUpdate")}
-        </Button>
+        </MutatingButton>
       </div>
     </form>
   );

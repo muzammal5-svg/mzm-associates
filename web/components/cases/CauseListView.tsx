@@ -11,6 +11,7 @@ import { EmptyState }        from "@/components/ui/EmptyState";
 import { QueryErrorState }   from "@/components/ui/QueryErrorState";
 import { SkeletonCard }      from "@/components/ui/Skeleton";
 import { Button }            from "@/components/ui/Button";
+import { useMutationLock }   from "@/components/shared/MutatingButton";
 import { UpdateHearingSheet } from "./UpdateHearingSheet";
 import { QuickEditSheet }    from "./QuickEditSheet";
 import { useCauseList, type CauseListFilter } from "@/hooks/useHearings";
@@ -26,6 +27,7 @@ function CauseCard({
   onUpdateHearing?: (r: CauseListRow) => void;
 }) {
   const { t } = useTranslation();
+  const { lock } = useMutationLock();
   return (
     <Card className="space-y-2.5">
       {/* Top row: serial + ref + status */}
@@ -41,16 +43,16 @@ function CauseCard({
         </div>
         <div className="flex gap-1">
           {onQuickEdit && (
-            <button onClick={() => onQuickEdit(row)}
-              className="w-7 h-7 flex items-center justify-center rounded-lg text-navy-300 hover:bg-navy-50 hover:text-gold transition-colors"
+            <button onClick={() => onQuickEdit(row)} {...lock}
+              className="w-7 h-7 flex items-center justify-center rounded-lg text-navy-300 hover:bg-navy-50 hover:text-gold transition-colors disabled:opacity-40"
               aria-label={t("common.quickEdit")}
             >
               <Edit2 className="w-3.5 h-3.5" />
             </button>
           )}
           {onUpdateHearing && (
-            <button onClick={() => onUpdateHearing(row)}
-              className="btn-secondary text-xs px-2 py-1 min-h-0 h-7"
+            <button onClick={() => onUpdateHearing(row)} {...lock}
+              className="btn-secondary text-xs px-2 py-1 min-h-0 h-7 disabled:opacity-40"
               aria-label={t("hearings.updateHearing")}
             >
               {t("common.update")}
@@ -79,8 +81,8 @@ function CauseCard({
           </span>
         )}
         {row.hearing_judge && <span>{row.hearing_judge}</span>}
-        <Badge variant={row.representing === "plaintiff" ? "gold" : "info"} size="sm">
-          {row.representing === "plaintiff" ? t("cases.plaintiff") : t("cases.defendant")}
+        <Badge variant={row.From === "plaintiff" ? "gold" : "info"} size="sm">
+          {row.From === "plaintiff" ? t("cases.plaintiff") : t("cases.defendant")}
         </Badge>
       </div>
 
@@ -113,6 +115,7 @@ function TableRow({
   onUpdateHearing?: (r: CauseListRow) => void;
 }) {
   const { t } = useTranslation();
+  const { lock } = useMutationLock();
   return (
     <tr className="border-b border-navy-50 hover:bg-navy-50/30 transition-colors">
       <td className="px-3 py-2.5 text-center">
@@ -132,8 +135,8 @@ function TableRow({
         </Link>
       </td>
       <td className="px-3 py-2.5">
-        <Badge variant={row.representing === "plaintiff" ? "gold" : "info"} size="sm">
-              {row.representing === "plaintiff" ? t("cases.plaintiff") : t("cases.defendant")}
+        <Badge variant={row.From === "plaintiff" ? "gold" : "info"} size="sm">
+              {row.From === "plaintiff" ? t("cases.plaintiff") : t("cases.defendant")}
         </Badge>
       </td>
       <td className="px-3 py-2.5 text-xs text-navy-400 max-w-[150px]">
@@ -154,16 +157,16 @@ function TableRow({
       <td className="px-3 py-2.5">
         <div className="flex items-center gap-1">
           {onQuickEdit && (
-            <button onClick={() => onQuickEdit(row)}
-              className="w-6 h-6 flex items-center justify-center rounded text-navy-300 hover:text-gold hover:bg-gold-50 transition-colors"
+            <button onClick={() => onQuickEdit(row)} {...lock}
+              className="w-6 h-6 flex items-center justify-center rounded text-navy-300 hover:text-gold hover:bg-gold-50 transition-colors disabled:opacity-40"
               aria-label={t("common.quickEdit")}
             >
               <Edit2 className="w-3.5 h-3.5" />
             </button>
           )}
           {onUpdateHearing && (
-            <button onClick={() => onUpdateHearing(row)}
-              className="text-[11px] font-semibold text-gold hover:underline whitespace-nowrap"
+            <button onClick={() => onUpdateHearing(row)} {...lock}
+              className="text-[11px] font-semibold text-gold hover:underline whitespace-nowrap disabled:opacity-40"
             >
               {t("common.update")} →
             </button>
@@ -268,7 +271,7 @@ export function CauseListView({
         <table className="w-full text-sm border-collapse">
           <thead className="bg-navy-50/70 sticky top-0 z-10">
             <tr>
-              {[t("hearings.serialNo"), t("hearings.previousDate"), t("common.parties"), t("cases.representing"), t("hearings.currentProceeding"), t("hearings.nextProceeding"), t("hearings.nextDateLabel"), `${t("cases.court")}/${t("cases.judge")}`, ""].map((h, i) => (
+              {[t("hearings.serialNo"), t("hearings.previousDate"), t("common.parties"), t("cases.From"), t("hearings.currentProceeding"), t("hearings.nextProceeding"), t("hearings.nextDateLabel"), `${t("cases.court")}/${t("cases.judge")}`, ""].map((h, i) => (
                 <th key={i} className="px-3 py-2.5 text-start text-xs font-semibold text-navy-400 uppercase tracking-wider whitespace-nowrap">
                   {h}
                 </th>

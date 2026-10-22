@@ -62,7 +62,7 @@ SELECT
   c.case_ref_no,
   c.plaintiff_name,
   c.defendant_name,
-  c.representing,
+  c.From,
   c.status AS case_status,
   c.judge_name AS case_judge,
   c.court_no AS case_court_no,
@@ -170,7 +170,7 @@ BEGIN
 
   FOR v_case IN
     SELECT c.id AS case_id, c.firm_id, c.case_ref_no,
-           c.plaintiff_name, c.defendant_name, c.representing,
+           c.plaintiff_name, c.defendant_name, c.From,
            h.id AS hearing_id, h.next_date,
            COALESCE(h.court_no, c.court_no) AS court_no
     FROM public.cases c
@@ -344,7 +344,7 @@ BEGIN
 
   INSERT INTO public.cases (
     firm_id, client_id, case_ref_no, plaintiff_name, defendant_name,
-    representing, judge_name, court_no, case_type_id, offence, description,
+    From, judge_name, court_no, case_type_id, offence, description,
     status, assigned_to, created_by
   ) VALUES (
     v_firm_id,
@@ -352,7 +352,7 @@ BEGIN
     p_case->>'case_ref_no',
     p_case->>'plaintiff_name',
     p_case->>'defendant_name',
-    (p_case->>'representing')::representing_type,
+    (p_case->>'From')::From_type,
     NULLIF(p_case->>'judge_name', ''),
     NULLIF(p_case->>'court_no', ''),
     (p_case->>'case_type_id')::UUID,

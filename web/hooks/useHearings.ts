@@ -16,7 +16,7 @@ export interface CauseListFilter {
   courtNo?:       string;
   judgeFilter?:   string;
   caseTypeId?:    string;
-  representing?:  "plaintiff" | "defendant" | "";
+  From?:  "plaintiff" | "defendant" | "";
   nextDateFrom?:  string;          // ISO date
   nextDateTo?:    string;          // ISO date
   latestOnly?:    boolean;         // when true: is_latest_hearing = true
@@ -38,7 +38,7 @@ export function useCauseList(filter: CauseListFilter = {}) {
     courtNo      = "",
     judgeFilter  = "",
     caseTypeId   = "",
-    representing = "",
+    From = "",
     nextDateFrom = "",
     nextDateTo   = "",
     latestOnly   = false,
@@ -60,16 +60,16 @@ export function useCauseList(filter: CauseListFilter = {}) {
         .order(sortBy, { ascending: sortDir === "asc", nullsFirst: false })
         .range(from, to);
 
-      // Date filter — null means no date filter (running cases view)
+      // Date filter — show cases whose hearing_date OR next_date matches the selected date
       if (date !== null && date !== undefined) {
-        q = q.eq("hearing_date", date);
+        q = q.or(`hearing_date.eq.${date},next_date.eq.${date}`);
       }
 
       if (latestOnly)   q = q.eq("is_latest_hearing", true);
       if (caseId)        q = q.eq("case_id", caseId);
       if (courtNo)       q = q.eq("hearing_court_no", courtNo);
       if (caseTypeId)    q = q.eq("case_type_id", caseTypeId);
-      if (representing)  q = q.eq("representing",     representing);
+      if (From)  q = q.eq("From",     From);
       if (nextDateFrom)  q = q.gte("next_date",        nextDateFrom);
       if (nextDateTo)    q = q.lte("next_date",        nextDateTo);
 

@@ -176,7 +176,7 @@ export type Database = {
           offence: string | null
           outcome: Database["public"]["Enums"]["case_outcome"] | null
           plaintiff_name: string
-          representing: Database["public"]["Enums"]["representing_type"]
+          From: Database["public"]["Enums"]["From_type"]
           status: Database["public"]["Enums"]["case_status"]
           updated_at: string
         }
@@ -199,7 +199,7 @@ export type Database = {
           offence?: string | null
           outcome?: Database["public"]["Enums"]["case_outcome"] | null
           plaintiff_name: string
-          representing: Database["public"]["Enums"]["representing_type"]
+          From: Database["public"]["Enums"]["From_type"]
           status?: Database["public"]["Enums"]["case_status"]
           updated_at?: string
         }
@@ -222,7 +222,7 @@ export type Database = {
           offence?: string | null
           outcome?: Database["public"]["Enums"]["case_outcome"] | null
           plaintiff_name?: string
-          representing?: Database["public"]["Enums"]["representing_type"]
+          From?: Database["public"]["Enums"]["From_type"]
           status?: Database["public"]["Enums"]["case_status"]
           updated_at?: string
         }
@@ -902,7 +902,7 @@ export type Database = {
           next_proceeding: string | null
           plaintiff_name: string | null
           previous_date: string | null
-          representing: Database["public"]["Enums"]["representing_type"] | null
+          From: Database["public"]["Enums"]["From_type"] | null
           requires_offence: boolean | null
           serial_no: string | null
         }
@@ -954,7 +954,7 @@ export type Database = {
           offence: string | null
           outcome: Database["public"]["Enums"]["case_outcome"] | null
           plaintiff_name: string
-          representing: Database["public"]["Enums"]["representing_type"]
+          From: Database["public"]["Enums"]["From_type"]
           status: Database["public"]["Enums"]["case_status"]
           updated_at: string
         }
@@ -1017,7 +1017,7 @@ export type Database = {
           offence: string | null
           outcome: Database["public"]["Enums"]["case_outcome"] | null
           plaintiff_name: string
-          representing: Database["public"]["Enums"]["representing_type"]
+          From: Database["public"]["Enums"]["From_type"]
           status: Database["public"]["Enums"]["case_status"]
           updated_at: string
         }
@@ -1049,7 +1049,7 @@ export type Database = {
           offence: string | null
           outcome: Database["public"]["Enums"]["case_outcome"] | null
           plaintiff_name: string
-          representing: Database["public"]["Enums"]["representing_type"]
+          From: Database["public"]["Enums"]["From_type"]
           status: Database["public"]["Enums"]["case_status"]
           updated_at: string
         }
@@ -1116,7 +1116,7 @@ export type Database = {
       platform_type: "web" | "android" | "ios"
       reminder_status: "upcoming" | "done" | "dismissed"
       reminder_urgency: "low" | "medium" | "high" | "critical"
-      representing_type: "plaintiff" | "defendant"
+      From_type: "plaintiff" | "defendant"
       subscription_status: "active" | "expired" | "trial"
       user_role: "super_admin" | "admin" | "lawyer" | "clerk"
     }
@@ -1264,7 +1264,7 @@ export const Constants = {
       platform_type: ["web", "android", "ios"],
       reminder_status: ["upcoming", "done", "dismissed"],
       reminder_urgency: ["low", "medium", "high", "critical"],
-      representing_type: ["plaintiff", "defendant"],
+      From_type: ["plaintiff", "defendant"],
       subscription_status: ["active", "expired", "trial"],
       user_role: ["super_admin", "admin", "lawyer", "clerk"],
     },
@@ -1273,7 +1273,7 @@ export const Constants = {
 
 export type CaseStatus = Database["public"]["Enums"]["case_status"]
 export type CaseOutcome = Database["public"]["Enums"]["case_outcome"]
-export type RepresentingType = Database["public"]["Enums"]["representing_type"]
+export type FromType = Database["public"]["Enums"]["From_type"]
 export type UserRole = Database["public"]["Enums"]["user_role"]
 export type ReminderStatus = Database["public"]["Enums"]["reminder_status"]
 export type ReminderUrgency = Database["public"]["Enums"]["reminder_urgency"]

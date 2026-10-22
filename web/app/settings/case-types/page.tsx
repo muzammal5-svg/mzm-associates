@@ -8,6 +8,7 @@ import { AppShell }        from "@/components/layout/AppShell";
 import { RouteGuard }      from "@/components/shared/RouteGuard";
 import { Card }            from "@/components/ui/Card";
 import { Button }          from "@/components/ui/Button";
+import { MutatingButton, useMutationLock } from "@/components/shared/MutatingButton";
 import { Input }           from "@/components/ui/Input";
 import { Badge }           from "@/components/ui/Badge";
 import { ConfirmDialog }   from "@/components/ui/Modal";
@@ -34,6 +35,7 @@ function CaseTypesAdmin() {
   const { t }       = useTranslation();
   const toast       = useToast();
   const { profile } = useAuth();
+  const { lock } = useMutationLock();
 
   const { data: types = [], isLoading, isError, refetch } = useCaseTypes();
   const createType  = useCreateCaseType();
@@ -89,9 +91,9 @@ function CaseTypesAdmin() {
       <div className="max-w-xl mx-auto space-y-4">
 
         <div className="flex justify-end">
-          <Button size="sm" leftIcon={<Plus className="w-4 h-4"/>} onClick={() => setAdding(true)}>
+          <MutatingButton size="sm" leftIcon={<Plus className="w-4 h-4"/>} onClick={() => setAdding(true)}>
             {t("common.addNew")}
-          </Button>
+          </MutatingButton>
         </div>
 
         {/* Add form */}
@@ -106,8 +108,8 @@ function CaseTypesAdmin() {
               <span className="text-sm text-navy">{t("common.requiresOffence")}</span>
             </label>
             <div className="flex gap-2">
-              <Button size="sm" onClick={handleAdd} loading={createType.isPending}
-                leftIcon={<Check className="w-4 h-4"/>}>{t("common.save")}</Button>
+              <MutatingButton size="sm" onClick={handleAdd} loading={createType.isPending}
+                leftIcon={<Check className="w-4 h-4"/>}>{t("common.save")}</MutatingButton>
               <Button size="sm" variant="secondary" onClick={() => { setAdding(false); setNewName(""); }}
                 leftIcon={<X className="w-4 h-4"/>}>{t("common.cancel")}</Button>
             </div>
@@ -130,8 +132,8 @@ function CaseTypesAdmin() {
                       <span className="text-sm text-navy">{t("common.requiresOffence")}</span>
                     </label>
                     <div className="flex gap-2">
-                      <Button size="xs" onClick={handleUpdate} loading={updateType.isPending}
-                        leftIcon={<Check className="w-3.5 h-3.5"/>}>{t("common.save")}</Button>
+                      <MutatingButton size="xs" onClick={handleUpdate} loading={updateType.isPending}
+                        leftIcon={<Check className="w-3.5 h-3.5"/>}>{t("common.save")}</MutatingButton>
                       <Button size="xs" variant="secondary" onClick={() => setEditId(null)}
                         leftIcon={<X className="w-3.5 h-3.5"/>}>{t("common.cancel")}</Button>
                     </div>
@@ -145,12 +147,12 @@ function CaseTypesAdmin() {
                       )}
                     </div>
                     <div className="flex gap-1">
-                      <button onClick={() => startEdit(ct)}
-                        className="w-7 h-7 flex items-center justify-center rounded text-navy-300 hover:text-navy hover:bg-navy-50 transition-colors">
+                      <button onClick={() => startEdit(ct)} {...lock}
+                        className="w-7 h-7 flex items-center justify-center rounded text-navy-300 hover:text-navy hover:bg-navy-50 transition-colors disabled:opacity-40">
                         <Edit className="w-3.5 h-3.5" />
                       </button>
-                      <button onClick={() => setConfirmId(ct.id)}
-                        className="w-7 h-7 flex items-center justify-center rounded text-navy-300 hover:text-danger hover:bg-red-50 transition-colors">
+                      <button onClick={() => setConfirmId(ct.id)} {...lock}
+                        className="w-7 h-7 flex items-center justify-center rounded text-navy-300 hover:text-danger hover:bg-red-50 transition-colors disabled:opacity-40">
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
                     </div>

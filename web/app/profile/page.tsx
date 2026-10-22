@@ -14,6 +14,7 @@ import { Card, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Input }       from "@/components/ui/Input";
 import { Button }      from "@/components/ui/Button";
 import { RoleBadge }   from "@/components/ui/Badge";
+import { useMutationLock } from "@/components/shared/MutatingButton";
 import { useToast }    from "@/components/ui/Toast";
 import { useAuth }     from "@/providers/AuthProvider";
 import { supabase, update } from "@/lib/supabase/client";
@@ -41,6 +42,7 @@ function ProfilePage() {
   const { t }                       = useTranslation();
   const { profile, firm, refreshProfile } = useAuth();
   const toast                       = useToast();
+  const { lock, canMutate } = useMutationLock();
   const fileRef                     = useRef<HTMLInputElement>(null);
 
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
@@ -61,7 +63,7 @@ function ProfilePage() {
   });
 
   async function onSaveProfile(data: ProfileForm) {
-    if (!profile) return;
+    if (!profile || !canMutate) return;
     const { error } = await update.profile(profile.id, {
       full_name: data.full_name,
       phone:     data.phone ?? null,
@@ -98,7 +100,7 @@ function ProfilePage() {
   // ── Photo upload ──────────────────────────────────────────────────────────
   async function handlePhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
-    if (!file || !profile) return;
+    if (!file || !profile || !canMutate) return;
 
     // ── Client-side validation ────────────────────────────────────────────
     const MAX_SIZE = 5 * 1024 * 1024; // 5 MB (matches avatars bucket limit)
@@ -156,6 +158,7 @@ function ProfilePage() {
               onClick={() => fileRef.current?.click()}
               disabled={uploadingPhoto}
               aria-label={t("profile.changePhoto")}
+              {...lock}
               className="absolute bottom-0 end-0 w-8 h-8 rounded-full bg-gold text-white flex items-center justify-center shadow-card hover:bg-gold-600 transition-colors disabled:opacity-50"
             >
               <Camera className="w-4 h-4" />
@@ -165,6 +168,7 @@ function ProfilePage() {
               accept="image/jpeg,image/png,image/webp"
               className="sr-only"
               onChange={handlePhotoChange}
+              disabled={!canMutate}
             />
           </div>
           <div className="text-center">
@@ -207,6 +211,7 @@ function ProfilePage() {
             />
             <Button
               type="submit"
+              {...lock}
               loading={savingProfile}
               leftIcon={<Save className="w-4 h-4" />}
               fullWidth

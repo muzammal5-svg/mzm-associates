@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/providers/AuthProvider";
 import type { UserRole } from "@/types/supabase";
-import { supabase } from "@/lib/supabase/client";
+import { saasRpc } from "@/lib/supabase/saas";
 
 interface UseRequireAuthOptions {
   redirectTo?: string;
@@ -30,9 +30,12 @@ export function useRequireAuth({
       router.replace(unauthorizedTo);
       return;
     }
+    // Super admins bypass firm subscription gating
+    if (profile.role === "super_admin") return;
+
     // subscription routing
     (async () => {
-      const { data } = await (supabase as any).rpc("get_subscription_state");
+      const { data } = await saasRpc.getSubscriptionState();
       const status = (data as any)?.status ?? "none";
       if (status === "none" || status === "pending") { router.replace("/billing"); return; }
       if (status === "expired" || status === "suspended" || status === "cancelled") { router.replace("/billing"); return; }

@@ -10,6 +10,7 @@ import {
 
 import { AppShell }             from "@/components/layout/AppShell";
 import { RouteGuard }           from "@/components/shared/RouteGuard";
+import { useMutationLock }      from "@/components/shared/MutatingButton";
 import { Card }                 from "@/components/ui/Card";
 import { Badge, CaseStatusBadge, OutcomeBadge } from "@/components/ui/Badge";
 import { Button }               from "@/components/ui/Button";
@@ -146,6 +147,7 @@ function ClientViewPage() {
   const params          = useSearchParams();
   const id              = params.get("id");
   const { canWrite, canDelete } = useRoleGuard();
+  const { lock } = useMutationLock();
 
   const { data: client, isLoading, isError, refetch } = useClient(id);
   const { data: counts, isError: countsError, refetch: refetchCounts } = useClientCaseCounts(id);
@@ -224,8 +226,9 @@ if (!client) return <AppShell showBack><EmptyState title={t("common.clientNotFou
             {canDelete && (
               <button
                 onClick={handleToggleActive}
+                {...lock}
                 aria-label={client.is_active ? t("common.deactivate") : t("common.activate")}
-                className="text-navy-300 hover:text-navy transition-colors"
+                className="text-navy-300 hover:text-navy transition-colors disabled:opacity-40"
               >
                 {client.is_active
                   ? <ToggleRight className="w-6 h-6 text-success" />

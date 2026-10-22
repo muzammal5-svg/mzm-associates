@@ -12,7 +12,6 @@ export type ReminderItem = Omit<Reminder, "case" | "hearing"> & {
     case_ref_no: string;
     plaintiff_name: string;
     defendant_name: string;
-    representing: "plaintiff" | "defendant";
     judge_name: string | null;
     court_no: string | null;
     client: { full_name: string } | null;
@@ -50,11 +49,12 @@ export function useReminders() {
         .from("reminders")
         .select(`
           *,
-          case:cases(id,case_ref_no,plaintiff_name,defendant_name,representing,judge_name,court_no,client:clients(full_name)),
+          case:cases(id,case_ref_no,plaintiff_name,defendant_name,judge_name,court_no,client:clients(full_name)),
           hearing:hearings(next_date,judge_name,court_no)
         `)
         .eq("user_id", user!.id)
-        .order("next_date", { ascending: true })
+        .eq("is_custom" as any, true)
+        .order("remind_date", { ascending: true })
         .limit(300);
       if (error) throw error;
       return (data ?? []) as ReminderItem[];

@@ -140,7 +140,7 @@ BEGIN
            c.case_ref_no,
            c.plaintiff_name,
            c.defendant_name,
-           c.representing,
+           c.From,
            h.id AS hearing_id,
            h.next_date,
            COALESCE(h.court_no, c.court_no) AS court_no

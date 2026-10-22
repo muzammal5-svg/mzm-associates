@@ -638,9 +638,9 @@ ON CONFLICT (code) DO NOTHING;
 
 -- Seed payment_accounts placeholders
 INSERT INTO public.payment_accounts (method, account_title, account_number, bank_name, instructions, sort_order) VALUES
-  ('bank_transfer', 'MZM Associates', '0000-0000-0000', 'Bank', 'Transfer and share transaction ID', 1),
-  ('jazzcash', 'MZM Associates', '0300-0000000', NULL, 'Send to JazzCash number', 2),
-  ('easypaisa', 'MZM Associates', '0300-0000000', NULL, 'Send to Easypaisa number', 3)
+  ('bank_transfer', 'MZM Associates', '14870010155786580019', 'Allied Bank', 'Transfer and share transaction ID', 1),
+  ('jazzcash', 'MZM Associates', '03261929571', NULL, 'Send to JazzCash number', 2),
+  ('easypaisa', 'MZM Associates', '03417359571', NULL, 'Send to Easypaisa number', 3)
 ON CONFLICT DO NOTHING;
 
 -- Storage bucket for payment slips (create if not exists) - handled via storage API; RLS below assumes bucket 'payment-slips'

@@ -1,10 +1,11 @@
 "use client";
 
+import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import Link from "next/link";
 import { differenceInCalendarDays, parseISO } from "date-fns";
 import { useTranslation } from "react-i18next";
-import { Bell, Check, ExternalLink, RotateCcw, X } from "lucide-react";
+import { Bell, Check, ExternalLink, RotateCcw, X, Plus } from "lucide-react";
 import { AppShell } from "@/components/layout/AppShell";
 import { RouteGuard } from "@/components/shared/RouteGuard";
 import { Button } from "@/components/ui/Button";
@@ -12,8 +13,11 @@ import { Card } from "@/components/ui/Card";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { QueryErrorState } from "@/components/ui/QueryErrorState";
 import { SkeletonCard } from "@/components/ui/Skeleton";
+import { useMutationLock } from "@/components/shared/MutatingButton";
 import { useToast } from "@/components/ui/Toast";
 import { useReminders, useUpdateReminderStatus } from "@/hooks/useReminders";
+import { useAuth } from "@/providers/AuthProvider";
+import { supabaseRaw } from "@/lib/supabase/client";
 import { fmtDate, todayKarachi } from "@/lib/utils";
 import type { ReminderStatus } from "@/types/supabase";
 
@@ -21,11 +25,43 @@ type ReminderTab = Extract<ReminderStatus, "upcoming" | "done" | "dismissed">;
 
 function RemindersPage() {
   const { t } = useTranslation();
+  const { profile } = useAuth();
+  const qc = useQueryClient();
   const [tab, setTab] = useState<ReminderTab>("upcoming");
   const { data, isLoading, isError, refetch } = useReminders();
   const updateStatus = useUpdateReminderStatus();
   const toast = useToast();
+  const { lock, canMutate } = useMutationLock();
+  const [showForm, setShowForm] = useState(false);
+  const [title, setTitle] = useState("");
+  const [date, setDate] = useState("");
+  const [saving, setSaving] = useState(false);
   const reminders = data ?? [];
+  // ... (rest)
+
+  async function addReminder() {
+    if (!profile || !title.trim() || !date) return;
+    setSaving(true);
+    try {
+      const { error } = await supabaseRaw.from("reminders").insert({
+        firm_id: profile.firm_id,
+        user_id: profile.id,
+        title: title.trim(),
+        remind_date: date,
+        status: "upcoming",
+        is_custom: true,
+      } as any);
+      if (error) throw error;
+      toast.success("Reminder added");
+      setTitle(""); setDate(""); setShowForm(false);
+      void refetch();
+      qc.invalidateQueries({ queryKey: ["reminders", profile?.id] });
+    } catch (e) {
+      toast.error("Failed", e instanceof Error ? e.message : "Could not add reminder");
+    } finally {
+      setSaving(false);
+    }
+  }
   const counts = {
     upcoming: reminders.filter(item => item.status === "upcoming").length,
     done: reminders.filter(item => item.status === "done").length,
@@ -33,9 +69,10 @@ function RemindersPage() {
   };
   const visible = reminders
     .filter(item => item.status === tab)
-    .sort((a, b) => (a.next_date ?? "").localeCompare(b.next_date ?? ""));
+    .sort((a, b) => ((a.next_date ?? a.remind_date ?? "")).localeCompare((b.next_date ?? b.remind_date ?? "")));
 
   async function setStatus(id: string, status: ReminderStatus) {
+    if (!canMutate) return;
     try {
       await updateStatus.mutateAsync({ id, status });
       toast.success(status === "upcoming" ? t("reminders.restored") : t("reminders.statusUpdated", { status: t(`reminders.${status}`) }));
@@ -68,6 +105,34 @@ function RemindersPage() {
           ))}
         </div>
 
+        <button
+          type="button"
+          onClick={() => setShowForm((v) => !v)}
+          className="ml-auto px-3 py-1.5 rounded-lg bg-gold/10 border border-gold text-gold text-xs font-medium hover:bg-gold/20 flex items-center gap-1"
+        >
+          <Plus className="w-3.5 h-3.5" /> Add reminder
+        </button>
+
+      {showForm && (
+        <Card className="p-4 space-y-3">
+          <input
+            className="w-full px-3 py-2 rounded-lg border border-navy-100 text-sm"
+            placeholder="Reminder title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
+          <input
+            type="date"
+            className="w-full px-3 py-2 rounded-lg border border-navy-100 text-sm"
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
+          />
+          <Button onClick={addReminder} loading={saving} fullWidth>
+            Save
+          </Button>
+        </Card>
+      )}
+
         {isLoading ? (
           <div className="space-y-3">{[1, 2, 3].map(i => <SkeletonCard key={i} />)}</div>
         ) : isError ? (
@@ -84,7 +149,7 @@ function RemindersPage() {
         ) : (
           <div className="space-y-3">
             {visible.map(reminder => {
-              const nextDate = reminder.next_date ?? reminder.hearing?.next_date;
+              const nextDate = reminder.next_date ?? reminder.hearing?.next_date ?? reminder.remind_date;
               const daysLeft = nextDate
                 ? differenceInCalendarDays(parseISO(nextDate), parseISO(todayKarachi()))
                 : null;
@@ -108,6 +173,9 @@ function RemindersPage() {
 
               return (
                 <Card key={reminder.id} className={`border ${urgent}`}>
+                  {(reminder as any).title && (
+                    <p className="mb-2 font-semibold text-navy">{(reminder as any).title}</p>
+                  )}
                   <div className="flex items-start gap-4">
                     <div className={`w-[76px] shrink-0 rounded-xl p-2 text-center ${
                       daysLeft === 0 ? "bg-danger text-white" : daysLeft !== null && daysLeft <= 3 ? "bg-gold text-white" : "bg-navy-50 text-navy"
@@ -122,7 +190,7 @@ function RemindersPage() {
                         {reminder.case?.plaintiff_name ?? t("reminders.unknownParty")} {t("cases.vs")} {reminder.case?.defendant_name ?? t("reminders.unknownParty")}
                       </p>
                       <p className="mt-1 text-xs text-navy-400">
-                        {reminder.case?.case_ref_no ?? t("reminders.case")} · {t("reminders.representing")} {reminder.case?.representing === "plaintiff" ? t("cases.plaintiff") : reminder.case?.representing === "defendant" ? t("cases.defendant") : "—"}
+                        {reminder.case?.case_ref_no ?? (reminder as any).title ?? t("reminders.reminder")}
                       </p>
                       <p className="mt-1 text-xs text-navy-400">
                         {nextDate ? fmtDate(nextDate) : t("reminders.hearingDateUnavailable")}
@@ -142,6 +210,7 @@ function RemindersPage() {
                           size="sm"
                           leftIcon={<Check className="h-3.5 w-3.5" />}
                           loading={updateStatus.isPending}
+                          {...lock}
                           onClick={() => void setStatus(reminder.id, "done")}
                         >{t("reminders.markDone")}</Button>
                         <Button
@@ -149,6 +218,7 @@ function RemindersPage() {
                           variant="secondary"
                           leftIcon={<X className="h-3.5 w-3.5" />}
                           disabled={updateStatus.isPending}
+                          {...lock}
                           onClick={() => void setStatus(reminder.id, "dismissed")}
                         >{t("reminders.dismiss")}</Button>
                       </>
@@ -158,6 +228,7 @@ function RemindersPage() {
                         variant="secondary"
                         leftIcon={<RotateCcw className="h-3.5 w-3.5" />}
                         loading={updateStatus.isPending}
+                        {...lock}
                         onClick={() => void setStatus(reminder.id, "upcoming")}
                       >{t("reminders.undo")}</Button>
                     )}

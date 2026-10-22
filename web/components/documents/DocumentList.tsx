@@ -14,6 +14,7 @@ import { QueryErrorState } from "@/components/ui/QueryErrorState";
 import { ConfirmDialog }   from "@/components/ui/Modal";
 import { useToast }        from "@/components/ui/Toast";
 import { useRoleGuard }    from "@/hooks/useRoleGuard";
+import { useMutationLock } from "@/components/shared/MutatingButton";
 import { fmtDate }         from "@/lib/utils";
 import { formatFileSize }  from "@/lib/imageCompress";
 import { cn }              from "@/lib/utils";
@@ -77,6 +78,7 @@ export function DocumentList({
   const { t }         = useTranslation();
   const toast         = useToast();
   const { canDeleteDocuments } = useRoleGuard();
+  const { lock } = useMutationLock();
 
   const { data: docs, isLoading, isError, refetch } = useDocuments({
     clientId, caseId, filterClientId, filterCaseId, search, documentType,
@@ -184,8 +186,9 @@ export function DocumentList({
               {canDeleteDocuments && (
                 <button
                   onClick={() => setConfirmDoc(doc)}
+                  {...lock}
                   aria-label={t("documents.delete")}
-                  className="w-8 h-8 flex items-center justify-center rounded-lg text-navy-300 hover:bg-red-50 hover:text-danger transition-colors"
+                  className="w-8 h-8 flex items-center justify-center rounded-lg text-navy-300 hover:bg-red-50 hover:text-danger transition-colors disabled:opacity-40"
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>

@@ -14,7 +14,8 @@ test("header drawer + nav", async ({ page }) => {
   await page.goto("/welcome/", { timeout: 30000 });
   await page.click('button[aria-label="Menu"]');
   await page.waitForTimeout(500);
-  const link = page.locator(".absolute.start-0").locator('a[href="/pricing/"]');
+  const drawer = page.getByRole("dialog", { name: "Menu" });
+  const link = drawer.locator('a[href="/pricing/"]');
   expect(await link.count()).toBeGreaterThan(0);
   await link.first().click({ force: true });
   await page.waitForTimeout(1000);

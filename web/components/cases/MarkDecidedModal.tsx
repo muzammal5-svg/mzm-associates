@@ -12,6 +12,7 @@ import { Select }               from "@/components/ui/Select";
 import { DatePicker }           from "@/components/ui/DatePicker";
 import { Textarea }             from "@/components/ui/Textarea";
 import { Button }               from "@/components/ui/Button";
+import { MutatingButton, useMutationLock } from "@/components/shared/MutatingButton";
 import { useToast }             from "@/components/ui/Toast";
 import { useAuth }              from "@/providers/AuthProvider";
 import { useMarkAsDecidedFull } from "@/hooks/useActivityLog";
@@ -41,6 +42,7 @@ export function MarkDecidedModal({
   const { t }       = useTranslation();
   const toast       = useToast();
   const { profile } = useAuth();
+  const { lock, canMutate } = useMutationLock();
   const fileRef     = useRef<HTMLInputElement>(null);
 
   const markDecided = useMarkAsDecidedFull();
@@ -184,7 +186,8 @@ export function MarkDecidedModal({
           <button
             type="button"
             onClick={() => fileRef.current?.click()}
-            className="w-full flex items-center gap-2 p-3 border-2 border-dashed border-navy-100 rounded-xl hover:border-gold hover:bg-gold-50/30 transition-colors text-sm text-navy-400"
+            {...lock}
+            className="w-full flex items-center gap-2 p-3 border-2 border-dashed border-navy-100 rounded-xl hover:border-gold hover:bg-gold-50/30 transition-colors text-sm text-navy-400 disabled:opacity-50"
           >
             <Upload className="w-4 h-4 flex-shrink-0" />
             {t("common.uploadFinalOrder")}
@@ -195,6 +198,7 @@ export function MarkDecidedModal({
           type="file"
           accept={ALLOWED_MIME_ACCEPT}
           className="sr-only"
+          disabled={!canMutate}
           onChange={handleFileChange}
         />
       </div>
@@ -207,14 +211,14 @@ export function MarkDecidedModal({
         <Button type="button" variant="secondary" onClick={onClose} className="flex-1">
           {t("common.cancel")}
         </Button>
-        <Button
+        <MutatingButton
           type="submit"
           loading={isSubmitting || uploading}
           leftIcon={<CheckSquare className="w-4 h-4" />}
           className="flex-1"
         >
           {t("common.markAsDecided")}
-        </Button>
+        </MutatingButton>
       </div>
     </form>
   );

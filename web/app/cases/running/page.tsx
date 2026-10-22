@@ -32,7 +32,7 @@ function RunningCasesPage({ updateCaseId }: { updateCaseId: string | null }) {
   const [courtNo,      setCourtNo]      = useState("");
   const [judgeFilter,  setJudgeFilter]  = useState("");
   const [caseType,     setCaseType]     = useState("");
-  const [representing, setRepresenting] = useState<"plaintiff"|"defendant"|"">("");
+  const [From, setFrom] = useState<"plaintiff"|"defendant"|"">("");
   const [nextDateFrom, setNextDateFrom] = useState("");
   const [nextDateTo,   setNextDateTo]   = useState("");
   const [sortBy,       setSortBy]       = useState<CauseListFilter["sortBy"]>("next_date");
@@ -43,12 +43,12 @@ function RunningCasesPage({ updateCaseId }: { updateCaseId: string | null }) {
   const debouncedSearch = useDebounce(search, 350);
 
   // Count active filters
-  const activeFilterCount = [courtNo, judgeFilter, caseType, representing, nextDateFrom, nextDateTo]
+  const activeFilterCount = [courtNo, judgeFilter, caseType, From, nextDateFrom, nextDateTo]
     .filter(Boolean).length;
 
   function resetFilters() {
     setCourtNo(""); setJudgeFilter(""); setCaseType("");
-    setRepresenting(""); setNextDateFrom(""); setNextDateTo("");
+    setFrom(""); setNextDateFrom(""); setNextDateTo("");
     setPage(1);
   }
 
@@ -60,7 +60,7 @@ function RunningCasesPage({ updateCaseId }: { updateCaseId: string | null }) {
     courtNo,
     judgeFilter,
     caseTypeId:   caseType,
-    representing,
+    From,
     nextDateFrom,
     nextDateTo,
     page,
@@ -133,13 +133,13 @@ function RunningCasesPage({ updateCaseId }: { updateCaseId: string | null }) {
                 onChange={e => { setCaseType(e.target.value); setPage(1); }}
               />
               <div className="space-y-1.5">
-                <label className="label">{t("cases.representing")}</label>
+                <label className="label">{t("cases.From")}</label>
                 <div className="flex rounded-xl overflow-hidden border border-navy-100">
                   {(["", "plaintiff", "defendant"] as const).map(r => (
                     <button key={r} type="button"
-                      onClick={() => { setRepresenting(r); setPage(1); }}
+                      onClick={() => { setFrom(r); setPage(1); }}
                       className={`flex-1 py-2 text-xs font-semibold transition-colors ${
-                        representing === r
+                        From === r
                           ? "bg-navy text-white"
                           : "bg-white text-navy-400 hover:bg-navy-50"
                       }`}

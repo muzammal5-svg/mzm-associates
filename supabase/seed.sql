@@ -117,7 +117,7 @@ BEGIN
   ON CONFLICT (id) DO NOTHING;
 
   INSERT INTO public.cases
-    (id, firm_id, client_id, case_ref_no, plaintiff_name, defendant_name, representing, case_type_id, status, judge_name, court_no, offence, assigned_to, created_by)
+    (id, firm_id, client_id, case_ref_no, plaintiff_name, defendant_name, From, case_type_id, status, judge_name, court_no, offence, assigned_to, created_by)
   VALUES
     (v_case1, v_firm, v_c1, 'WP-1234/2024', 'Muhammad Aslam Khan', 'Province of Punjab', 'plaintiff', v_ct_writ, 'running', 'Hon. Justice Syed Ali Shah', '3', NULL, v_lawyer_uid, v_admin_uid),
     (v_case2, v_firm, v_c3, 'CS-567/2024', 'Allied Construction', 'City Development Authority', 'plaintiff', v_ct_civil, 'running', 'Mr. Khalid Mahmood ADJ', '12', NULL, v_lawyer_uid, v_admin_uid),

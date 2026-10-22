@@ -78,13 +78,11 @@ export function DocumentsModule({ clientId, caseId, className, firmWide = false 
           )}
         </div>
       )}
-      {(!firmWide || clientId || caseId) && (
-        <DocumentUploader
-          clientId={clientId}
-          caseId={caseId}
-          className="mb-4"
-        />
-      )}
+      <DocumentUploader
+        clientId={clientId}
+        caseId={caseId}
+        className="mb-4"
+      />
       <DocumentList
         clientId={clientId}
         caseId={caseId}

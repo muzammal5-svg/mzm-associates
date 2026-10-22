@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/Button";
 import { Card, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
 import { QueryErrorState } from "@/components/ui/QueryErrorState";
+import { useMutationLock } from "@/components/shared/MutatingButton";
 import { useToast } from "@/components/ui/Toast";
 import { useAuth } from "@/providers/AuthProvider";
 import { canUseWebPush, disableWebPush, enableWebPush, getWebPushSubscriptionEndpoint, sendTestPush } from "@/lib/push";
@@ -26,6 +27,7 @@ function NotificationSettingsPage() {
   const { user, profile, firm } = useAuth();
   const queryClient = useQueryClient();
   const toast = useToast();
+  const { lock, canMutate } = useMutationLock();
   const [reminders, setReminders] = useState(true);
   const [dailySummary, setDailySummary] = useState(true);
   const [caseUpdates, setCaseUpdates] = useState(true);
@@ -76,7 +78,7 @@ function NotificationSettingsPage() {
 
   async function savePreferences(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!user || !profile) return;
+    if (!user || !profile || !canMutate) return;
     setSaving(true);
     try {
       const { error } = await supabaseRaw.from("notification_preferences").upsert({
@@ -100,7 +102,7 @@ function NotificationSettingsPage() {
 
   async function saveFirmDefault(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!profile || !isAdmin) return;
+    if (!profile || !isAdmin || !canMutate) return;
     setSaving(true);
     try {
       const { error } = await supabaseRaw.rpc("set_firm_reminder_default", { p_days: firmDefault });
@@ -115,7 +117,7 @@ function NotificationSettingsPage() {
   }
 
   async function togglePush() {
-    if (!user) return;
+    if (!user || !canMutate) return;
     setPushBusy(true);
     try {
       if (pushEnabled) {
@@ -178,7 +180,7 @@ function NotificationSettingsPage() {
               onChange={event => setRemindDays(Math.min(30, Math.max(1, Number(event.target.value) || 1)))}
               hint={useFirmDefault ? t("settings.usingFirmDefault") : t("settings.personalReminderWindow")}
             />
-            <Button type="submit" loading={saving} leftIcon={<Check className="h-4 w-4" />}>{t("settings.savePreferences")}</Button>
+            <Button type="submit" {...lock} loading={saving} leftIcon={<Check className="h-4 w-4" />}>{t("settings.savePreferences")}</Button>
           </form>
         </Card>
 
@@ -196,7 +198,7 @@ function NotificationSettingsPage() {
                 value={firmDefault}
                 onChange={event => setFirmDefault(Math.min(30, Math.max(1, Number(event.target.value) || 1)))}
               />
-              <Button type="submit" variant="secondary" loading={saving}>{t("settings.saveFirmDefault")}</Button>
+              <Button type="submit" {...lock} variant="secondary" loading={saving}>{t("settings.saveFirmDefault")}</Button>
             </form>
           </Card>
         )}
@@ -212,11 +214,11 @@ function NotificationSettingsPage() {
             <p className="text-sm text-navy-400">{t("settings.browserPushUnsupported")}</p>
           ) : (
             <div className="flex flex-wrap gap-2">
-              <Button variant={pushEnabled ? "secondary" : "primary"} onClick={() => void togglePush()} loading={pushBusy}>
+              <Button variant={pushEnabled ? "secondary" : "primary"} {...lock} onClick={() => void togglePush()} loading={pushBusy}>
                 {pushEnabled ? t("settings.disableBrowserPush") : t("settings.enableBrowserPush")}
               </Button>
               {pushEnabled && (
-                <Button variant="secondary" onClick={() => void testPush()} loading={pushBusy}>{t("settings.sendTest")}</Button>
+                <Button variant="secondary" {...lock} onClick={() => void testPush()} loading={pushBusy}>{t("settings.sendTest")}</Button>
               )}
             </div>
           )}

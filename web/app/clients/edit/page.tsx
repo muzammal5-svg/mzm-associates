@@ -10,6 +10,7 @@ import { AlertTriangle }      from "lucide-react";
 
 import { AppShell }         from "@/components/layout/AppShell";
 import { RouteGuard }       from "@/components/shared/RouteGuard";
+import { MutatingButton }   from "@/components/shared/MutatingButton";
 import { Card }             from "@/components/ui/Card";
 import { Input }            from "@/components/ui/Input";
 import { Select }           from "@/components/ui/Select";
@@ -175,9 +176,9 @@ function EditClientPage() {
               <Button type="button" variant="secondary" onClick={() => router.back()} className="flex-1">
                 {t("common.cancel")}
               </Button>
-              <Button type="submit" loading={isSubmitting} className="flex-1">
+              <MutatingButton type="submit" loading={isSubmitting} className="flex-1">
                 {t("common.save")}
-              </Button>
+              </MutatingButton>
             </div>
           </form>
         </Card>

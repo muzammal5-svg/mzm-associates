@@ -6,6 +6,8 @@ interface EmptyStateProps {
   icon?:      React.ComponentType<{ className?: string }>;
   title?:     string;
   message?:   string;
+  /** Alias for `message` kept for backwards compatibility. */
+  description?: string;
   action?:    ReactNode;
   className?: string;
 }
@@ -14,9 +16,11 @@ export function EmptyState({
   icon: Icon  = Inbox,
   title       = "No records found",
   message,
+  description,
   action,
   className,
 }: EmptyStateProps) {
+  const body = message ?? description;
   return (
     <div
       className={cn(
@@ -29,8 +33,8 @@ export function EmptyState({
       </div>
       <div className="space-y-1">
         <p className="font-semibold text-navy">{title}</p>
-        {message && (
-          <p className="text-sm text-navy-300 max-w-xs mx-auto">{message}</p>
+        {body && (
+          <p className="text-sm text-navy-300 max-w-xs mx-auto">{body}</p>
         )}
       </div>
       {action && <div className="mt-2">{action}</div>}

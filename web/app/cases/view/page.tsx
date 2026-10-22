@@ -22,6 +22,7 @@ import { EmptyState }          from "@/components/ui/EmptyState";
 import { ConfirmDialog }       from "@/components/ui/Modal";
 import { useToast }            from "@/components/ui/Toast";
 import { useRoleGuard }        from "@/hooks/useRoleGuard";
+import { MutatingButton, useMutationLock } from "@/components/shared/MutatingButton";
 import { useCase, useCaseHearings, useCaseNotes, useSoftDeleteCase, useAddCaseNote, useDeleteCaseNote } from "@/hooks/useCases";
 import { useActivityLog }      from "@/hooks/useActivityLog";
 import { useAuth }             from "@/providers/AuthProvider";
@@ -131,6 +132,7 @@ function NotesTab({ caseId, readOnly = false }: { caseId: string; readOnly?: boo
   const { profile } = useAuth();
   const toast       = useToast();
   const { isAdminOrAbove } = useRoleGuard();
+  const { lock } = useMutationLock();
   const { data: notes, isLoading, isError, refetch } = useCaseNotes(caseId);
   const addNote    = useAddCaseNote(caseId);
   const deleteNote = useDeleteCaseNote(caseId);
@@ -159,9 +161,9 @@ function NotesTab({ caseId, readOnly = false }: { caseId: string; readOnly?: boo
             <textarea value={body} onChange={e => setBody(e.target.value)}
               placeholder={t("cases.description")} rows={2} className="input resize-none" />
           </div>
-          <Button type="submit" size="sm" loading={saving} leftIcon={<Send className="w-4 h-4"/>} disabled={!body.trim()}>
+          <MutatingButton type="submit" size="sm" loading={saving} leftIcon={<Send className="w-4 h-4"/>} disabled={!body.trim()}>
             {t("common.save")}
-          </Button>
+          </MutatingButton>
         </form>
       )}
       {isLoading ? <SkeletonCard /> :
@@ -172,8 +174,8 @@ function NotesTab({ caseId, readOnly = false }: { caseId: string; readOnly?: boo
               <div className="flex items-start justify-between gap-2">
                 <p className="text-sm text-navy flex-1">{n.body}</p>
                 {isAdminOrAbove && !readOnly && (
-                  <button onClick={() => setConfirmNote(n.id)}
-                    className="text-navy-200 hover:text-danger transition-colors flex-shrink-0">
+                  <button onClick={() => setConfirmNote(n.id)} {...lock}
+                    className="text-navy-200 hover:text-danger transition-colors flex-shrink-0 disabled:opacity-40">
                     <Trash2 className="w-3.5 h-3.5" />
                   </button>
                 )}
@@ -235,7 +237,7 @@ function OverviewTab({ caseId }: { caseId: string }) {
       <Card padding="sm">
         <Row label={t("cases.caseNo")}      value={c.case_ref_no}    mono />
         <Row label={t("cases.caseType")}    value={c.case_type?.name} />
-        <Row label={t("cases.representing")} value={c.representing === "plaintiff" ? "Plaintiff" : "Defendant"} />
+        <Row label={t("cases.From")} value={c.From === "plaintiff" ? "Plaintiff" : "Defendant"} />
         <Row label={t("cases.offence")}     value={c.offence} />
         <Row label={t("cases.judge")}       value={c.judge_name} />
         <Row label={t("cases.courtNo")}     value={c.court_no} />
@@ -273,6 +275,7 @@ function CaseActionsMenu({
   const { t }       = useTranslation();
   const toast       = useToast();
   const { canDelete, isSuperAdmin, isAdminOrAbove } = useRoleGuard();
+  const { lock } = useMutationLock();
   const softDelete  = useSoftDeleteCase();
   const [open,    setOpen]    = useState(false);
   const [confirm, setConfirm] = useState(false);
@@ -307,23 +310,23 @@ function CaseActionsMenu({
                     className="flex items-center gap-2.5 px-4 py-3 text-sm text-navy hover:bg-navy-50 transition-colors">
                     <Edit className="w-4 h-4 text-navy-300" /> {t("common.edit")}
                   </Link>
-                    <button onClick={() => { setOpen(false); onDecide(); }}
-                      className="flex items-center gap-2.5 w-full px-4 py-3 text-sm text-navy hover:bg-navy-50 transition-colors">
+                    <button onClick={() => { setOpen(false); onDecide(); }} {...lock}
+                      className="flex items-center gap-2.5 w-full px-4 py-3 text-sm text-navy hover:bg-navy-50 transition-colors disabled:opacity-40">
                       <CheckSquare className="w-4 h-4 text-navy-300" /> {t("common.markAsDecided")}
                     </button>
                 </>
               )}
               {status === "decided" && isAdminOrAbove && (
-                  <button onClick={() => { setOpen(false); onReopen(); }}
-                    className="flex items-center gap-2.5 w-full px-4 py-3 text-sm text-navy hover:bg-navy-50 transition-colors">
+                  <button onClick={() => { setOpen(false); onReopen(); }} {...lock}
+                    className="flex items-center gap-2.5 w-full px-4 py-3 text-sm text-navy hover:bg-navy-50 transition-colors disabled:opacity-40">
                     <RefreshCw className="w-4 h-4 text-navy-300" /> {t("common.reopenCase")}
                   </button>
               )}
               {canDelete && (
                 <>
                   <div className="border-t border-navy-50" />
-                  <button onClick={() => { setOpen(false); setConfirm(true); }}
-                    className="flex items-center gap-2.5 w-full px-4 py-3 text-sm text-danger hover:bg-red-50 transition-colors">
+                  <button onClick={() => { setOpen(false); setConfirm(true); }} {...lock}
+                    className="flex items-center gap-2.5 w-full px-4 py-3 text-sm text-danger hover:bg-red-50 transition-colors disabled:opacity-40">
                     <Trash2 className="w-4 h-4" /> {t("common.delete")}
                   </button>
                 </>
@@ -388,8 +391,8 @@ function CaseViewPage() {
               <div className="flex items-center gap-2 flex-wrap mt-2">
                 <CaseStatusBadge status={c.status} />
                 {c.case_type && <Badge variant="navy" size="sm">{c.case_type.name}</Badge>}
-                <Badge variant={c.representing === "plaintiff" ? "gold" : "info"} size="sm">
-                  {c.representing === "plaintiff" ? "For Plaintiff" : "For Defendant"}
+                <Badge variant={c.From === "plaintiff" ? "gold" : "info"} size="sm">
+                  {c.From === "plaintiff" ? "For Plaintiff" : "For Defendant"}
                 </Badge>
                 {isDecided && c.outcome && <OutcomeBadge outcome={c.outcome} />}
               </div>

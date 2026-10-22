@@ -1,0 +1,1 @@
+CREATE POLICY "users insert own custom reminders" ON public.reminders FOR INSERT WITH CHECK (firm_id = public.current_firm_id() AND user_id = auth.uid() AND is_custom = TRUE);

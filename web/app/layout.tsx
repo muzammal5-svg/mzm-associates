@@ -3,6 +3,7 @@ import "./globals.css";
 import { QueryProvider }  from "@/providers/QueryProvider";
 import { I18nProvider }   from "@/providers/I18nProvider";
 import { AuthProvider }   from "@/providers/AuthProvider";
+import { SubscriptionProvider } from "@/providers/SubscriptionProvider";
 import { LangProvider }   from "@/providers/LangProvider";
 import { ToastProvider }  from "@/components/ui/Toast";
 import { ErrorBoundary }  from "@/components/shared/ErrorBoundary";
@@ -38,12 +39,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <I18nProvider>
             <QueryProvider>
               <AuthProvider>
-                <LangProvider>
-                  <ToastProvider>
-                    {children}
-                    <OfflineBanner />
-                  </ToastProvider>
-                </LangProvider>
+                <SubscriptionProvider>
+                  <LangProvider>
+                    <ToastProvider>
+                      {children}
+                      <OfflineBanner />
+                    </ToastProvider>
+                  </LangProvider>
+                </SubscriptionProvider>
               </AuthProvider>
             </QueryProvider>
           </I18nProvider>

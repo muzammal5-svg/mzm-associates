@@ -14,7 +14,7 @@ CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 CREATE TYPE user_role          AS ENUM ('super_admin','admin','lawyer','clerk');
 CREATE TYPE case_status        AS ENUM ('running','decided');
 CREATE TYPE case_outcome       AS ENUM ('won','lost','dismissed','settled','withdrawn');
-CREATE TYPE representing_type  AS ENUM ('plaintiff','defendant');
+CREATE TYPE From_type  AS ENUM ('plaintiff','defendant');
 CREATE TYPE reminder_status    AS ENUM ('upcoming','done','dismissed');
 CREATE TYPE platform_type      AS ENUM ('web','android','ios');
 CREATE TYPE subscription_status AS ENUM ('active','expired','trial');
@@ -126,7 +126,7 @@ CREATE TABLE public.cases (
   case_ref_no      TEXT               NOT NULL,
   plaintiff_name   TEXT               NOT NULL,
   defendant_name   TEXT               NOT NULL,
-  representing     representing_type  NOT NULL,
+  From     From_type  NOT NULL,
   judge_name       TEXT,
   court_no         TEXT,
   case_type_id     UUID               NOT NULL REFERENCES public.case_types(id),
@@ -175,7 +175,6 @@ CREATE TABLE public.documents (
   size         BIGINT,                 -- bytes
   uploaded_by  UUID        REFERENCES public.profiles(id) ON DELETE SET NULL,
   created_at   TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  CONSTRAINT chk_doc_owner CHECK (client_id IS NOT NULL OR case_id IS NOT NULL)
 );
 
 COMMENT ON TABLE public.documents IS 'One module for case docs and client docs. Stored in private bucket.';
@@ -531,7 +530,7 @@ SELECT
   c.case_ref_no,
   c.plaintiff_name,
   c.defendant_name,
-  c.representing,
+  c.From,
   c.status              AS case_status,
   c.judge_name          AS case_judge,
   c.court_no            AS case_court_no,

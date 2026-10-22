@@ -10,6 +10,7 @@ import { AlertTriangle }                from "lucide-react";
 
 import { AppShell }            from "@/components/layout/AppShell";
 import { RouteGuard }          from "@/components/shared/RouteGuard";
+import { MutatingButton }      from "@/components/shared/MutatingButton";
 import { Card }                from "@/components/ui/Card";
 import { Input }               from "@/components/ui/Input";
 import { Select }              from "@/components/ui/Select";
@@ -33,7 +34,7 @@ const schema = z.object({
   case_ref_no:     z.string().min(1, "Case reference number is required").max(80),
   plaintiff_name:  z.string().min(1, "Plaintiff name is required").max(200),
   defendant_name:  z.string().min(1, "Defendant name is required").max(200),
-  representing:    z.enum(["plaintiff", "defendant"]),
+  From:    z.enum(["plaintiff", "defendant"]),
   case_type_id:    z.string().min(1, "Case type is required"),
   offence:         z.string().max(300).optional().or(z.literal("")),
   court_no:        z.string().max(100).optional().or(z.literal("")),
@@ -69,6 +70,7 @@ function NewCasePage() {
     prefilledClient ?? null
   );
   const [dupWarning, setDupWarning] = useState<string | null>(null);
+  const [customCols, setCustomCols] = useState<string[]>([]);
 
   const {
     register, handleSubmit, watch, control, setValue,
@@ -76,7 +78,7 @@ function NewCasePage() {
   } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: {
-      representing:    "plaintiff",
+      From:    "plaintiff",
       client_id:       prefilledClientId ?? "",
     },
   });
@@ -106,7 +108,7 @@ function NewCasePage() {
         case_ref_no:    data.case_ref_no.trim(),
         plaintiff_name: data.plaintiff_name.trim(),
         defendant_name: data.defendant_name.trim(),
-        representing:   data.representing,
+        From:   data.From,
         judge_name:     data.judge_name   || undefined,
         court_no:       data.court_no     || undefined,
         case_type_id:   data.case_type_id,
@@ -184,6 +186,22 @@ function NewCasePage() {
               error={errors.case_type_id?.message}
               {...register("case_type_id")}
             />
+            <button
+              type="button"
+              onClick={() => setCustomCols((c) => [...c, ""])}
+              className="px-3 py-1.5 rounded-lg bg-gold/10 border border-gold text-gold text-xs font-medium hover:bg-gold/20"
+            >
+              + Add column
+            </button>
+            {customCols.map((v, i) => (
+              <div key={i} className="p-3 rounded-xl bg-navy-50 border border-navy-100">
+                <Input
+                  label="Write Down the Colum"
+                  value={v}
+                  onChange={(e) => setCustomCols((c) => c.map((x, idx) => (idx === i ? e.target.value : x)))}
+                />
+              </div>
+            ))}
 
             {/* Offence — only for criminal types */}
             {needsOffence && (
@@ -195,17 +213,17 @@ function NewCasePage() {
               />
             )}
 
-            {/* Representing toggle */}
+            {/* From toggle */}
             <div className="space-y-1.5">
-              <label className="label">{t("cases.representing")} <span className="text-danger ms-0.5">*</span></label>
+              <label className="label">{t("cases.From")} <span className="text-danger ms-0.5">*</span></label>
               <div className="flex rounded-xl overflow-hidden border border-navy-100">
                 {(["plaintiff", "defendant"] as const).map(r => {
-                  const active = watch("representing") === r;
+                  const active = watch("From") === r;
                   return (
                     <button
                       key={r}
                       type="button"
-                      onClick={() => setValue("representing", r, { shouldValidate: true })}
+                      onClick={() => setValue("From", r, { shouldValidate: true })}
                       className={`flex-1 py-2.5 text-sm font-semibold transition-colors ${
                         active ? "bg-navy text-white" : "bg-white text-navy-400 hover:bg-navy-50"
                       }`}
@@ -233,12 +251,17 @@ function NewCasePage() {
             </div>
 
             <div className="grid md:grid-cols-2 gap-4">
-              <Select
+              <Input
                 label={t("cases.court")}
-                options={courtOptions}
                 placeholder={t("common.allCourts")}
+                list="court-options"
                 {...register("court_no")}
               />
+              <datalist id="court-options">
+                {courtOptions.map((c) => (
+                  <option key={c.value} value={c.value} />
+                ))}
+              </datalist>
               <Input
                 label={t("cases.judge")}
                 placeholder="Hon. Justice Syed Ali Shah"
@@ -290,9 +313,9 @@ function NewCasePage() {
           <Button type="button" variant="secondary" onClick={() => router.back()} className="flex-1">
             {t("common.cancel")}
           </Button>
-          <Button type="submit" loading={isSubmitting} className="flex-1">
+          <MutatingButton type="submit" loading={isSubmitting} className="flex-1">
             {t("common.save")}
-          </Button>
+          </MutatingButton>
         </div>
 
       </form>

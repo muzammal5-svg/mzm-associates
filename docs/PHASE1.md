@@ -126,7 +126,7 @@ npx cap open android
 
 ## Assumptions Made
 
-1. **`representing` field** — stored as `plaintiff | defendant` enum and labelled "From/For" in the UI as specified.
+1. **`From` field** — stored as `plaintiff | defendant` enum and labelled "From/For" in the UI as specified.
 2. **`requires_offence`** — implemented as a DB check constraint (`case_type = 'criminal' → offence NOT NULL`) and enforced in the UI by showing/hiding the Offence field. No separate `case_types.requires_offence` lookup table (kept simpler).
 3. **Auth is invite-only** — `enable_signup = false` in `supabase/config.toml`. Admins create user accounts via Supabase dashboard or an Edge Function (Phase 3).
 4. **Storage bucket** — the `documents` storage bucket setup is commented-out SQL at the bottom of the migration (Supabase requires bucket creation via dashboard or CLI, not raw SQL in migrations).
