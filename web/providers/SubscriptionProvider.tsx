@@ -25,7 +25,8 @@ type SubscriptionValue = {
 
 const SubscriptionContext = createContext<SubscriptionValue | null>(null);
 
-/** One get_subscription_state call per session, shared by every gated control. */
+/** Shares subscription state across gated controls. Refreshes on window focus
+ *  so payment verification picked up by the DB is reflected without a hard reload. */
 export function SubscriptionProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth();
   const userId = user?.id;
@@ -38,14 +39,29 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
       setLoading(false);
       return;
     }
+    setLoading(true);
     const { data } = await saasRpc.getSubscriptionState();
     setState((data as SubState) ?? { status: "none" });
     setLoading(false);
   }, [userId]);
 
+  // Initial load
   useEffect(() => {
     setLoading(true);
     void refresh();
+  }, [refresh]);
+
+  // Refresh when the tab/window regains focus (e.g. after returning from payment gateway)
+  useEffect(() => {
+    const onFocus = () => void refresh();
+    window.addEventListener("focus", onFocus);
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "visible") void refresh();
+    });
+    return () => {
+      window.removeEventListener("focus", onFocus);
+      document.removeEventListener("visibilitychange", onFocus);
+    };
   }, [refresh]);
 
   const value = useMemo<SubscriptionValue>(() => {

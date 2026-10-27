@@ -55,6 +55,7 @@ export const db = {
   activityLog:           () => supabase.from("case_activity_log"),
   notifPrefs:            () => supabase.from("notification_preferences"),
   pushSubscriptions:     () => supabase.from("push_subscriptions"),
+  caseLaws:              () => supabase.from("case_laws"),
 } as const;
 
 // ─── Storage helper ───────────────────────────────────────────────────────────
@@ -133,6 +134,8 @@ export const update = {
     supabaseRaw.from("reminders").update(data).eq("id", id),
   notifPrefs: (userId: string, data: TablesUpdate<"notification_preferences">) =>
     supabaseRaw.from("notification_preferences").update(data).eq("user_id", userId),
+  caseLaw: (id: string, data: TablesUpdate<"case_laws">) =>
+    supabaseRaw.from("case_laws").update(data).eq("id", id),
 } as const;
 
 export const insert = {
@@ -150,4 +153,6 @@ export const insert = {
     supabaseRaw.from("case_types").insert(data).select().single(),
   court:     (data: TablesInsert<"courts">) =>
     supabaseRaw.from("courts").insert(data).select().single(),
+  caseLaw:   (data: TablesInsert<"case_laws">) =>
+    supabaseRaw.from("case_laws").insert(data).select().single(),
 } as const;

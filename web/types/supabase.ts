@@ -395,6 +395,7 @@ export type Database = {
         Row: {
           case_id: string | null
           client_id: string | null
+          category: string | null
           created_at: string
           file_path: string
           firm_id: string
@@ -407,6 +408,7 @@ export type Database = {
         Insert: {
           case_id?: string | null
           client_id?: string | null
+          category?: string | null
           created_at?: string
           file_path: string
           firm_id: string
@@ -419,6 +421,7 @@ export type Database = {
         Update: {
           case_id?: string | null
           client_id?: string | null
+          category?: string | null
           created_at?: string
           file_path?: string
           firm_id?: string
@@ -453,6 +456,57 @@ export type Database = {
           {
             foreignKeyName: "documents_uploaded_by_fkey"
             columns: ["uploaded_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      case_laws: {
+        Row: {
+          case_title: string
+          created_at: string
+          created_by: string | null
+          firm_id: string | null
+          id: string
+          law_report: string
+          page_no: number
+          updated_at: string
+          year: number
+        }
+        Insert: {
+          case_title: string
+          created_at?: string
+          created_by?: string | null
+          firm_id?: string | null
+          id?: string
+          law_report: string
+          page_no: number
+          updated_at?: string
+          year: number
+        }
+        Update: {
+          case_title?: string
+          created_at?: string
+          created_by?: string | null
+          firm_id?: string | null
+          id?: string
+          law_report?: string
+          page_no?: number
+          updated_at?: string
+          year?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "case_laws_firm_id_fkey"
+            columns: ["firm_id"]
+            isOneToOne: false
+            referencedRelation: "firms"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "case_laws_created_by_fkey"
+            columns: ["created_by"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
@@ -1299,3 +1353,4 @@ export type Notification = Tables<"notifications">
 export type NotificationPreference = Tables<"notification_preferences">
 export type CaseActivityLog = Tables<"case_activity_log">
 export type CauseListRow = Database["public"]["Views"]["v_cause_list"]["Row"]
+export type CaseLaw = Tables<"case_laws">

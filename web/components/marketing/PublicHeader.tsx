@@ -3,11 +3,12 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useTranslation } from "react-i18next";
-import { Scale, ArrowRight, Menu, X, Check } from "lucide-react";
+import { Scale, ArrowRight, Menu, X, Check, Phone } from "lucide-react";
 import { useAuth } from "@/providers/AuthProvider";
 import { useLang } from "@/providers/LangProvider";
 import { cn } from "@/lib/utils";
 import type { SupportedLang } from "@/i18n/config";
+import { SITE, phoneLink } from "@/lib/siteConfig";
 
 interface PublicHeaderProps {
   /** Kept for backwards compatibility — the header is always a dark glass surface. */
@@ -83,6 +84,14 @@ export function PublicHeader({ overDark = false }: PublicHeaderProps) {
         <div className="hidden md:flex items-center gap-3">
           <LangPill />
 
+          <a
+            href={phoneLink()}
+            className="inline-flex items-center gap-2 rounded-md border border-white/15 bg-white/5 px-3 py-2 text-xs font-semibold text-white/80 transition-all duration-200 hover:border-gold-400/60 hover:bg-gold-400/10 hover:text-gold-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-400"
+          >
+            <Phone className="h-3.5 w-3.5" aria-hidden="true" />
+            {SITE.phone}
+          </a>
+
           {user ? (
             <Link
               href="/"
@@ -125,7 +134,8 @@ export function PublicHeader({ overDark = false }: PublicHeaderProps) {
         <div className="fixed inset-0 z-50 md:hidden" id="public-mobile-menu">
           <button
             type="button"
-            className="absolute inset-0 h-full w-full cursor-default bg-slate-950/70 backdrop-blur-sm animate-fade-in"
+            className="absolute inset-0 h-full w-full cursor-default bg-black animate-fade-in"
+            style={{ backgroundColor: '#000000' }}
             onClick={() => setOpen(false)}
             aria-label={t("marketing.close")}
             tabIndex={-1}
@@ -134,7 +144,7 @@ export function PublicHeader({ overDark = false }: PublicHeaderProps) {
             role="dialog"
             aria-modal="true"
             aria-label={t("marketing.menu")}
-            className="drawer-panel absolute inset-y-0 end-0 flex w-[86%] max-w-sm flex-col border-s border-white/10 bg-slate-900/95 p-6 shadow-2xl backdrop-blur-xl"
+            className="drawer-panel absolute inset-y-0 end-0 flex w-[86%] max-w-sm flex-col border-s border-white/10 bg-slate-900 p-6 shadow-2xl"
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -159,7 +169,7 @@ export function PublicHeader({ overDark = false }: PublicHeaderProps) {
                   key={n.href}
                   href={n.href}
                   onClick={() => setOpen(false)}
-                  className="rounded-lg px-3 py-3 text-base font-medium text-white/80 transition-colors duration-200 hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-400"
+                  className="rounded-lg px-3 py-3 text-base font-medium text-white bg-white/5 transition-colors duration-200 hover:bg-white/15 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-400"
                 >
                   {n.label}
                 </Link>
@@ -168,6 +178,13 @@ export function PublicHeader({ overDark = false }: PublicHeaderProps) {
 
             <div className="mt-auto space-y-4 border-t border-white/10 pt-6">
               <LangPill className="w-full" />
+              <a
+                href={phoneLink()}
+                className="inline-flex items-center gap-2 rounded-lg border border-white/15 bg-white/5 px-3 py-2 text-xs font-semibold text-white/80 transition-all duration-200 hover:border-gold-400/60 hover:bg-gold-400/10 hover:text-gold-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-400"
+              >
+                <Phone className="h-3.5 w-3.5" aria-hidden="true" />
+                {SITE.phone}
+              </a>
               {user ? (
                 <Link href="/" onClick={() => setOpen(false)} className="btn-ghost-gold w-full">
                   {t("marketing.goToDashboard")}

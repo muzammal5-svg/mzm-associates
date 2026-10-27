@@ -197,9 +197,9 @@ function DashboardPage() {
               <Link
                 key={svc.key}
                 href={svc.href}
-                className="group flex flex-col items-center gap-2 p-4 bg-white rounded-xl border border-border shadow-sm hover:shadow-md hover:border-gold/30 transition-all duration-150 active:scale-[.98] focus-visible:ring-2 focus-visible:ring-gold focus-visible:outline-none"
+                className="group flex flex-col items-center gap-2 p-4 bg-gradient-to-br from-white to-navy-50 rounded-xl border border-border shadow-sm hover:shadow-md hover:border-gold/30 transition-all duration-150 active:scale-[.98] focus-visible:ring-2 focus-visible:ring-gold focus-visible:outline-none"
               >
-                <div className={`w-11 h-11 rounded-xl flex items-center justify-center ${svc.color} relative shadow-xs`}>
+                <div className={`w-11 h-11 rounded-xl flex items-center justify-center ${svc.color} relative shadow-xs bg-gradient-to-br`}>
                   <svc.icon className="w-5 h-5" />
                   {svc.badge > 0 && (
                     <Badge

@@ -5,10 +5,11 @@ import Link from "next/link";
 import { useTranslation } from "react-i18next";
 import {
   Scale, Mail, MessageCircle, FileText, ShieldCheck, Wallet, Sparkles, ArrowUpRight,
+  Phone,
 } from "lucide-react";
 import { Logo } from "@/components/shared/Logo";
 import { LegalDrawer } from "@/components/marketing/LegalDrawer";
-import { SITE, whatsappLink } from "@/lib/siteConfig";
+import { SITE, whatsappLink, phoneLink } from "@/lib/siteConfig";
 import type { LegalDocId } from "@/lib/legalDocs";
 
 export function PublicFooter() {
@@ -46,6 +47,13 @@ export function PublicFooter() {
               >
                 <MessageCircle className="h-3.5 w-3.5" aria-hidden="true" />
                 {t("marketing.footerWhatsapp")}
+              </a>
+              <a
+                href={phoneLink()}
+                className="inline-flex items-center gap-2 rounded-lg border border-white/15 bg-white/5 px-3.5 py-2 text-xs font-semibold text-white/80 transition-all duration-200 hover:border-gold-400/60 hover:bg-gold-400/10 hover:text-gold-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-400"
+              >
+                <Phone className="h-3.5 w-3.5" aria-hidden="true" />
+                {SITE.phone}
               </a>
               <a
                 href={`mailto:${SITE.email}`}
@@ -130,6 +138,9 @@ export function PublicFooter() {
         © {new Date().getFullYear()} {SITE.name} ·{" "}
         <a href={whatsappLink()} className="underline decoration-gold-400/40 underline-offset-4 transition-colors hover:text-gold-200">
           {t("marketing.footerWhatsapp")}
+        </a>{" "}
+        · <a href={phoneLink()} className="underline decoration-gold-400/40 underline-offset-4 transition-colors hover:text-gold-200">
+          {SITE.phone}
         </a>{" "}
         · <span>{SITE.email}</span>
       </div>

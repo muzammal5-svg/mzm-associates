@@ -439,63 +439,63 @@ function AdminDashboard() {
       </header>
 
       {/* Main Container */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 pt-6 space-y-6">
-        {/* Metric Highlights */}
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-          <Card className="glass-card p-4">
-            <div className="flex items-center justify-between">
+      <main className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 pt-4 sm:pt-6 space-y-4 sm:space-y-6">
+        {/* Metric Highlights - Mobile responsive */}
+        <div className="grid grid-cols-2 gap-2 sm:gap-3 md:gap-4 md:grid-cols-4">
+          <Card className="glass-card p-3 sm:p-4">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-wider text-muted">Pending Payments</p>
-                <p className="mt-1 font-heading text-2xl font-bold text-navy">{metrics.pendingCount}</p>
+                <p className="text-xs font-semibold uppercase tracking-wider text-muted line-clamp-2">Pending Payments</p>
+                <p className="mt-1 sm:mt-2 font-heading text-xl sm:text-2xl font-bold text-navy">{metrics.pendingCount}</p>
               </div>
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-100 text-amber-600">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-100 text-amber-600 flex-shrink-0">
                 <Clock className="h-5 w-5" aria-hidden="true" />
               </div>
             </div>
           </Card>
 
-          <Card className="glass-card p-4">
-            <div className="flex items-center justify-between">
+          <Card className="glass-card p-3 sm:p-4">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-wider text-muted">Active Firms</p>
-                <p className="mt-1 font-heading text-2xl font-bold text-navy">{metrics.activeFirmsCount}</p>
+                <p className="text-xs font-semibold uppercase tracking-wider text-muted line-clamp-2">Active Firms</p>
+                <p className="mt-1 sm:mt-2 font-heading text-xl sm:text-2xl font-bold text-navy">{metrics.activeFirmsCount}</p>
               </div>
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-100 text-emerald-600">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-100 text-emerald-600 flex-shrink-0">
                 <Building2 className="h-5 w-5" aria-hidden="true" />
               </div>
             </div>
           </Card>
 
-          <Card className="glass-card p-4">
-            <div className="flex items-center justify-between">
+          <Card className="glass-card p-3 sm:p-4">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-wider text-muted">Trialing Firms</p>
-                <p className="mt-1 font-heading text-2xl font-bold text-navy">{metrics.trialingFirmsCount}</p>
+                <p className="text-xs font-semibold uppercase tracking-wider text-muted line-clamp-2">Trialing Firms</p>
+                <p className="mt-1 sm:mt-2 font-heading text-xl sm:text-2xl font-bold text-navy">{metrics.trialingFirmsCount}</p>
               </div>
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-sky-100 text-sky-600">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-sky-100 text-sky-600 flex-shrink-0">
                 <Users className="h-5 w-5" aria-hidden="true" />
               </div>
             </div>
           </Card>
 
-          <Card className="glass-card p-4">
-            <div className="flex items-center justify-between">
+          <Card className="glass-card p-3 sm:p-4">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-wider text-muted">Verified Revenue</p>
-                <p className="mt-1 font-heading text-2xl font-bold text-gold-700">
+                <p className="text-xs font-semibold uppercase tracking-wider text-muted line-clamp-2">Verified Revenue</p>
+                <p className="mt-1 sm:mt-2 font-heading text-xl sm:text-2xl font-bold text-gold-700">
                   Rs {metrics.totalRevenue.toLocaleString()}
                 </p>
               </div>
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gold-100 text-gold-700">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gold-100 text-gold-700 flex-shrink-0">
                 <Wallet className="h-5 w-5" aria-hidden="true" />
               </div>
             </div>
           </Card>
         </div>
 
-        {/* Tab Navigation */}
+        {/* Tab Navigation - Mobile responsive */}
         <div
-          className="scrollbar-hide flex items-center gap-1 overflow-x-auto rounded-2xl border border-slate-200/80 bg-white/80 p-1.5 shadow-sm backdrop-blur-md"
+          className="scrollbar-hide flex items-center gap-1 overflow-x-auto rounded-2xl border border-slate-200/80 bg-white/80 p-1 sm:p-1.5 shadow-sm backdrop-blur-md"
           role="tablist"
           aria-label="Admin sections"
         >
@@ -517,17 +517,17 @@ function AdminDashboard() {
                 role="tab"
                 aria-selected={isActive}
                 onClick={() => { setActiveTab(tab.id); setSearchQuery(""); }}
-                className={`flex shrink-0 items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold whitespace-nowrap transition-all duration-200 ease-in-out active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold ${
+                className={`flex shrink-0 items-center gap-1 sm:gap-2 rounded-xl px-2 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm font-semibold whitespace-nowrap transition-all duration-200 ease-in-out active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold ${
                   isActive
                     ? "bg-navy-800 text-white shadow-md"
                     : "text-muted hover:bg-white hover:text-navy"
                 }`}
               >
                 <Icon className="h-4 w-4" aria-hidden="true" />
-                <span>{tab.label}</span>
+                <span className="hidden sm:inline">{tab.label}</span>
                 {tab.count > 0 && (
                   <span
-                    className={`rounded-full px-1.5 py-0.5 text-[11px] font-bold leading-none ${
+                    className={`rounded-full px-1 py-0.5 text-[10px] sm:text-[11px] font-bold leading-none ${
                       isActive ? "bg-gold-cta text-navy-900" : "bg-navy-50 text-navy-500"
                     }`}
                   >
@@ -541,15 +541,15 @@ function AdminDashboard() {
 
         {/* Tab 1: Payments Queue */}
         {activeTab === "payments" && (
-          <div className="space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-              {/* Filter pills */}
-              <div className="flex items-center gap-1.5 overflow-x-auto">
+          <div className="space-y-3 sm:space-y-4">
+            <div className="flex flex-col gap-3 sm:gap-4">
+              {/* Filter pills - Mobile responsive */}
+              <div className="flex items-center gap-1 overflow-x-auto scrollbar-hide">
                 {(["pending", "verified", "rejected", "all"] as const).map((st) => (
                   <button
                     key={st}
                     onClick={() => setPaymentFilter(st)}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all ${
+                    className={`px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg text-xs font-semibold uppercase tracking-wider whitespace-nowrap transition-all ${
                       paymentFilter === st
                         ? "bg-gold text-white shadow-xs"
                         : "bg-white text-muted hover:text-navy border border-border"
@@ -560,15 +560,15 @@ function AdminDashboard() {
                 ))}
               </div>
 
-              {/* Search box */}
-              <div className="relative w-full sm:w-64">
+              {/* Search box - Mobile responsive */}
+              <div className="relative w-full">
                 <Search className="w-4 h-4 absolute start-3 top-1/2 -translate-y-1/2 text-muted" />
                 <input
                   type="text"
                   placeholder="Search firm or ref no..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full ps-9 pe-3 py-1.5 text-xs rounded-lg border border-border bg-white focus:outline-none focus:ring-2 focus:ring-gold/30"
+                  className="w-full ps-9 pe-3 py-2 sm:py-2.5 text-xs sm:text-sm rounded-lg border border-border bg-white focus:outline-none focus:ring-2 focus:ring-gold/30"
                 />
               </div>
             </div>

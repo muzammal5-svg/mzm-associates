@@ -8,7 +8,7 @@ export default function DocumentsPage() {
   return (
     <RouteGuard>
       <AppShell pageTitle="Documents">
-        <DocumentsModule className="max-w-5xl" firmWide />
+        <DocumentsModule className="max-w-5xl" firmWide category="regular" />
       </AppShell>
     </RouteGuard>
   );

@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { PublicHeader } from "@/components/marketing/PublicHeader";
 import { PublicFooter } from "@/components/marketing/PublicFooter";
+import { Logo } from "@/components/shared/Logo";
 import { HeroDashboard } from "@/components/marketing/HeroDashboard";
 import { PlanCard, type PlanView } from "@/components/marketing/PlanCard";
 import { Reveal } from "@/components/marketing/Reveal";
@@ -111,6 +112,9 @@ export function Landing() {
         <div className={`${CONTAINER} relative grid items-center gap-14 py-16 md:grid-cols-2 md:gap-10 md:py-24`}>
           {/* Copy */}
           <div className="text-center md:text-start">
+            <div className="mb-4 flex justify-center md:justify-start">
+              <Logo size="lg" variant="full" />
+            </div>
             {/* Animated gradient pill */}
             <span className="pill-badge border border-gold-400/30 bg-gradient-to-r from-white/[0.06] via-gold-400/20 to-white/[0.06] bg-[length:200%_100%] text-gold-100 backdrop-blur-md animate-gradient-pan">
               <span className="pulse-dot text-gold-300" aria-hidden="true" />

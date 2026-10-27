@@ -26,6 +26,7 @@ export interface UploadedFile {
 interface DocumentUploaderProps {
   clientId?:  string | null;
   caseId?:    string | null;
+  category?:  string;
   onUploaded?: (doc: UploadedFile) => void;
   /** If true, drop zone + file picker only — no DB insert (used in Add Client wizard before client exists) */
   pendingMode?: boolean;
@@ -51,7 +52,7 @@ interface FileEntry {
 }
 
 export function DocumentUploader({
-  clientId, caseId, onUploaded, pendingMode = false, onPending, className,
+  clientId, caseId, category, onUploaded, pendingMode = false, onPending, className,
 }: DocumentUploaderProps) {
   const { t }       = useTranslation();
   const { profile } = useAuth();
@@ -113,13 +114,22 @@ export function DocumentUploader({
   async function uploadEntry(entry: FileEntry) {
     if (!profile) return;
     const firmId = profile.firm_id;
+    const isSuperAdmin = profile.role === "super_admin";
+    const storagePrefix = isSuperAdmin && !firmId ? "super_admin" : firmId;
+
+    if (!firmId && !isSuperAdmin) {
+      setEntries(prev => prev.map(e =>
+        e.id === entry.id ? { ...e, status: "error", error: t("documents.firmRequired"), progress: 0 } : e
+      ));
+      return;
+    }
     setEntries(prev => prev.map(e =>
       e.id === entry.id ? { ...e, status: "uploading", progress: 0 } : e
     ));
 
     let uploadedPath: string | null = null;
     try {
-      const upload = await uploadDocument(firmId, entry.file, progress => {
+      const upload = await uploadDocument(storagePrefix, entry.file, progress => {
         setEntries(prev => prev.map(e =>
           e.id === entry.id ? { ...e, progress } : e
         ));
@@ -127,9 +137,10 @@ export function DocumentUploader({
       uploadedPath = upload.path;
 
       const { error: dbErr } = await insert.document({
-        firm_id:     firmId,
+        firm_id:     firmId ?? null,
         client_id:   clientId ?? null,
         case_id:     caseId   ?? null,
+        category:    category ?? null,
         name:        entry.name || entry.file.name,
         file_path:   upload.path,
         mime:        entry.file.type,

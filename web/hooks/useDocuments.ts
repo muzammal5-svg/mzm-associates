@@ -13,17 +13,18 @@ interface DocsFilter {
   filterCaseId?: string | null;
   search?: string;
   documentType?: string;
+  category?: string;
 }
 
 function qKey(f: DocsFilter) {
   return [
     "documents", f.clientId ?? null, f.caseId ?? null, f.filterClientId ?? null,
-    f.filterCaseId ?? null, f.search ?? "", f.documentType ?? "all",
+    f.filterCaseId ?? null, f.search ?? "", f.documentType ?? "all", f.category ?? "all",
   ];
 }
 
 export function useDocuments(filter: DocsFilter) {
-  const { clientId, caseId, filterClientId, filterCaseId, search = "", documentType } = filter;
+  const { clientId, caseId, filterClientId, filterCaseId, search = "", documentType, category } = filter;
 
   return useQuery({
     queryKey: qKey(filter),
@@ -38,6 +39,7 @@ export function useDocuments(filter: DocsFilter) {
       if (caseId)   q = q.eq("case_id",   caseId);
       if (filterClientId) q = q.eq("client_id", filterClientId);
       if (filterCaseId) q = q.eq("case_id", filterCaseId);
+      if (category) q = q.eq("category", category);
 
       if (search.trim()) {
         const s = `%${search.trim()}%`;

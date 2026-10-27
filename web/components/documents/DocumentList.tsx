@@ -28,6 +28,8 @@ interface DocumentListProps {
   search?: string;
   documentType?: string;
   className?: string;
+  canDelete?: boolean;
+  category?: string;
 }
 
 function DocIcon({ mime }: { mime: string | null }) {
@@ -73,7 +75,7 @@ function DocPreviewModal({ url, mime, onClose }: { url: string; mime: string | n
 }
 
 export function DocumentList({
-  clientId, caseId, filterClientId, filterCaseId, search, documentType, className,
+  clientId, caseId, filterClientId, filterCaseId, search, documentType, className, canDelete = true, category,
 }: DocumentListProps) {
   const { t }         = useTranslation();
   const toast         = useToast();
@@ -81,7 +83,7 @@ export function DocumentList({
   const { lock } = useMutationLock();
 
   const { data: docs, isLoading, isError, refetch } = useDocuments({
-    clientId, caseId, filterClientId, filterCaseId, search, documentType,
+    clientId, caseId, filterClientId, filterCaseId, search, documentType, category,
   });
   const deleteMut                 = useDeleteDocument();
 
@@ -183,7 +185,7 @@ export function DocumentList({
                 <Download className="w-4 h-4" />
               </button>
               {/* Delete */}
-              {canDeleteDocuments && (
+              {canDeleteDocuments && canDelete && (
                 <button
                   onClick={() => setConfirmDoc(doc)}
                   {...lock}

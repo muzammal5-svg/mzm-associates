@@ -7,18 +7,20 @@ import { useTranslation } from "react-i18next";
 import {
   LayoutDashboard, Calendar, Briefcase, Users,
   FolderOpen, Bell, CheckSquare, BellRing,
-  Settings, LogOut, ChevronRight, List, ShieldCheck, FileText,
+  Settings, LogOut, ChevronRight, List, ShieldCheck, FileText, BookOpen,
+  Phone,
 } from "lucide-react";
 import { Logo }           from "@/components/shared/Logo";
 import { LangSwitcher }   from "@/components/shared/LangSwitcher";
 import { RoleBadge }      from "@/components/ui/Badge";
 import { useAuth }        from "@/providers/AuthProvider";
+import { SITE, phoneLink } from "@/lib/siteConfig";
 import { cn }             from "@/lib/utils";
 import { SIDEBAR_NAV }    from "./navItems";
 
 const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
   LayoutDashboard, Calendar, Briefcase, Users,
-  FolderOpen, Bell, CheckSquare, BellRing, Settings, List, FileText,
+  FolderOpen, Bell, CheckSquare, BellRing, Settings, List, FileText, BookOpen,
 };
 
 export function Sidebar() {
@@ -71,7 +73,10 @@ export function Sidebar() {
     <aside className="hidden md:flex flex-col w-64 min-h-screen bg-navy fixed start-0 top-0 z-30">
       {/* Logo / firm header */}
       <div className="px-5 py-5 border-b border-white/10 flex items-center gap-3">
-        {firm?.logo_url ? (
+        {profile?.photo_url ? (
+          <Image src={profile.photo_url} alt={profile.full_name} width={36} height={36}
+            className="rounded-full object-cover flex-shrink-0 border border-white/10" unoptimized />
+        ) : firm?.logo_url ? (
           <Image src={firm.logo_url} alt={firm.name} width={36} height={36}
             className="rounded-lg object-contain flex-shrink-0" unoptimized />
         ) : (
@@ -142,6 +147,15 @@ export function Sidebar() {
             </div>
           </Link>
         )}
+        <div className="px-3 pt-3 space-y-2">
+          <a
+            href={phoneLink()}
+            className="flex items-center gap-3 px-3 py-2.5 rounded-xl border border-navy-100 text-sm font-medium text-navy hover:bg-navy-50 hover:text-gold transition-colors"
+          >
+            <Phone className="w-4 h-4" />
+            <span>{SITE.phone}</span>
+          </a>
+        </div>
         <button
           onClick={signOut}
           className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-sm font-medium text-navy-300 hover:bg-white/10 hover:text-white transition-colors"

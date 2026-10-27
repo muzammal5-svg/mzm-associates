@@ -14,6 +14,9 @@ interface DocumentsModuleProps {
   caseId?:   string | null;
   className?: string;
   firmWide?: boolean;
+  canUpload?: boolean;
+  canDelete?: boolean;
+  category?: string;
 }
 
 /**
@@ -23,7 +26,7 @@ interface DocumentsModuleProps {
  *   - Case detail    → pass caseId
  *   - Decided cases  → pass caseId
  */
-export function DocumentsModule({ clientId, caseId, className, firmWide = false }: DocumentsModuleProps) {
+export function DocumentsModule({ clientId, caseId, className, firmWide = false, canUpload = true, canDelete = true, category }: DocumentsModuleProps) {
   const { t } = useTranslation();
   const [search, setSearch] = useState("");
   const [filterClientId, setFilterClientId] = useState("");
@@ -78,11 +81,14 @@ export function DocumentsModule({ clientId, caseId, className, firmWide = false 
           )}
         </div>
       )}
-      <DocumentUploader
-        clientId={clientId}
-        caseId={caseId}
-        className="mb-4"
-      />
+      {canUpload && (
+        <DocumentUploader
+          clientId={clientId}
+          caseId={caseId}
+          category={category}
+          className="mb-4"
+        />
+      )}
       <DocumentList
         clientId={clientId}
         caseId={caseId}
@@ -90,6 +96,8 @@ export function DocumentsModule({ clientId, caseId, className, firmWide = false 
         filterCaseId={firmWide ? filterCaseId || null : null}
         search={firmWide ? search : undefined}
         documentType={firmWide ? documentType : undefined}
+        canDelete={canDelete}
+        category={category}
       />
     </div>
   );

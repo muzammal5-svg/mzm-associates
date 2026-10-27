@@ -102,6 +102,12 @@ function NewCasePage() {
   async function onSubmit(data: FormData) {
     if (!profile) return;
     try {
+      // Validate required fields
+      if (!data.client_id?.trim()) {
+        toast.error(t("common.error"), "Please select a client");
+        return;
+      }
+
       const newCase = await createCase.mutateAsync({
         firm_id:        profile.firm_id,
         client_id:      data.client_id,
@@ -109,23 +115,25 @@ function NewCasePage() {
         plaintiff_name: data.plaintiff_name.trim(),
         defendant_name: data.defendant_name.trim(),
         From:   data.From,
-        judge_name:     data.judge_name   || undefined,
-        court_no:       data.court_no     || undefined,
+        judge_name:     (data.judge_name?.trim()) || undefined,
+        court_no:       (data.court_no?.trim()) || undefined,
         case_type_id:   data.case_type_id,
-        offence:        needsOffence ? (data.offence || undefined) : undefined,
-        description:    data.description  || undefined,
+        offence:        needsOffence ? (data.offence?.trim() || undefined) : undefined,
+        description:    (data.description?.trim()) || undefined,
         assigned_to:    profile.id,
         created_by:     profile.id,
         first_hearing: {
-          serial_no:       data.serial_no       || undefined,
+          serial_no:       (data.serial_no?.trim()) || undefined,
           next_date:       data.next_date        || undefined,
-          next_proceeding: data.next_proceeding  || undefined,
+          next_proceeding: (data.next_proceeding?.trim()) || undefined,
         },
       });
-      toast.success(t("cases.new"), `${data.case_ref_no} created.`);
+      toast.success(t("cases.new"), `Case ${data.case_ref_no} created successfully.`);
       router.push(`/cases/view?id=${newCase.id}`);
     } catch (err: unknown) {
-      toast.error(t("common.error"), err instanceof Error ? err.message : "Failed to save.");
+      console.error("[case-creation] Error:", err);
+      const errorMsg = err instanceof Error ? err.message : "Failed to create case";
+      toast.error(t("common.error"), errorMsg);
     }
   }
 
@@ -137,7 +145,7 @@ function NewCasePage() {
       {clientError && <QueryErrorState onRetry={() => void refetchClient()} />}
       {caseTypesError && <QueryErrorState onRetry={() => void refetchCaseTypes()} />}
       {courtsError && <QueryErrorState onRetry={() => void refetchCourts()} />}
-      <form onSubmit={handleSubmit(onSubmit)} noValidate className="max-w-2xl mx-auto space-y-5">
+      <form onSubmit={handleSubmit(onSubmit)} noValidate className="w-full max-w-2xl mx-auto px-3 sm:px-4 md:px-0 space-y-4 sm:space-y-5">
 
         {/* ── Client ── */}
         <Card>
@@ -224,7 +232,7 @@ function NewCasePage() {
                       key={r}
                       type="button"
                       onClick={() => setValue("From", r, { shouldValidate: true })}
-                      className={`flex-1 py-2.5 text-sm font-semibold transition-colors ${
+                      className={`flex-1 py-2 sm:py-2.5 text-xs sm:text-sm font-semibold transition-colors ${
                         active ? "bg-navy text-white" : "bg-white text-navy-400 hover:bg-navy-50"
                       }`}
                     >
@@ -235,7 +243,7 @@ function NewCasePage() {
               </div>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <Input
                 label={t("cases.plaintiff")} required
                 placeholder="Muhammad Aslam Khan"
@@ -250,7 +258,7 @@ function NewCasePage() {
               />
             </div>
 
-            <div className="grid md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <Input
                 label={t("cases.court")}
                 placeholder={t("common.allCourts")}
@@ -284,7 +292,7 @@ function NewCasePage() {
             {t("cases.firstHearing")} <span className="text-navy-300 font-normal">{t("common.optional")}</span>
           </h2>
           <div className="space-y-4">
-            <div className="grid md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <Input
                 label={t("hearings.serialNo")}
                 placeholder="14"
@@ -309,7 +317,7 @@ function NewCasePage() {
         </Card>
 
         {/* ── Actions ── */}
-        <div className="flex gap-3">
+        <div className="flex gap-2 sm:gap-3">
           <Button type="button" variant="secondary" onClick={() => router.back()} className="flex-1">
             {t("common.cancel")}
           </Button>
