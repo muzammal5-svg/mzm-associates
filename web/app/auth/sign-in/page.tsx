@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link                    from "next/link";
 import { useRouter }           from "next/navigation";
 import { useTranslation }      from "react-i18next";
 import { Eye, EyeOff, Phone, Mail, ArrowRight, AlertCircle } from "lucide-react";
@@ -114,7 +115,7 @@ export default function SignInPage() {
           {/* Logo */}
           <div className="flex flex-col items-center gap-2 pb-2">
             <Logo size="lg" variant="full" />
-            <p className="text-xs text-navy-300 text-center leading-snug">
+            <p className="text-xs text-navy-600 font-medium text-center leading-snug">
               {t("brand.tagline")}
             </p>
           </div>
@@ -141,8 +142,8 @@ export default function SignInPage() {
                   className={cn(
                     "flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-sm font-medium transition-colors",
                     tab === t_
-                      ? "bg-white text-navy shadow-card"
-                      : "text-navy-400 hover:text-navy"
+                      ? "bg-white text-navy font-semibold shadow-card"
+                      : "text-navy-600 hover:text-navy"
                   )}
                 >
                   {t_ === "password" ? <Mail className="w-3.5 h-3.5" /> : <Phone className="w-3.5 h-3.5" />}
@@ -156,9 +157,9 @@ export default function SignInPage() {
           {tab === "password" && (
             <form onSubmit={handlePasswordLogin} className="space-y-4" noValidate>
               <div className="space-y-1.5">
-                <label htmlFor="email" className="label">{t("auth.email")}</label>
+                <label htmlFor="email" className="label text-navy-700">{t("auth.email")}</label>
                 <div className="relative">
-                  <Mail className="absolute start-3 top-1/2 -translate-y-1/2 w-4 h-4 text-navy-300 pointer-events-none" />
+                  <Mail className="absolute start-3 top-1/2 -translate-y-1/2 w-4 h-4 text-navy-400 pointer-events-none" />
                   <input
                     id="email" type="email" autoComplete="email" required
                     value={email} onChange={e => setEmail(e.target.value)}
@@ -170,7 +171,7 @@ export default function SignInPage() {
               </div>
 
               <div className="space-y-1.5">
-                <label htmlFor="password" className="label">{t("auth.password")}</label>
+                <label htmlFor="password" className="label text-navy-700">{t("auth.password")}</label>
                 <div className="relative">
                   <input
                     id="password" type={showPwd ? "text" : "password"}
@@ -183,7 +184,7 @@ export default function SignInPage() {
                     type="button"
                     aria-label={showPwd ? t("auth.hidePassword") : t("auth.showPassword")}
                     onClick={() => setShowPwd(v => !v)}
-                    className="absolute end-3 top-1/2 -translate-y-1/2 text-navy-300 hover:text-navy transition-colors p-0.5"
+                    className="absolute end-3 top-1/2 -translate-y-1/2 text-navy-400 hover:text-navy transition-colors p-0.5"
                   >
                     {showPwd ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
@@ -199,21 +200,21 @@ export default function SignInPage() {
                     onChange={e => setRememberMe(e.target.checked)}
                     className="w-4 h-4 rounded border-navy-200 accent-gold"
                   />
-                  <span className="text-xs text-navy-400">{t("auth.rememberMe")}</span>
+                  <span className="text-xs font-medium text-navy-700">{t("auth.rememberMe")}</span>
                 </label>
-                <a
+                <Link
                   href="/auth/forgot-password"
-                  className="text-xs text-gold hover:underline font-medium"
+                  className="text-xs font-semibold text-gold-600 hover:text-gold-700 hover:underline"
                 >
                   {t("auth.forgotPassword")}
-                </a>
+                </Link>
               </div>
 
               {/* Error */}
               {error && (
                 <div role="alert" className="flex items-start gap-2 bg-red-50 border border-red-100 rounded-lg p-2.5">
                   <AlertCircle className="w-4 h-4 text-danger flex-shrink-0 mt-0.5" />
-                  <p className="text-xs text-danger">{error}</p>
+                  <p className="text-xs text-danger font-medium">{error}</p>
                 </div>
               )}
 
@@ -242,9 +243,9 @@ export default function SignInPage() {
             <form onSubmit={otpStep === "phone" ? handleSendOtp : handleVerifyOtp} className="space-y-4" noValidate>
               {otpStep === "phone" ? (
                 <div className="space-y-1.5">
-                  <label htmlFor="phone" className="label">{t("auth.phone")}</label>
+                  <label htmlFor="phone" className="label text-navy-700">{t("auth.phone")}</label>
                   <div className="relative">
-                    <Phone className="absolute start-3 top-1/2 -translate-y-1/2 w-4 h-4 text-navy-300 pointer-events-none" />
+                    <Phone className="absolute start-3 top-1/2 -translate-y-1/2 w-4 h-4 text-navy-400 pointer-events-none" />
                     <input
                       id="phone" type="tel" autoComplete="tel" required
                       value={phone} onChange={e => setPhone(e.target.value)}
@@ -256,20 +257,20 @@ export default function SignInPage() {
                 </div>
               ) : (
                 <div className="space-y-1.5">
-                  <p className="text-xs text-navy-400">{info}</p>
-                  <label htmlFor="otp" className="label">{t("auth.otpLabel")}</label>
+                  <p className="text-xs text-navy-600 font-medium">{info}</p>
+                  <label htmlFor="otp" className="label text-navy-700">{t("auth.otpLabel")}</label>
                   <input
                     id="otp" type="text" inputMode="numeric" pattern="[0-9]*"
                     maxLength={6} required
                     value={otp} onChange={e => setOtp(e.target.value.replace(/\D/g, ""))}
-                    className="input tracking-[0.4em] text-center text-lg font-mono"
+                    className="input tracking-[0.4em] text-center text-lg font-mono font-bold text-navy"
                     placeholder="000000"
                     disabled={loading}
                   />
                   <button
                     type="button"
                     onClick={() => { setOtpStep("phone"); setOtp(""); clearMessages(); }}
-                    className="text-xs text-gold hover:underline"
+                    className="text-xs font-semibold text-gold-600 hover:underline"
                   >
                     {t("auth.backToLogin")}
                   </button>
@@ -279,7 +280,7 @@ export default function SignInPage() {
               {error && (
                 <div role="alert" className="flex items-start gap-2 bg-red-50 border border-red-100 rounded-lg p-2.5">
                   <AlertCircle className="w-4 h-4 text-danger flex-shrink-0 mt-0.5" />
-                  <p className="text-xs text-danger">{error}</p>
+                  <p className="text-xs text-danger font-medium">{error}</p>
                 </div>
               )}
 
@@ -297,15 +298,15 @@ export default function SignInPage() {
       </div>
 
       {/* Sign-up nudge */}
-      <div className="mt-4 text-center text-xs text-navy-400">
+      <div className="mt-4 text-center text-xs text-white/70">
         {t("marketing.regHaveAccount")}{' '}
-        <a href="/register" className="font-semibold text-gold hover:underline">
+        <Link href="/register" className="font-semibold text-gold hover:underline">
           {t("marketing.signUp")}
-        </a>
+        </Link>
       </div>
 
       {/* Version note */}
-      <p className="mt-6 text-navy-400 text-xs">{t("brand.name")} &copy; {new Date().getFullYear()}</p>
+      <p className="mt-6 text-white/50 text-xs">{t("brand.name")} &copy; {new Date().getFullYear()}</p>
     </div>
   );
 }

@@ -33,10 +33,10 @@ interface DocumentListProps {
 }
 
 function DocIcon({ mime }: { mime: string | null }) {
-  if (!mime) return <FileIcon className="w-5 h-5 text-navy-300" />;
+  if (!mime) return <FileIcon className="w-5 h-5 text-navy-400" />;
   if (mime.startsWith("image/"))       return <ImageIcon className="w-5 h-5 text-blue-500" />;
   if (mime === "application/pdf")      return <FileText  className="w-5 h-5 text-red-500" />;
-  return <FileIcon className="w-5 h-5 text-navy-300" />;
+  return <FileIcon className="w-5 h-5 text-navy-400" />;
 }
 
 function DocPreviewModal({ url, mime, onClose }: { url: string; mime: string | null; onClose: () => void }) {
@@ -148,7 +148,7 @@ export function DocumentList({
         {docs.map(doc => (
           <div
             key={doc.id}
-            className="flex items-center gap-3 p-3 bg-white rounded-xl border border-navy-50 shadow-card"
+            className="flex items-center gap-3 p-3 bg-white rounded-xl border border-border shadow-xs"
           >
             {/* Icon */}
             <div className="w-9 h-9 rounded-lg bg-navy-50 flex items-center justify-center flex-shrink-0">
@@ -171,7 +171,7 @@ export function DocumentList({
                 <button
                   onClick={() => handlePreview(doc)}
                   aria-label={t("common.view")}
-                  className="w-8 h-8 flex items-center justify-center rounded-lg text-navy-300 hover:bg-navy-50 hover:text-navy transition-colors"
+                  className="w-8 h-8 flex items-center justify-center rounded-lg text-navy-400 hover:bg-navy-50 hover:text-navy transition-colors"
                 >
                   <Eye className="w-4 h-4" />
                 </button>
@@ -180,7 +180,7 @@ export function DocumentList({
               <button
                 onClick={() => handleDownload(doc)}
                 aria-label={t("documents.download")}
-                className="w-8 h-8 flex items-center justify-center rounded-lg text-navy-300 hover:bg-navy-50 hover:text-navy transition-colors"
+                className="w-8 h-8 flex items-center justify-center rounded-lg text-navy-400 hover:bg-navy-50 hover:text-navy transition-colors"
               >
                 <Download className="w-4 h-4" />
               </button>
@@ -190,7 +190,7 @@ export function DocumentList({
                   onClick={() => setConfirmDoc(doc)}
                   {...lock}
                   aria-label={t("documents.delete")}
-                  className="w-8 h-8 flex items-center justify-center rounded-lg text-navy-300 hover:bg-red-50 hover:text-danger transition-colors disabled:opacity-40"
+                  className="w-8 h-8 flex items-center justify-center rounded-lg text-navy-400 hover:bg-red-50 hover:text-danger transition-colors disabled:opacity-40"
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>

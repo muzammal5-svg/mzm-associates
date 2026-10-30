@@ -11,10 +11,12 @@ export default function HelpPage() {
       <AppShell pageTitle={t("more.help")} showBack>
         <div className="max-w-xl mx-auto">
           <Card className="flex flex-col items-center gap-4 py-10 text-center">
-            <HelpCircle className="w-12 h-12 text-navy-300" />
+            <div className="w-16 h-16 rounded-2xl bg-gold/10 border border-gold/20 flex items-center justify-center">
+              <HelpCircle className="w-8 h-8 text-gold" />
+            </div>
             <div>
               <p className="font-semibold text-navy text-lg">{t("more.helpTitle")}</p>
-              <p className="text-sm text-navy-400 mt-1">{t("more.helpText")}</p>
+              <p className="text-sm text-navy-500 mt-1">{t("more.helpText")}</p>
             </div>
             <a href="mailto:support@mzm.pk" className="btn-primary px-6">
               {t("more.emailSupport")}

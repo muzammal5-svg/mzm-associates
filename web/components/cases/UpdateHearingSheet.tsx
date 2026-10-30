@@ -15,6 +15,7 @@ import { Button }             from "@/components/ui/Button";
 import { MutatingButton }     from "@/components/shared/MutatingButton";
 import { useToast }           from "@/components/ui/Toast";
 import { useUpdateHearing }   from "@/hooks/useHearings";
+import { supabaseRaw }        from "@/lib/supabase/client";
 import type { CauseListRow }  from "@/types/supabase";
 
 const schema = z.object({
@@ -55,27 +56,42 @@ export function UpdateHearingSheet({ row, onClose }: UpdateHearingSheetProps) {
   } = useForm<FormData>({ resolver: zodResolver(formSchema) });
 
   useEffect(() => {
-    if (!row?.hearing_id || !row.case_id) return;
+    if (!row?.case_id) return;
     reset({
       serial_no:     row.serial_no ?? "",
-      judge_change:  row.hearing_judge ?? "",
-      court_change:  row.hearing_court_no ?? "",
+      judge_change:  row.hearing_judge ?? row.case_judge ?? "",
+      court_change:  row.hearing_court_no ?? row.case_court_no ?? "",
     });
   }, [row, reset]);
 
   async function onSubmit(data: FormData) {
-    if (!row?.hearing_id || !row.case_id) return;
+    if (!row?.case_id || !row?.firm_id) return;
     try {
-      await update.mutateAsync({
-        currentHearingId:  row.hearing_id,
-        caseId:            row.case_id,
-        currentProceeding: data.current_proceeding,
-        serialNo:          data.serial_no || undefined,
-        nextDate:          data.next_date,
-        nextProceeding:    data.next_proceeding || undefined,
-        judgeChange:       data.judge_change || undefined,
-        courtChange:       data.court_change || undefined,
-      });
+      if (row.hearing_id) {
+        await update.mutateAsync({
+          currentHearingId:  row.hearing_id,
+          caseId:            row.case_id,
+          currentProceeding: data.current_proceeding,
+          serialNo:          data.serial_no || undefined,
+          nextDate:          data.next_date,
+          nextProceeding:    data.next_proceeding || undefined,
+          judgeChange:       data.judge_change || undefined,
+          courtChange:       data.court_change || undefined,
+        });
+      } else {
+        const { error } = await supabaseRaw.from("hearings").insert({
+          case_id:            row.case_id,
+          firm_id:            row.firm_id,
+          serial_no:          data.serial_no || null,
+          current_proceeding: data.current_proceeding,
+          next_date:          data.next_date,
+          next_proceeding:    data.next_proceeding || null,
+          judge_name:         data.judge_change || row.case_judge || null,
+          court_no:           data.court_change || row.case_court_no || null,
+          hearing_date:       new Date().toISOString().split("T")[0],
+        });
+        if (error) throw error;
+      }
       toast.success(t("common.updated"), t("common.newHearingRow"));
       onClose();
     } catch (err: unknown) {
@@ -90,9 +106,9 @@ export function UpdateHearingSheet({ row, onClose }: UpdateHearingSheetProps) {
     <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-4">
       {/* Case label */}
       {row && (
-        <div className="bg-navy-50 rounded-xl px-3 py-2.5">
-          <p className="text-xs font-mono text-gold font-semibold">{row.case_ref_no}</p>
-          <p className="text-sm text-navy font-medium truncate mt-0.5">
+        <div className="bg-slate-50 border border-slate-200/80 rounded-2xl px-4 py-3">
+          <p className="text-xs font-mono text-gold font-semibold">{row.case_ref_no || "—"}</p>
+          <p className="text-sm font-semibold text-navy truncate mt-0.5">
             {row.plaintiff_name} {t("cases.vs")} {row.defendant_name}
           </p>
         </div>
@@ -140,7 +156,7 @@ export function UpdateHearingSheet({ row, onClose }: UpdateHearingSheetProps) {
         />
       </div>
 
-      <p className="text-[11px] text-navy-400 bg-gold-50 border border-gold-100 rounded-lg px-3 py-2">
+      <p className="text-[11px] text-amber-800 bg-amber-500/10 border border-amber-500/20 rounded-xl px-3.5 py-2.5 leading-relaxed">
         {t("common.hearingUpdateNote")}
       </p>
 

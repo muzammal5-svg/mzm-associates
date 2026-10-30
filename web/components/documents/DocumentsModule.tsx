@@ -37,7 +37,7 @@ export function DocumentsModule({ clientId, caseId, className, firmWide = false,
   return (
     <div className={className}>
       {firmWide && (
-        <div className="mb-4 space-y-3 rounded-xl border border-navy-100 bg-white p-4">
+        <div className="mb-4 space-y-3 rounded-xl border border-border bg-white p-4 shadow-xs">
           <Input
             label={t("common.searchDocuments")}
             placeholder={t("common.documentName")}

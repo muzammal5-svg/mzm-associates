@@ -152,15 +152,15 @@ function NotificationsPage() {
                 key={item.id}
                 onClick={() => void openNotification(item)}
                 className={`block w-full rounded-xl border text-start transition-colors ${
-                  item.is_read ? "border-navy-50 bg-white" : "border-gold-200 bg-gold-50"
+                  item.is_read ? "border-border bg-white hover:bg-navy-50/50 shadow-xs" : "border-gold-300 bg-gold-50/60 hover:bg-gold-50 shadow-xs"
                 }`}
               >
                 <div className="flex items-start gap-3 p-4">
                   <span className={`mt-1.5 h-2.5 w-2.5 shrink-0 rounded-full ${item.is_read ? "bg-transparent" : "bg-gold"}`} aria-label={item.is_read ? "Read" : "Unread"} />
                   <span className="min-w-0 flex-1">
-                    <span className={`block text-sm font-semibold ${item.is_read ? "text-navy-400" : "text-navy"}`}>{item.title}</span>
-                    <span className="mt-0.5 block text-xs text-navy-400">{item.body}</span>
-                    <span className="mt-1 block text-[10px] text-navy-300">{fmtDate(item.created_at)} · {t(`notifications.type.${item.type}`, { defaultValue: item.type.replace(/_/g, " ") })}</span>
+                    <span className={`block text-sm font-semibold ${item.is_read ? "text-navy-500 font-medium" : "text-navy font-bold"}`}>{item.title}</span>
+                    <span className={`mt-0.5 block text-xs ${item.is_read ? "text-navy-400" : "text-navy-600 font-medium"}`}>{item.body}</span>
+                    <span className="mt-1 block text-[10px] text-navy-400 font-medium">{fmtDate(item.created_at)} · {t(`notifications.type.${item.type}`, { defaultValue: item.type.replace(/_/g, " ") })}</span>
                   </span>
                 </div>
               </button>

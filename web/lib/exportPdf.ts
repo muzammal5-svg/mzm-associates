@@ -78,7 +78,7 @@ export async function exportCauseListPdf(opts: PdfExportOptions): Promise<void> 
 
   const body = rows.map(r => [
     r.serial_no         ?? "—",
-    r.case_ref_no,
+    r.case_ref_no || "—",
     `${r.plaintiff_name} vs ${r.defendant_name}`,
     r.case_type_name,
     r.hearing_court_no  ?? "—",
@@ -150,7 +150,7 @@ export async function shareCauseList(
     `${rows.length} hearing(s) scheduled`,
     "",
     ...rows.map(r =>
-      `${r.serial_no ?? "—"}. ${r.case_ref_no} | ${r.plaintiff_name} vs ${r.defendant_name} | Court: ${r.hearing_court_no ?? "—"}`
+      `${r.serial_no ?? "—"}. ${r.case_ref_no || "—"} | ${r.plaintiff_name} vs ${r.defendant_name} | Court: ${r.hearing_court_no ?? "—"}`
     ),
   ].join("\n");
 

@@ -135,7 +135,7 @@ function CauseListPage() {
               aria-label={t("common.previousDay")}
               className="w-8 h-8 flex items-center justify-center rounded-lg text-navy hover:bg-navy-50 transition-colors"
             >
-              <ChevronLeft className="w-4 h-4" />
+              <ChevronLeft className="w-4 h-4 rtl:rotate-180" />
             </button>
             <div className="px-3 text-center min-w-[130px]">
               <p className="text-sm font-semibold text-navy">{fmtDate(date)}</p>
@@ -146,7 +146,7 @@ function CauseListPage() {
               aria-label={t("common.nextDay")}
               className="w-8 h-8 flex items-center justify-center rounded-lg text-navy hover:bg-navy-50 transition-colors"
             >
-              <ChevronRight className="w-4 h-4" />
+              <ChevronRight className="w-4 h-4 rtl:rotate-180" />
             </button>
           </div>
 

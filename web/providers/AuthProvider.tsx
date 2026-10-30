@@ -137,7 +137,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const removeDeviceToken = useCallback(async (userId: string) => {
     if (!IS_SUPABASE_CONFIGURED || !userId) return;
     try {
-      await supabase.from("device_tokens").delete().eq("user_id", userId);
+      // Only remove the current browser's push token, not all tokens across devices
+      const { getWebPushSubscriptionEndpoint } = await import("@/lib/push");
+      const endpoint = await getWebPushSubscriptionEndpoint();
+      if (!endpoint) return; // No push subscription for this browser — nothing to clean up
+      const { error } = await supabase
+        .from("device_tokens")
+        .delete()
+        .eq("user_id", userId)
+        .eq("token", endpoint);
+      if (error) console.error("[device_token] remove:", error.message);
     } catch (error) {
       console.error("[device_token] remove:", error);
     }

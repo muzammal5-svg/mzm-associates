@@ -4,7 +4,7 @@ import { useState, useCallback } from "react";
 import Link                       from "next/link";
 import { useRouter }              from "next/navigation";
 import { useTranslation }         from "react-i18next";
-import { Plus, Search, X, Briefcase } from "lucide-react";
+import { Plus, Search, X, Briefcase, ChevronLeft, ChevronRight } from "lucide-react";
 
 import { Input }        from "@/components/ui/Input";
 import { Button }       from "@/components/ui/Button";
@@ -29,10 +29,28 @@ function Pagination({ page, totalPages, onChange }: {
   const { t } = useTranslation();
   if (totalPages <= 1) return null;
   return (
-    <div className="flex items-center justify-center gap-2 mt-6">
-      <Button size="sm" variant="secondary" disabled={page === 1} onClick={() => onChange(page - 1)}>← {t("common.previousPage")}</Button>
-      <span className="text-sm text-navy-400">{page} / {totalPages}</span>
-      <Button size="sm" variant="secondary" disabled={page === totalPages} onClick={() => onChange(page + 1)}>{t("common.nextPage")} →</Button>
+    <div className="flex items-center justify-center gap-3 mt-6">
+      <Button
+        size="sm"
+        variant="secondary"
+        disabled={page === 1}
+        onClick={() => onChange(page - 1)}
+        leftIcon={<ChevronLeft className="w-3.5 h-3.5 rtl:rotate-180" />}
+      >
+        {t("common.previousPage")}
+      </Button>
+      <span className="text-xs font-semibold px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 border border-slate-200">
+        {page} / {totalPages}
+      </span>
+      <Button
+        size="sm"
+        variant="secondary"
+        disabled={page === totalPages}
+        onClick={() => onChange(page + 1)}
+        rightIcon={<ChevronRight className="w-3.5 h-3.5 rtl:rotate-180" />}
+      >
+        {t("common.nextPage")}
+      </Button>
     </div>
   );
 }
@@ -113,7 +131,7 @@ export function CasesList({ status, title }: CasesListProps) {
                 {
                   key: "ref",
                   header: t("cases.caseNo"),
-                  render: c => <span className="font-mono text-xs font-semibold text-gold">{c.case_ref_no}</span>,
+                  render: c => <span className="font-mono text-xs font-semibold text-gold">{c.case_ref_no || "—"}</span>,
                   width: "140px",
                 },
                 {
@@ -122,7 +140,7 @@ export function CasesList({ status, title }: CasesListProps) {
                   render: c => (
                     <span className="text-sm font-medium text-navy"
                       dir={isUrdu(c.plaintiff_name) ? "rtl" : "ltr"}>
-                      {c.plaintiff_name} <span className="text-navy-300 text-xs">{t("cases.vs")}</span> {c.defendant_name}
+                      {c.plaintiff_name} <span className="text-navy-400 font-medium mx-1 text-xs">{t("cases.vs")}</span> {c.defendant_name}
                     </span>
                   ),
                 },
@@ -136,7 +154,7 @@ export function CasesList({ status, title }: CasesListProps) {
                   key: "client",
                   header: t("clients.title"),
                   render: c => (
-                    <span className="text-xs text-navy-400"
+                    <span className="text-xs text-navy-600 font-medium"
                       dir={textDir(c.client?.full_name ?? "")}>
                       {c.client?.full_name ?? "—"}
                     </span>
@@ -146,7 +164,7 @@ export function CasesList({ status, title }: CasesListProps) {
                   ? {
                       key: "outcome",
                       header: t("cases.outcome"),
-                      render: c => c.outcome ? <OutcomeBadge outcome={c.outcome} /> : <span className="text-navy-300 text-xs">—</span>,
+                      render: c => c.outcome ? <OutcomeBadge outcome={c.outcome} /> : <span className="text-navy-400 text-xs">—</span>,
                       width: "110px",
                     }
                   : {

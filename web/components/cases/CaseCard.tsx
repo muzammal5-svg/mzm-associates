@@ -22,19 +22,19 @@ export function CaseCard({ case_: c, className }: CaseCardProps) {
         {/* Ref no circle */}
         <div className="w-10 h-10 rounded-lg bg-gold/10 flex items-center justify-center flex-shrink-0 mt-0.5">
           <span className="text-[10px] font-bold text-gold leading-tight text-center px-1 break-all">
-            {c.case_ref_no.slice(0, 8)}
+            {c.case_ref_no ? c.case_ref_no.slice(0, 8) : "—"}
           </span>
         </div>
 
         {/* Info */}
         <div className="flex-1 min-w-0">
-          <p className="text-xs font-mono text-gold font-semibold">{c.case_ref_no}</p>
+          <p className="text-xs font-mono text-gold font-semibold">{c.case_ref_no || "—"}</p>
           <p
             className="text-sm font-semibold text-navy mt-0.5 leading-snug line-clamp-2"
             dir={isUrdu(c.plaintiff_name) || isUrdu(c.defendant_name) ? "rtl" : "ltr"}
           >
             {c.plaintiff_name}
-            <span className="text-navy-300 font-normal mx-1 text-xs">{t("cases.vs")}</span>
+            <span className="text-navy-400 font-medium mx-1 text-xs">{t("cases.vs")}</span>
             {c.defendant_name}
           </p>
           <div className="flex items-center gap-1.5 mt-1.5 flex-wrap">
@@ -47,14 +47,14 @@ export function CaseCard({ case_: c, className }: CaseCardProps) {
             )}
           </div>
           {c.client?.full_name && (
-            <p className="text-[11px] text-navy-300 mt-1"
+            <p className="text-xs text-navy-500 mt-1"
               dir={textDir(c.client.full_name)}>
               {c.client.full_name}
             </p>
           )}
         </div>
 
-        <ChevronRight className="w-4 h-4 text-navy-200 group-hover:text-gold transition-colors flex-shrink-0 mt-1" />
+        <ChevronRight className="w-4 h-4 text-navy-400 group-hover:text-gold transition-colors flex-shrink-0 mt-1 rtl:rotate-180" />
       </Card>
     </Link>
   );

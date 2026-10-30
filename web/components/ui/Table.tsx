@@ -34,10 +34,10 @@ export function Table<T>({
   stickyHeader = false,
 }: TableProps<T>) {
   return (
-    <div className={cn("w-full overflow-x-auto rounded-xl border border-navy-50", className)}>
+    <div className={cn("w-full overflow-x-auto rounded-xl border border-border shadow-xs", className)}>
       <table className="w-full text-sm border-collapse">
         <thead className={cn(
-          "bg-navy-50/60 text-navy-400",
+          "bg-navy-50/75 text-navy-600",
           stickyHeader && "sticky top-0 z-10"
         )}>
           <tr>
@@ -48,7 +48,7 @@ export function Table<T>({
                 style={col.width ? { width: col.width } : undefined}
                 className={cn(
                   "text-start font-semibold text-xs uppercase tracking-wider",
-                  "px-4 py-3 border-b border-navy-50",
+                  "px-4 py-3.5 border-b border-border",
                   col.headerClass
                 )}
               >
@@ -57,10 +57,10 @@ export function Table<T>({
             ))}
           </tr>
         </thead>
-        <tbody className="bg-white divide-y divide-navy-50">
+        <tbody className="bg-white divide-y divide-border">
           {data.length === 0 ? (
             <tr>
-              <td colSpan={columns.length} className="text-center py-12 text-navy-300">
+              <td colSpan={columns.length} className="text-center py-12 text-navy-500 font-medium">
                 {emptyMessage}
               </td>
             </tr>
@@ -71,13 +71,13 @@ export function Table<T>({
                 onClick={onRowClick ? () => onRowClick(row) : undefined}
                 className={cn(
                   "transition-colors duration-100",
-                  onRowClick && "cursor-pointer hover:bg-navy-50/50"
+                  onRowClick && "cursor-pointer hover:bg-navy-50/60"
                 )}
               >
                 {columns.map((col) => (
                   <td
                     key={col.key}
-                    className={cn("px-4 py-3 text-navy", col.className)}
+                    className={cn("px-4 py-3.5 text-navy", col.className)}
                   >
                     {col.render(row, index)}
                   </td>
@@ -114,7 +114,7 @@ export function CardList<T>({
 }: CardListProps<T>) {
   if (data.length === 0) {
     return (
-      <div className="py-12 text-center text-sm text-navy-300">{emptyMessage}</div>
+      <div className="py-12 text-center text-sm text-navy-500 font-medium">{emptyMessage}</div>
     );
   }
 

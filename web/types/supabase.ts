@@ -176,7 +176,8 @@ export type Database = {
           offence: string | null
           outcome: Database["public"]["Enums"]["case_outcome"] | null
           plaintiff_name: string
-          From: Database["public"]["Enums"]["From_type"]
+          representing: Database["public"]["Enums"]["From_type"]
+          From?: Database["public"]["Enums"]["From_type"]
           status: Database["public"]["Enums"]["case_status"]
           updated_at: string
         }
@@ -199,7 +200,8 @@ export type Database = {
           offence?: string | null
           outcome?: Database["public"]["Enums"]["case_outcome"] | null
           plaintiff_name: string
-          From: Database["public"]["Enums"]["From_type"]
+          representing?: Database["public"]["Enums"]["From_type"]
+          From?: Database["public"]["Enums"]["From_type"]
           status?: Database["public"]["Enums"]["case_status"]
           updated_at?: string
         }
@@ -818,43 +820,55 @@ export type Database = {
       reminders: {
         Row: {
           acted_at: string | null
-          case_id: string
+          case_id: string | null
           created_at: string
           firm_id: string
-          hearing_id: string
+          hearing_id: string | null
           id: string
+          is_custom: boolean
           last_notified_at: string | null
           next_date: string | null
           remind_date: string
           status: Database["public"]["Enums"]["reminder_status"]
+          title: string | null
+          from: string | null
+          from_party: string | null
           urgency: Database["public"]["Enums"]["reminder_urgency"]
           user_id: string
         }
         Insert: {
           acted_at?: string | null
-          case_id: string
+          case_id?: string | null
           created_at?: string
           firm_id: string
-          hearing_id: string
+          hearing_id?: string | null
           id?: string
+          is_custom?: boolean
           last_notified_at?: string | null
           next_date?: string | null
           remind_date: string
           status?: Database["public"]["Enums"]["reminder_status"]
+          title?: string | null
+          from?: string | null
+          from_party?: string | null
           urgency?: Database["public"]["Enums"]["reminder_urgency"]
           user_id: string
         }
         Update: {
           acted_at?: string | null
-          case_id?: string
+          case_id?: string | null
           created_at?: string
           firm_id?: string
-          hearing_id?: string
+          hearing_id?: string | null
           id?: string
+          is_custom?: boolean
           last_notified_at?: string | null
           next_date?: string | null
           remind_date?: string
           status?: Database["public"]["Enums"]["reminder_status"]
+          title?: string | null
+          from?: string | null
+          from_party?: string | null
           urgency?: Database["public"]["Enums"]["reminder_urgency"]
           user_id?: string
         }
@@ -957,6 +971,7 @@ export type Database = {
           plaintiff_name: string | null
           previous_date: string | null
           From: Database["public"]["Enums"]["From_type"] | null
+          representing?: Database["public"]["Enums"]["From_type"] | null
           requires_offence: boolean | null
           serial_no: string | null
         }

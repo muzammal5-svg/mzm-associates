@@ -8,6 +8,7 @@ interface DatePickerProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "t
   label?:       string;
   error?:       string;
   hint?:        string;
+  variant?:     "light" | "dark";
   containerClassName?: string;
 }
 
@@ -17,13 +18,14 @@ interface DatePickerProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "t
  * Works on all platforms including iOS/Android WebView.
  */
 export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
-  ({ label, error, hint, containerClassName, className, id, required, ...props }, ref) => {
+  ({ label, error, hint, variant = "light", containerClassName, className, id, required, ...props }, ref) => {
     const inputId = id ?? label?.toLowerCase().replace(/\s+/g, "-");
+    const isDark  = variant === "dark";
 
     return (
       <div className={cn("flex flex-col gap-1.5", containerClassName)}>
         {label && (
-          <label htmlFor={inputId} className="label">
+          <label htmlFor={inputId} className={isDark ? "label-dark" : "label"}>
             {label}
             {required && <span className="text-danger ms-0.5" aria-hidden="true">*</span>}
           </label>
@@ -31,7 +33,7 @@ export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
 
         <div className="relative flex items-center">
           <Calendar
-            className="absolute start-3 w-4 h-4 text-navy-300 pointer-events-none"
+            className={cn("absolute start-3 w-4 h-4 pointer-events-none", isDark ? "text-white/50" : "text-navy-400")}
             aria-hidden="true"
           />
           <input
@@ -41,9 +43,7 @@ export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
             required={required}
             aria-invalid={!!error}
             className={cn(
-              "input ps-9",
-              // iOS date input needs explicit colour
-              "[color-scheme:light]",
+              isDark ? "input-dark ps-9 min-h-[44px] [color-scheme:dark]" : "input ps-9 min-h-[44px] [color-scheme:light]",
               error && "border-danger focus:ring-danger",
               className
             )}
@@ -55,7 +55,7 @@ export const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
           <p role="alert" className="text-danger text-xs font-medium">{error}</p>
         )}
         {hint && !error && (
-          <p className="text-navy-300 text-xs">{hint}</p>
+          <p className={cn("text-xs", isDark ? "text-white/60" : "text-navy-500")}>{hint}</p>
         )}
       </div>
     );

@@ -51,7 +51,7 @@ export function PageLoader({ message = "Loading…" }: { message?: string }) {
   return (
     <div className="min-h-[50vh] flex flex-col items-center justify-center gap-3">
       <LoadingSpinner size="lg" />
-      <p className="text-sm text-navy-300">{message}</p>
+      <p className="text-sm text-navy-500 font-medium">{message}</p>
     </div>
   );
 }

@@ -57,13 +57,13 @@ function CasesTab({ clientId }: { clientId: string }) {
   return (
     <div className="space-y-3">
       {/* Sub-tab toggle */}
-      <div className="flex rounded-xl overflow-hidden border border-navy-100">
+      <div className="flex rounded-xl overflow-hidden border border-border">
         {(["running", "decided"] as const).map(s => (
           <button
             key={s}
             onClick={() => setSub(s)}
             className={`flex-1 py-2 text-xs font-semibold transition-colors ${
-              sub === s ? "bg-navy text-white" : "bg-white text-navy-400 hover:bg-navy-50"
+              sub === s ? "bg-navy text-white shadow-xs" : "bg-white text-navy-600 hover:bg-navy-50"
             }`}
           >
             {s === "running" ? t("cases.running") : t("cases.decided")}
@@ -93,13 +93,13 @@ function CasesTab({ clientId }: { clientId: string }) {
             <Link key={c.id} href={`/cases/view?id=${c.id}`}>
               <Card hover className="flex items-center gap-3">
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs font-mono text-gold font-semibold">{c.case_ref_no}</p>
+                  <p className="text-xs font-mono text-gold font-semibold">{c.case_ref_no || "—"}</p>
                   <p
                     className="text-sm font-medium text-navy truncate mt-0.5"
                     dir={textDir(c.plaintiff_name)}
                   >
                     {c.plaintiff_name}{" "}
-                    <span className="text-navy-300 text-xs">{t("cases.vs")}</span>{" "}
+                    <span className="text-navy-400 text-xs">{t("cases.vs")}</span>{" "}
                     {c.defendant_name}
                   </p>
                   <div className="flex items-center gap-1.5 mt-1 flex-wrap">
@@ -108,11 +108,11 @@ function CasesTab({ clientId }: { clientId: string }) {
                       <OutcomeBadge outcome={c.outcome} />
                     )}
                     {c.decision_date && (
-                      <span className="text-[11px] text-navy-300">{fmtDate(c.decision_date)}</span>
+                      <span className="text-[11px] text-navy-500">{fmtDate(c.decision_date)}</span>
                     )}
                   </div>
                 </div>
-                <ChevronRight className="w-4 h-4 text-navy-200 flex-shrink-0" />
+                <ChevronRight className="w-4 h-4 text-navy-400 flex-shrink-0" />
               </Card>
             </Link>
           ))}
@@ -128,10 +128,10 @@ function DetailRow({ label, value, isUrduText = false }: {
 }) {
   if (!value) return null;
   return (
-    <div className="flex items-start justify-between gap-4 py-2.5 border-b border-navy-50 last:border-0">
-      <span className="text-sm text-navy-400 flex-shrink-0 w-32">{label}</span>
+    <div className="flex items-start justify-between gap-4 py-2.5 border-b border-border last:border-0">
+      <span className="text-sm text-navy-500 font-medium flex-shrink-0 w-32">{label}</span>
       <span
-        className={`text-sm text-navy text-end flex-1 ${isUrduText && isUrdu(value) ? "font-urdu" : ""}`}
+        className={`text-sm font-semibold text-navy text-end flex-1 ${isUrduText && isUrdu(value) ? "font-urdu" : ""}`}
         dir={isUrduText ? textDir(value) : "ltr"}
       >
         {value}
@@ -199,13 +199,13 @@ if (!client) return <AppShell showBack><EmptyState title={t("common.clientNotFou
           </div>
           <div className="flex-1 min-w-0">
             <p
-              className="text-lg font-heading font-semibold text-navy"
+              className="text-lg font-heading font-bold text-navy"
               dir={textDir(client.full_name)}
               lang={isUrdu(client.full_name) ? "ur" : "en"}
             >
               {client.full_name}
             </p>
-            {client.city && <p className="text-sm text-navy-400">{client.city}</p>}
+            {client.city && <p className="text-sm text-navy-500 font-medium">{client.city}</p>}
             <div className="flex items-center gap-2 mt-1 flex-wrap">
               {client.is_active
                 ? <Badge variant="success" dot>{t("common.active")}</Badge>
@@ -228,7 +228,7 @@ if (!client) return <AppShell showBack><EmptyState title={t("common.clientNotFou
                 onClick={handleToggleActive}
                 {...lock}
                 aria-label={client.is_active ? t("common.deactivate") : t("common.activate")}
-                className="text-navy-300 hover:text-navy transition-colors disabled:opacity-40"
+                className="text-navy-400 hover:text-navy transition-colors disabled:opacity-40"
               >
                 {client.is_active
                   ? <ToggleRight className="w-6 h-6 text-success" />

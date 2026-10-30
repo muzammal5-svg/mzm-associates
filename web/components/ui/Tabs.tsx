@@ -33,7 +33,7 @@ export function TabList({ children, className }: TabListProps) {
     <div
       role="tablist"
       className={cn(
-        "flex gap-0 border-b border-navy-100 overflow-x-auto scrollbar-hide",
+        "flex gap-0 border-b border-border overflow-x-auto scrollbar-hide",
         className
       )}
     >
@@ -66,8 +66,8 @@ export function TabTrigger({ value, children, className, count }: TabTriggerProp
         "border-b-2 -mb-px transition-colors duration-150",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold",
         isActive
-          ? "border-gold text-gold"
-          : "border-transparent text-navy-300 hover:text-navy hover:border-navy-100",
+          ? "border-gold text-gold font-semibold"
+          : "border-transparent text-navy-500 font-medium hover:text-navy hover:border-navy-300",
         className
       )}
     >
@@ -75,7 +75,7 @@ export function TabTrigger({ value, children, className, count }: TabTriggerProp
       {count !== undefined && (
         <span className={cn(
           "text-xs font-bold rounded-full px-1.5 py-0.5 min-w-[1.25rem] text-center",
-          isActive ? "bg-gold-100 text-gold-700" : "bg-navy-50 text-navy-400"
+          isActive ? "bg-gold-100 text-gold-700" : "bg-navy-100 text-navy-600"
         )}>
           {count}
         </span>

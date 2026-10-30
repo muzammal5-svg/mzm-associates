@@ -54,13 +54,13 @@ export default function ResetPasswordPage() {
           {done ? (
             <div className="flex flex-col items-center gap-3 py-4 text-center">
               <CheckCircle className="w-12 h-12 text-success" />
-              <p className="text-sm text-navy-400">{t("profile.passwordChanged")}</p>
-              <p className="text-xs text-navy-300">{t("common.loading")}</p>
+              <p className="text-sm font-semibold text-navy">{t("profile.passwordChanged")}</p>
+              <p className="text-xs text-navy-500">{t("common.loading")}</p>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4" noValidate>
               <div className="space-y-1.5">
-                <label htmlFor="new-password" className="label">{t("profile.newPassword")}</label>
+                <label htmlFor="new-password" className="label text-navy-700">{t("profile.newPassword")}</label>
                 <div className="relative">
                   <input
                     id="new-password" type={showPwd ? "text" : "password"}
@@ -69,7 +69,7 @@ export default function ResetPasswordPage() {
                     className="input pe-10" disabled={loading}
                   />
                   <button type="button" onClick={() => setShowPwd(v => !v)}
-                    className="absolute end-3 top-1/2 -translate-y-1/2 text-navy-300 hover:text-navy p-0.5"
+                    className="absolute end-3 top-1/2 -translate-y-1/2 text-navy-400 hover:text-navy p-0.5"
                     aria-label={showPwd ? t("auth.hidePassword") : t("auth.showPassword")}
                   >
                     {showPwd ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -77,14 +77,14 @@ export default function ResetPasswordPage() {
                 </div>
               </div>
               <div className="space-y-1.5">
-                <label htmlFor="confirm-password" className="label">{t("profile.confirmPassword")}</label>
+                <label htmlFor="confirm-password" className="label text-navy-700">{t("profile.confirmPassword")}</label>
                 <input
                   id="confirm-password" type="password" autoComplete="new-password" required
                   value={confirmPwd} onChange={e => setConfirmPwd(e.target.value)}
                   className="input" disabled={loading}
                 />
               </div>
-              {error && <p role="alert" className="text-danger text-xs">{error}</p>}
+              {error && <p role="alert" className="text-danger text-xs font-medium">{error}</p>}
               <button type="submit" disabled={loading || !newPwd || !confirmPwd} className="btn-primary w-full">
                 {loading ? t("common.loading") : t("common.save")}
               </button>

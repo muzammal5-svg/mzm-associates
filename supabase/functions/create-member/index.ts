@@ -87,7 +87,7 @@ serve(async (req) => {
 
     // revoke devices? not needed
 
-    return new Response(JSON.stringify({ user_id: created.user.id, temp_password }), { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    return new Response(JSON.stringify({ user_id: created.user.id, message: "Member created successfully." }), { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e) {
     return new Response(JSON.stringify({ error: String(e) }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }

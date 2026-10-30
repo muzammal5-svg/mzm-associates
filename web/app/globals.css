@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Cormorant+Garamond:wght@400;600;700&family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Cormorant+Garamond:wght@400;600;700&family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Nastaliq+Urdu:wght@400;600;700&family=Noto+Sans+Arabic:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -78,18 +78,33 @@ h1, h2, h3, h4 {
 
 /* ─── Urdu text helper ──────────────────────────────────────────────────────── */
 .urdu {
-  font-family: var(--font-noto-urdu);
+  font-family: var(--font-noto-urdu), 'Noto Sans Arabic', 'Jameel Noori Nastaleeq', 'Urdu Typesetting', Tahoma, serif;
   direction: rtl;
   text-align: right;
-  line-height: 2;
+  line-height: 2.1;
 }
 
-/* ─── RTL support ───────────────────────────────────────────────────────────── */
+/* ─── RTL support & Urdu Harmony ────────────────────────────────────────────── */
 [dir="rtl"] body {
-  font-family: var(--font-noto-urdu);
+  font-family: var(--font-noto-urdu), 'Noto Sans Arabic', 'Jameel Noori Nastaleeq', 'Urdu Typesetting', Tahoma, serif;
+  line-height: 1.95;
+  letter-spacing: normal;
 }
+
 [dir="rtl"] h1, [dir="rtl"] h2, [dir="rtl"] h3, [dir="rtl"] h4 {
-  font-family: var(--font-noto-urdu);
+  font-family: var(--font-noto-urdu), 'Noto Sans Arabic', 'Jameel Noori Nastaleeq', 'Urdu Typesetting', Tahoma, serif;
+  line-height: 1.75;
+}
+
+[dir="rtl"] .btn-primary, [dir="rtl"] .btn-secondary, [dir="rtl"] .btn-danger {
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+  line-height: 1.7;
+}
+
+[dir="rtl"] input, [dir="rtl"] select, [dir="rtl"] textarea {
+  line-height: 1.8;
+  font-family: var(--font-noto-urdu), 'Noto Sans Arabic', Tahoma, sans-serif;
 }
 
 /* ─── Scrollbar (desktop) ───────────────────────────────────────────────────── */
@@ -170,14 +185,22 @@ button, a, [role="button"] {
            disabled:opacity-50 disabled:cursor-not-allowed;
   }
   .input {
-    @apply w-full rounded-md border border-border bg-white px-3.5 py-3 text-sm text-navy
-           placeholder:text-navy-300
-           focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent
-           disabled:bg-navy-50 disabled:cursor-not-allowed
-           transition-shadow duration-200;
+    @apply w-full rounded-xl border border-navy-200 bg-white px-3.5 py-2.5 text-sm text-navy placeholder:text-navy-400
+           focus:outline-none focus:ring-2 focus:ring-gold focus:border-gold
+           disabled:bg-navy-50 disabled:text-navy-400 disabled:cursor-not-allowed
+           transition-all duration-200;
+  }
+  .input-dark {
+    @apply w-full rounded-xl border border-white/20 bg-white/10 px-3.5 py-2.5 text-sm text-white placeholder:text-white/40
+           focus:outline-none focus:ring-2 focus:ring-gold focus:border-gold
+           disabled:bg-white/5 disabled:cursor-not-allowed
+           transition-all duration-200;
   }
   .label {
-    @apply block text-sm font-medium text-muted mb-1.5;
+    @apply block text-xs font-semibold text-navy-700 uppercase tracking-wider mb-1.5;
+  }
+  .label-dark {
+    @apply block text-xs font-semibold text-white/80 uppercase tracking-wider mb-1.5;
   }
   .badge {
     @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold;
@@ -251,14 +274,36 @@ button, a, [role="button"] {
 
 /* ─── Floating label field ─────────────────────────────────────────────────── */
 .field-float {
-  @apply w-full min-h-[56px] rounded-xl border border-slate-200 bg-white px-3.5 pb-2 pt-6 text-sm text-navy
+  @apply w-full min-h-[56px] rounded-xl border border-slate-200 bg-white pb-2 pt-6 text-sm text-navy
          placeholder:text-transparent
          focus:outline-none focus:border-gold-400 focus:ring-4 focus:ring-gold-400/15
          transition-all duration-200 ease-in-out;
+  padding-inline-start: 1rem;
+  padding-inline-end: 1rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+.field-float--with-left-icon {
+  padding-inline-start: 2.75rem !important;
+  padding-left: 2.75rem !important;
+}
+[dir="rtl"] .field-float--with-left-icon {
+  padding-inline-start: 2.75rem !important;
+  padding-right: 2.75rem !important;
+  padding-left: 1rem !important;
+}
+.field-float--with-right-slot {
+  padding-inline-end: 2.75rem !important;
+  padding-right: 2.75rem !important;
+}
+[dir="rtl"] .field-float--with-right-slot {
+  padding-inline-end: 2.75rem !important;
+  padding-left: 2.75rem !important;
+  padding-right: 1rem !important;
 }
 .field-float-label {
   position: absolute;
-  inset-inline-start: 0.875rem;
+  inset-inline-start: 1rem;
   top: 50%;
   transform: translateY(-50%);
   font-size: 14px;
@@ -267,7 +312,15 @@ button, a, [role="button"] {
   pointer-events: none;
   transition: top .2s ease-in-out, transform .2s ease-in-out, font-size .2s ease-in-out, color .2s ease-in-out;
 }
-.field-float-label--inset { inset-inline-start: 2.5rem; }
+.field-float-label--inset {
+  inset-inline-start: 2.75rem;
+}
+[dir="ltr"] .field-float-label--inset {
+  left: 2.75rem;
+}
+[dir="rtl"] .field-float-label--inset {
+  right: 2.75rem;
+}
 .field-float:focus ~ .field-float-label,
 .field-float:not(:placeholder-shown) ~ .field-float-label,
 .field-float:-webkit-autofill ~ .field-float-label {

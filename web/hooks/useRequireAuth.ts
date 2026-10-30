@@ -25,7 +25,7 @@ export function useRequireAuth({
 
   useEffect(() => {
     // Wait for subscription state to load before making routing decisions
-    if (subLoading) return;
+    if (subLoading && !subStatus) return;
     if (waitingForAuth) return;
     if (!configured) return;
     if (!user) { router.replace(redirectTo); return; }
@@ -65,5 +65,9 @@ export function useRequireAuth({
     // trialing/active/grace stay
   }, [waitingForAuth, user, profile, configured, router, redirectTo, allowedRoles, unauthorizedTo, subStatus, subLoading, subRefresh]);
 
-  return { user, profile, loading: waitingForAuth || subLoading || (configured && (!user || !profile)) };
+  // Only consider subscription as blocking if it's the initial resolution (!subStatus).
+  // Background revalidation (e.g. window focus when selecting a file) should never flip
+  // loading back to true, which would unmount the active page tree in RouteGuard.
+  const isSubResolving = subLoading && !subStatus;
+  return { user, profile, loading: waitingForAuth || isSubResolving || (configured && (!user || !profile)) };
 }

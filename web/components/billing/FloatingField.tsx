@@ -44,7 +44,7 @@ export const FloatingField = forwardRef<HTMLInputElement, FloatingFieldProps>(
       <div className={cn("flex flex-col gap-1.5", containerClassName)}>
         <div className="relative">
           {leftIcon && (
-            <span className="pointer-events-none absolute start-3.5 top-1/2 -translate-y-1/2 text-navy-300" aria-hidden="true">
+            <span className="pointer-events-none absolute start-3.5 top-1/2 -translate-y-1/2 text-navy-400 flex items-center justify-center w-5 h-5" aria-hidden="true">
               {leftIcon}
             </span>
           )}
@@ -59,8 +59,8 @@ export const FloatingField = forwardRef<HTMLInputElement, FloatingFieldProps>(
             aria-describedby={error ? `${inputId}-error` : hint ? `${inputId}-hint` : undefined}
             className={cn(
               "field-float",
-              leftIcon && "ps-10",
-              (rightSlot || showValid) && "pe-10",
+              leftIcon ? "field-float--with-left-icon !ps-11" : "!ps-4",
+              (rightSlot || showValid) ? "field-float--with-right-slot !pe-11" : "!pe-4",
               error && "border-rose-300 focus:border-rose-400 focus:ring-rose-400/15",
               className
             )}

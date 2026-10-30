@@ -2,8 +2,9 @@
 
 import { Suspense, useState } from "react";
 import { useSearchParams }    from "next/navigation";
+import Link                   from "next/link";
 import { useTranslation }     from "react-i18next";
-import { Search, Filter, X, ChevronDown, ChevronUp } from "lucide-react";
+import { Search, Filter, X, ChevronDown, ChevronUp, Plus } from "lucide-react";
 
 import { AppShell }           from "@/components/layout/AppShell";
 import { RouteGuard }         from "@/components/shared/RouteGuard";
@@ -53,6 +54,7 @@ function RunningCasesPage({ updateCaseId }: { updateCaseId: string | null }) {
   }
 
   const filter: CauseListFilter = {
+    status:       "running",
     date:         null,        // null = no date filter (running cases)
     latestOnly:   true,        // one row per case (latest hearing)
     caseId:       updateCaseId ?? undefined,
@@ -78,8 +80,8 @@ function RunningCasesPage({ updateCaseId }: { updateCaseId: string | null }) {
       <div className="space-y-4">
         {optionsError && <QueryErrorState onRetry={() => void refetchOptions()} />}
 
-        {/* ── Search + filter toggle ── */}
-        <div className="flex items-center gap-3">
+        {/* ── Search + filter toggle + New Case ── */}
+        <div className="flex items-center gap-2.5">
           <div className="flex-1">
             <Input
               placeholder={t("cases.searchRunningPlaceholder")}
@@ -105,11 +107,17 @@ function RunningCasesPage({ updateCaseId }: { updateCaseId: string | null }) {
               <Badge variant="danger" size="sm" className="-me-1">{activeFilterCount}</Badge>
             )}
           </Button>
+          <Link href="/cases/new" className="flex-shrink-0">
+            <Button size="md" variant="primary" leftIcon={<Plus className="w-4 h-4" />}>
+              <span className="hidden sm:inline">{t("cases.newCase") || "New Case"}</span>
+              <span className="sm:hidden">{t("cases.new")}</span>
+            </Button>
+          </Link>
         </div>
 
         {/* ── Filter panel ── */}
         {filtersOpen && (
-          <div className="bg-white rounded-xl border border-navy-100 p-4 space-y-4 animate-slide-down">
+          <div className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-xs space-y-4 animate-slide-down">
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
               <Select
                 label="Court"
@@ -134,14 +142,14 @@ function RunningCasesPage({ updateCaseId }: { updateCaseId: string | null }) {
               />
               <div className="space-y-1.5">
                 <label className="label">{t("cases.From")}</label>
-                <div className="flex rounded-xl overflow-hidden border border-navy-100">
+                <div className="flex rounded-xl overflow-hidden border border-border">
                   {(["", "plaintiff", "defendant"] as const).map(r => (
                     <button key={r} type="button"
                       onClick={() => { setFrom(r); setPage(1); }}
                       className={`flex-1 py-2 text-xs font-semibold transition-colors ${
                         From === r
-                          ? "bg-navy text-white"
-                          : "bg-white text-navy-400 hover:bg-navy-50"
+                          ? "bg-navy text-white shadow-xs"
+                          : "bg-white text-navy-600 hover:bg-navy-50"
                       }`}
                     >
                       {r === "" ? t("common.all") : r === "plaintiff" ? t("cases.plaintiff") : t("cases.defendant")}

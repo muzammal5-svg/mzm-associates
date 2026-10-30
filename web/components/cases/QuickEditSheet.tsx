@@ -59,9 +59,9 @@ export function QuickEditSheet({ row, onClose }: QuickEditSheetProps) {
   const content = (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       {row && (
-        <div className="bg-navy-50 rounded-xl px-3 py-2.5">
-          <p className="text-xs font-mono text-gold font-semibold">{row.case_ref_no}</p>
-          <p className="text-sm text-navy truncate">{row.plaintiff_name} {t("cases.vs")} {row.defendant_name}</p>
+        <div className="bg-slate-50 border border-slate-200/80 rounded-2xl px-4 py-3">
+          <p className="text-xs font-mono text-gold font-semibold">{row.case_ref_no || "—"}</p>
+          <p className="text-sm font-semibold text-navy truncate mt-0.5">{row.plaintiff_name} {t("cases.vs")} {row.defendant_name}</p>
         </div>
       )}
       <Input label={t("hearings.serialNo")} placeholder={t("common.serialPlaceholder")} {...register("serial_no")} />

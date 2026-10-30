@@ -46,21 +46,21 @@ export function ClientCard({ client, caseCount, className }: ClientCardProps) {
 
           <div className="flex items-center gap-2 mt-0.5 flex-wrap">
             {client.phone && (
-              <span className="flex items-center gap-1 text-xs text-navy-400">
-                <Phone className="w-3 h-3" />
+              <span className="flex items-center gap-1 text-xs text-navy-500 font-medium">
+                <Phone className="w-3 h-3 text-navy-400" />
                 {formatPhoneDisplay(client.phone)}
               </span>
             )}
             {client.cnic && (
-              <span className="flex items-center gap-1 text-xs text-navy-400">
-                <CreditCard className="w-3 h-3" />
+              <span className="flex items-center gap-1 text-xs text-navy-500 font-mono">
+                <CreditCard className="w-3 h-3 text-navy-400" />
                 {client.cnic}
               </span>
             )}
           </div>
 
           {client.city && (
-            <p className="text-[11px] text-navy-300 mt-0.5">{client.city}</p>
+            <p className="text-xs text-navy-500 mt-0.5">{client.city}</p>
           )}
         </div>
 
@@ -75,7 +75,7 @@ export function ClientCard({ client, caseCount, className }: ClientCardProps) {
               {caseCount}
             </span>
           )}
-          <ChevronRight className="w-4 h-4 text-navy-200 group-hover:text-gold transition-colors" />
+          <ChevronRight className="w-4 h-4 text-navy-400 group-hover:text-gold transition-colors rtl:rotate-180" />
         </div>
       </Card>
     </Link>

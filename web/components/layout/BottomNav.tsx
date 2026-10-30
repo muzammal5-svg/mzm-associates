@@ -21,7 +21,7 @@ export function BottomNav() {
 
   return (
     <nav
-      className="md:hidden fixed bottom-0 start-0 end-0 z-30 bg-white border-t border-border shadow-inner-top"
+      className="md:hidden fixed bottom-0 start-0 end-0 z-30 bg-white/95 backdrop-blur-md border-t border-border shadow-inner-top"
       style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
       aria-label={t("nav.home")}
     >
@@ -45,16 +45,16 @@ export function BottomNav() {
               aria-current={isActive ? "page" : undefined}
                className={cn(
                  "flex-1 flex flex-col items-center justify-center gap-0.5",
-                 "min-h-[56px] py-2 text-[10px] font-medium transition-colors",
-                 isActive ? "text-gold" : "text-muted"
+                 "min-h-[56px] py-2 text-[10px] font-medium transition-colors relative",
+                 isActive ? "text-gold font-semibold" : "text-navy-400 hover:text-navy"
                )}
              >
+               {isActive && (
+                 <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-6 h-1 rounded-t-full bg-gold" aria-hidden="true" />
+               )}
                <span className="relative">
                  {Icon && (
                    <Icon className={cn("w-[22px] h-[22px] transition-transform", isActive && "scale-110 text-gold")} />
-                 )}
-                 {isActive && (
-                   <span className="absolute -bottom-1.5 start-1/2 -translate-x-1/2 w-4 h-1 rounded-full bg-gold" aria-hidden="true" />
                  )}
                  {badge > 0 && (
                   <span

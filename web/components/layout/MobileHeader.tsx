@@ -49,7 +49,7 @@ export function MobileHeader({ title, showBack, actions, className }: MobileHead
             aria-hidden="true"
           />
           <aside
-            className="fixed inset-y-0 start-0 z-50 w-[80%] max-w-xs bg-navy flex flex-col"
+            className="fixed inset-y-0 start-0 z-50 w-[80%] max-w-xs bg-[#1a1f2e] flex flex-col"
             aria-label={t("common.mainNavigation")}
           >
             {/* Drawer header */}
@@ -67,11 +67,11 @@ export function MobileHeader({ title, showBack, actions, className }: MobileHead
                 <p className="text-white text-sm font-heading font-bold truncate leading-tight">
                   {firm?.name ?? "MZM & Associates"}
                 </p>
-                <p className="text-navy-300 text-[10px] truncate">{t("nav.dashboard")}</p>
+                <p className="text-white/60 text-[10px] truncate">{t("nav.dashboard")}</p>
               </div>
               <button
                 onClick={() => setMenuOpen(false)}
-                className="ml-auto w-8 h-8 flex items-center justify-center rounded hover:bg-white/10 transition-colors"
+                className="ms-auto w-8 h-8 flex items-center justify-center rounded hover:bg-white/10 transition-colors"
               >
                 <X className="w-4 h-4 text-white" />
               </button>
@@ -92,18 +92,18 @@ export function MobileHeader({ title, showBack, actions, className }: MobileHead
                       "group flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors duration-150",
                       isActive
                         ? "bg-gold/15 text-gold border-s-2 border-gold"
-                        : "text-navy-200 hover:bg-white/10 hover:text-white"
+                        : "text-white/70 hover:bg-white/10 hover:text-white"
                     )}
                   >
-                    <Icon className="w-4.5 h-4.5 text-navy-300 group-hover:text-white flex-shrink-0" />
+                    <Icon className="w-4.5 h-4.5 text-white/60 group-hover:text-white flex-shrink-0" />
                     <span className="flex-1 truncate">{t(`nav.${item.key}`)}</span>
-                    {isActive && <ChevronRight className="w-3.5 h-3.5 opacity-50 flex-shrink-0" />}
+                    {isActive && <ChevronRight className="w-3.5 h-3.5 opacity-50 flex-shrink-0 rtl:rotate-180" />}
                   </Link>
                 );
               })}
 
               <div className="pt-3 pb-1">
-                <p className="text-[10px] font-semibold uppercase tracking-widest text-navy-400 px-3 mb-1">
+                <p className="text-[10px] font-semibold uppercase tracking-widest text-white/50 px-3 mb-1">
                   {t("nav.more")}
                 </p>
               </div>
@@ -120,12 +120,12 @@ export function MobileHeader({ title, showBack, actions, className }: MobileHead
                       "group flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors duration-150",
                       isActive
                         ? "bg-gold/15 text-gold border-s-2 border-gold"
-                        : "text-navy-200 hover:bg-white/10 hover:text-white"
+                        : "text-white/70 hover:bg-white/10 hover:text-white"
                     )}
                   >
-                    <Icon className="w-4.5 h-4.5 text-navy-300 group-hover:text-white flex-shrink-0" />
+                    <Icon className={cn("w-4.5 h-4.5 flex-shrink-0 transition-colors", isActive ? "text-gold" : "text-white/60 group-hover:text-white")} />
                     <span className="flex-1 truncate">{t(`nav.${item.key}`)}</span>
-                    {isActive && <ChevronRight className="w-3.5 h-3.5 opacity-50 flex-shrink-0" />}
+                    {isActive && <ChevronRight className="w-3.5 h-3.5 opacity-50 flex-shrink-0 rtl:rotate-180" />}
                   </Link>
                 );
               })}
@@ -178,7 +178,7 @@ export function MobileHeader({ title, showBack, actions, className }: MobileHead
               <div className="px-3 pt-3 space-y-2">
                 <a
                   href={phoneLink()}
-                  className="flex items-center gap-3 px-3 py-2.5 rounded-xl border border-navy-100 text-sm font-medium text-navy hover:bg-navy-50 hover:text-gold transition-colors"
+                  className="flex items-center gap-3 px-3 py-2.5 rounded-xl border border-white/20 text-sm font-medium text-white/70 hover:bg-white/10 hover:text-white transition-colors"
                 >
                   <Phone className="w-4 h-4" />
                   <span>{SITE.phone}</span>
@@ -186,7 +186,7 @@ export function MobileHeader({ title, showBack, actions, className }: MobileHead
               </div>
               <button
                 onClick={() => { setMenuOpen(false); signOut(); }}
-                className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-sm font-medium text-navy-300 hover:bg-white/10 hover:text-white transition-colors"
+                className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-sm font-medium text-white/70 hover:bg-white/10 hover:text-white transition-colors"
               >
                 <LogOut className="w-4 h-4" />
                 {t("auth.signOut")}
@@ -199,7 +199,7 @@ export function MobileHeader({ title, showBack, actions, className }: MobileHead
       {/* Mobile header bar */}
       <header
         className={cn(
-          "md:hidden sticky top-0 z-20 bg-white border-b border-navy-50",
+          "md:hidden sticky top-0 z-20 bg-white border-b border-border shadow-xs",
           "flex items-center gap-2 px-4",
           className
         )}
@@ -222,7 +222,7 @@ export function MobileHeader({ title, showBack, actions, className }: MobileHead
               aria-label={t("common.back")}
               className="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-navy-50 transition-colors -ms-1"
             >
-              <ArrowLeft className="w-5 h-5 text-navy" />
+              <ArrowLeft className="w-5 h-5 text-navy rtl:rotate-180" />
             </button>
           ) : (
             /* Firm logo if available, else MZM mark */
@@ -250,7 +250,7 @@ export function MobileHeader({ title, showBack, actions, className }: MobileHead
                 {firm?.name ?? "MZM & Associates"}
               </span>
               {profile && (
-                <span className="text-[10px] text-navy-300 truncate">
+                <span className="text-[10px] text-navy-500 truncate">
                   {profile.full_name}
                 </span>
               )}

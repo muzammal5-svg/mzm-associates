@@ -123,7 +123,7 @@ export function CaseLawList({ onEdit }: CaseLawListProps = {}) {
                         onEdit?.(row);
                       }}
                       title={t("common.edit")}
-                      className="w-8 h-8 flex items-center justify-center rounded text-navy-300 hover:bg-navy-50 hover:text-navy transition-colors"
+                      className="w-8 h-8 flex items-center justify-center rounded text-navy-400 hover:bg-navy-50 hover:text-navy transition-colors"
                     >
                       <Edit className="w-4 h-4" />
                     </button>
@@ -135,7 +135,7 @@ export function CaseLawList({ onEdit }: CaseLawListProps = {}) {
                         handleDelete(row.id);
                       }}
                       title={t("common.delete")}
-                      className="w-8 h-8 flex items-center justify-center rounded text-navy-300 hover:bg-danger/10 hover:text-danger transition-colors"
+                      className="w-8 h-8 flex items-center justify-center rounded text-navy-400 hover:bg-danger/10 hover:text-danger transition-colors"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
@@ -149,17 +149,17 @@ export function CaseLawList({ onEdit }: CaseLawListProps = {}) {
           data={caseLaws}
           keyExtractor={(row) => row.id}
           renderMobile={(row, index) => (
-            <div className="rounded-xl border border-navy-50 p-3 bg-white">
+            <div className="rounded-xl border border-border shadow-xs p-3 bg-white">
               <div className="flex justify-between items-start mb-2">
                 <span className="font-medium text-navy font-mono">{`${row.law_report} ${row.year} ${row.page_no}`}</span>
                 <Badge variant="navy" size="sm">{row.law_report}</Badge>
               </div>
-              <p className="text-navy-400 text-sm">{row.case_title}</p>
+              <p className="text-navy-600 text-sm">{row.case_title}</p>
               <div className="mt-3 flex items-center gap-2">
                 {isSuperAdmin && (
                   <button
                     onClick={(e) => { e.stopPropagation(); onEdit?.(row); }}
-                    className="text-xs text-navy-300 hover:text-navy underline underline-offset-2"
+                    className="text-xs text-navy-500 hover:text-navy underline underline-offset-2"
                   >
                     {t("common.edit")}
                   </button>

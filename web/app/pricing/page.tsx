@@ -3,16 +3,33 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useTranslation } from "react-i18next";
-import { Check, Sparkles, ShieldCheck, ArrowRight } from "lucide-react";
-import { MarketingShell } from "@/components/marketing/MarketingShell";
-import { PlanCard, type PlanView } from "@/components/marketing/PlanCard";
+import { Check, ArrowRight } from "lucide-react";
+import { PublicHeader } from "@/components/marketing/PublicHeader";
+import { PublicFooter } from "@/components/marketing/PublicFooter";
+import { Reveal } from "@/components/marketing/Reveal";
 import { saasDb } from "@/lib/supabase/saas";
+
+const CONTAINER = "max-w-[1200px] mx-auto px-4 md:px-6";
+const SECTION = "py-[80px] md:py-[120px]";
+
+interface PlanView {
+  id: string;
+  code: string;
+  name: string;
+  price_pkr: string | number;
+  duration_months: number;
+  max_users: number;
+  description?: string;
+  is_active: boolean;
+  sort_order: number;
+}
 
 export default function PricingPage() {
   const { t } = useTranslation();
   const [plans, setPlans] = useState<PlanView[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selected, setSelected] = useState("");
+  const [selected, setSelected] = useState<string>("");
+
   useEffect(() => {
     let mounted = true;
     saasDb
@@ -24,7 +41,8 @@ export default function PricingPage() {
         if (mounted) {
           const rows = (data as unknown as PlanView[]) ?? [];
           setPlans(rows);
-          setSelected(rows.find((p) => p.duration_months >= 12)?.id ?? rows[0]?.id ?? "");
+          const yearly = rows.find((p) => p.duration_months >= 12) ?? rows[0];
+          if (yearly) setSelected(yearly.id);
           setLoading(false);
         }
       });
@@ -40,112 +58,229 @@ export default function PricingPage() {
     );
   }, [plans]);
 
-  const popularPlanId = useMemo(
-    () => plans.find((p) => p.duration_months >= 12)?.id ?? plans[0]?.id ?? "",
-    [plans]
-  );
-
   const activePlan = useMemo(
     () => plans.find((p) => p.id === selected),
     [plans, selected]
   );
 
-  const perks = [
-    t("marketing.f1Title"),
-    t("marketing.f2Title"),
-    t("marketing.f3Title"),
-    t("marketing.f4Title"),
-    t("marketing.f5Title"),
-    t("marketing.f6Title"),
+  const features = [
+    { key: "caseManagement", icon: "📋" },
+    { key: "clientPortal", icon: "👥" },
+    { key: "smartReminders", icon: "🔔" },
+    { key: "documentStorage", icon: "📄" },
+    { key: "analytics", icon: "📊" },
+    { key: "apiAccess", icon: "⚙️" },
+    { key: "support", icon: "💬" },
+    { key: "customization", icon: "🎨" },
   ];
 
   return (
-    <MarketingShell>
-      <section className="relative overflow-hidden bg-mesh-surface px-4 py-16 sm:px-6 md:py-24">
-        <div className="pointer-events-none absolute -top-24 start-1/2 h-80 w-[42rem] -translate-x-1/2 rounded-full bg-gold-400/10 blur-3xl" aria-hidden="true" />
+    <div className="min-h-dvh bg-[#0F1117]">
+      <PublicHeader overDark />
 
-        <div className="relative mx-auto max-w-2xl text-center">
-          <span className="pill-badge border border-gold-300/60 bg-gold-50 text-gold-800">
-            <Sparkles className="h-3.5 w-3.5" aria-hidden="true" />
-            {t("marketing.pricingEyebrow")}
-          </span>
-          <h1 className="mt-5 font-heading text-3xl font-bold text-navy md:text-5xl">
-            {t("pricing.title")}
+      {/* ── HERO ── */}
+      <section className="relative min-h-[400px] flex items-center justify-center overflow-hidden bg-gradient-to-b from-black to-[#0F1117]">
+        <div className="absolute inset-0 z-0">
+          <div className="absolute inset-0 bg-gradient-to-r from-black via-black/80 to-transparent z-10" />
+          <div className="absolute top-20 right-0 w-96 h-96 bg-gold/5 rounded-full blur-3xl" />
+          <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl" />
+        </div>
+
+        <div className={`${CONTAINER} relative z-20 py-20 md:py-32 text-center`}>
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-white leading-tight mb-6">
+            Simple, Transparent <span className="text-gold">Pricing</span>
           </h1>
-          <p className="mt-4 text-base leading-relaxed text-muted">
-            {t("pricing.subtitle")}
+          <p className="text-lg text-white/70 max-w-2xl mx-auto">
+            Choose the plan that works for your law firm. No hidden fees. Cancel anytime.
           </p>
         </div>
+      </section>
 
-        <div
-          className="relative mx-auto mt-12 grid max-w-5xl gap-8 md:grid-cols-3"
-          role="radiogroup"
-          aria-label={t("pricing.title")}
-        >
-          {loading
-            ? [1, 2, 3].map((i) => (
-                <div key={i} className="h-80 animate-pulse rounded-2xl bg-white/60" />
-              ))
-            : plans.map((p) => (
-                <PlanCard
-                  key={p.id}
-                  plan={p}
-                  selected={p.id === selected}
-                  popular={p.id === popularPlanId}
-                  baselineMonthly={baselineMonthly}
-                  onSelect={(next) => setSelected(next.id)}
-                  showCta={false}
-                />
+      {/* ── PRICING PLANS ── */}
+      <section className={`${SECTION} bg-[#0F1117]`}>
+        <div className={CONTAINER}>
+          {loading ? (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="h-96 bg-white/5 rounded-2xl animate-pulse" />
               ))}
-        </div>
-
-        {/* Selection summary + CTA */}
-        {activePlan && (
-          <div className="relative mx-auto mt-10 max-w-5xl">
-            <div className="flex flex-col items-center gap-4 rounded-2xl border border-slate-200/80 bg-white/90 p-5 shadow-sm backdrop-blur-md sm:flex-row sm:justify-between">
-              <div className="text-center sm:text-start">
-                <p className="text-[11px] font-semibold uppercase tracking-wider text-muted">
-                  {t("marketing.pricingSelected")}
-                </p>
-                <p className="mt-1 font-heading text-lg font-bold text-navy">
-                  {activePlan.name} ·{" "}
-                  <span className="text-gold-700">Rs {Number(activePlan.price_pkr).toLocaleString()}</span>
-                </p>
-              </div>
-              <Link
-                href={`/register?plan=${activePlan.code}`}
-                className="group inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-gold-cta px-6 text-sm font-semibold text-navy-900 shadow-gold transition-all duration-200 ease-in-out hover:shadow-glow-gold active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 sm:w-auto"
-              >
-                {t("marketing.choosePlan")}
-                <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" aria-hidden="true" />
-              </Link>
             </div>
-          </div>
-        )}
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {plans.map((plan) => {
+                const isSelected = plan.id === selected;
+                const isPopular = plan.duration_months >= 12;
 
-        {/* Included features */}
-        <div className="relative mx-auto mt-12 max-w-5xl">
-          <div className="rounded-2xl border border-slate-200/80 bg-white/80 p-6 shadow-sm backdrop-blur-md sm:p-8">
-            <h2 className="text-center font-heading text-lg font-bold text-navy">
-              {t("pricing.featuresIncluded")}
+                return (
+                  <Reveal key={plan.id}>
+                    <button
+                      onClick={() => setSelected(plan.id)}
+                      className="h-full text-left group"
+                    >
+                      <div
+                        className={`relative h-full rounded-2xl border transition-all duration-300 p-8 flex flex-col ${
+                          isPopular
+                            ? "bg-gradient-to-br from-gold/20 to-blue-500/20 border-gold/50 shadow-lg shadow-gold/20 ring-1 ring-gold/30"
+                            : "bg-[#1a1f2e] border-white/5 hover:border-gold/30"
+                        }`}
+                      >
+                        {/* Popular badge */}
+                        {isPopular && (
+                          <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 bg-gold text-black text-xs font-bold rounded-full">
+                            {t("pricing.mostPopular") || "Most Popular"}
+                          </div>
+                        )}
+
+                        {/* Plan name & price */}
+                        <div className="mb-6">
+                          <h3 className="text-2xl font-bold text-white mb-2">{plan.name}</h3>
+                          <div className="flex items-baseline gap-2">
+                            <span className="text-4xl font-heading font-bold text-gold">
+                              Rs {Math.round(Number(plan.price_pkr) / Math.max(1, plan.duration_months)).toLocaleString()}
+                            </span>
+                            <span className="text-white/60">/month</span>
+                          </div>
+                          <p className="text-sm text-white/50 mt-2">
+                            {t("pricing.billedEvery")} {plan.duration_months} {t("pricing.months")}
+                          </p>
+                        </div>
+
+                        {/* CTA */}
+                        <Link
+                          href={`/register?plan=${plan.code}`}
+                          className={`w-full py-3 rounded-lg font-semibold transition-all duration-200 mb-8 text-center inline-flex items-center justify-center gap-2 ${
+                            isPopular
+                              ? "bg-gold text-black hover:bg-gold/90"
+                              : "border border-white/20 text-white hover:border-gold/50 hover:text-gold"
+                          }`}
+                        >
+                          {t("pricing.getCta") || "Get Started"}
+                          <ArrowRight className="w-4 h-4" />
+                        </Link>
+
+                        {/* Features list */}
+                        <div className="flex-1 space-y-3 mb-6 border-t border-white/5 pt-6">
+                          <p className="text-sm text-white/60 font-semibold mb-4">
+                            {t("pricing.includes")}:
+                          </p>
+                          <div className="space-y-3">
+                            <div className="flex items-center gap-3">
+                              <div className="w-5 h-5 rounded bg-gold/20 flex items-center justify-center flex-shrink-0">
+                                <Check className="w-3 h-3 text-gold" />
+                              </div>
+                              <span className="text-sm text-white/80">
+                                Up to {plan.max_users} {t("pricing.users")}
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-3">
+                              <div className="w-5 h-5 rounded bg-gold/20 flex items-center justify-center flex-shrink-0">
+                                <Check className="w-3 h-3 text-gold" />
+                              </div>
+                              <span className="text-sm text-white/80">
+                                {t("pricing.fullAccess")}
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-3">
+                              <div className="w-5 h-5 rounded bg-gold/20 flex items-center justify-center flex-shrink-0">
+                                <Check className="w-3 h-3 text-gold" />
+                              </div>
+                              <span className="text-sm text-white/80">
+                                24/7 {t("pricing.support")}
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-3">
+                              <div className="w-5 h-5 rounded bg-gold/20 flex items-center justify-center flex-shrink-0">
+                                <Check className="w-3 h-3 text-gold" />
+                              </div>
+                              <span className="text-sm text-white/80">
+                                {t("pricing.dataBackup")}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </button>
+                  </Reveal>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* ── FEATURES COMPARISON ── */}
+      <section className={`${SECTION} bg-[#1a1f2e]/50 border-y border-white/5`}>
+        <div className={CONTAINER}>
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-heading font-bold text-white mb-4">
+              {t("pricing.featureComparison") || "Feature Comparison"}
             </h2>
-            <ul className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              {perks.map((p) => (
-                <li key={p} className="flex items-center gap-2.5 text-sm text-navy/80">
-                  <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-gold-100 text-gold-700">
-                    <Check className="h-3.5 w-3.5" aria-hidden="true" />
-                  </span>
-                  {p}
-                </li>
-              ))}
-            </ul>
-            <p className="mt-6 flex items-center justify-center gap-2 border-t border-slate-200/80 pt-5 text-xs text-muted">
-              <ShieldCheck className="h-4 w-4 text-gold" aria-hidden="true" />
-              {t("marketing.pricingNote")}
+            <p className="text-lg text-white/60">
+              {t("pricing.compareDescription") || "All plans include everything you need to manage your law practice"}
             </p>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-max">
+              <thead>
+                <tr className="border-b border-white/10">
+                  <th className="text-left py-4 px-6 text-white font-semibold">{t("pricing.feature")}</th>
+                  {plans.map((plan) => (
+                    <th key={plan.id} className="text-center py-4 px-6 text-white/70 font-semibold">
+                      {plan.name}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {features.map((feature, idx) => (
+                  <tr key={idx} className="border-b border-white/5 hover:bg-white/2 transition-colors">
+                    <td className="py-4 px-6 text-white font-medium">
+                      <span className="mr-2">{feature.icon}</span>
+                      {t(`pricing.feature_${feature.key}`) || feature.key}
+                    </td>
+                    {plans.map((plan) => (
+                      <td key={plan.id} className="text-center py-4 px-6">
+                        <Check className="w-5 h-5 text-gold mx-auto" />
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
       </section>
-    </MarketingShell>
+
+      {/* ── FAQ CTA ── */}
+      <section className="py-16 bg-[#0F1117]">
+        <div className={CONTAINER}>
+          <div className="bg-gradient-to-r from-gold/20 to-blue-500/20 border border-white/10 rounded-2xl p-12 text-center">
+            <h2 className="text-2xl md:text-3xl font-heading font-bold text-white mb-3">
+              {t("pricing.questions") || "Have questions about our plans?"}
+            </h2>
+            <p className="text-white/60 mb-6">
+              {t("pricing.questionsDesc") || "Check out our FAQ or contact our sales team"}
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link
+                href="/faq"
+                className="inline-flex items-center justify-center px-8 py-3 border border-white/30 text-white font-semibold rounded-lg hover:bg-white/5 transition-all duration-200"
+              >
+                {t("pricing.readFaq") || "Read FAQ"}
+              </Link>
+              <Link
+                href="/contact"
+                className="inline-flex items-center justify-center px-8 py-3 bg-gold text-black font-semibold rounded-lg hover:bg-gold/90 transition-all duration-200"
+              >
+                {t("pricing.contactSales") || "Contact Sales"}
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <PublicFooter />
+    </div>
   );
 }

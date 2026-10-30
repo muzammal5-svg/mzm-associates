@@ -12,6 +12,7 @@ import type { TablesUpdate } from "@/types/supabase";
 
 export interface CauseListFilter {
   date?:          string | null;   // ISO date; null = all dates (running cases view)
+  status?:        "running" | "decided"; // case_status filter
   search?:        string;          // party name / case ref / client
   courtNo?:       string;
   judgeFilter?:   string;
@@ -34,6 +35,7 @@ const PAGE_SIZE = 25;
 export function useCauseList(filter: CauseListFilter = {}) {
   const {
     date,
+    status,
     search       = "",
     courtNo      = "",
     judgeFilter  = "",
@@ -65,11 +67,12 @@ export function useCauseList(filter: CauseListFilter = {}) {
         q = q.or(`hearing_date.eq.${date},next_date.eq.${date}`);
       }
 
+      if (status)        q = q.eq("case_status", status);
       if (latestOnly)   q = q.eq("is_latest_hearing", true);
       if (caseId)        q = q.eq("case_id", caseId);
       if (courtNo)       q = q.eq("hearing_court_no", courtNo);
       if (caseTypeId)    q = q.eq("case_type_id", caseTypeId);
-      if (From)  q = q.eq("From",     From);
+      if (From)          q = q.eq("representing", From);
       if (nextDateFrom)  q = q.gte("next_date",        nextDateFrom);
       if (nextDateTo)    q = q.lte("next_date",        nextDateTo);
 

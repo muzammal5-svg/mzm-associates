@@ -6,6 +6,7 @@ interface CardProps extends HTMLAttributes<HTMLDivElement> {
   padding?:    "none" | "sm" | "md" | "lg";
   hover?:      boolean;
   clickable?:  boolean;
+  variant?:    "light" | "dark";
 }
 
 const paddingMap = {
@@ -20,6 +21,7 @@ export function Card({
   padding    = "md",
   hover      = false,
   clickable  = false,
+  variant    = "light",
   className,
   ...props
 }: CardProps) {
@@ -28,10 +30,12 @@ export function Card({
       role={clickable ? "button" : undefined}
       tabIndex={clickable ? 0 : undefined}
       className={cn(
-       "bg-white rounded-lg border border-border shadow-sm",
-       paddingMap[padding],
-       hover    && "hover:shadow-md transition-shadow duration-150",
-       clickable && "cursor-pointer active:scale-[.99] transition-transform focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2",
+        variant === "dark"
+          ? "bg-[#111827] rounded-2xl border border-white/10 shadow-sm text-white"
+          : "bg-white rounded-2xl border border-slate-200/80 shadow-xs text-navy",
+        paddingMap[padding],
+        hover     && "hover:shadow-md hover:border-slate-300 transition-all duration-200",
+        clickable && "cursor-pointer active:scale-[.99] transition-transform focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2",
         className
       )}
       {...props}
@@ -61,7 +65,7 @@ export function CardTitle({ children, className, ...props }: HTMLAttributes<HTML
 
 export function CardBody({ children, className, ...props }: HTMLAttributes<HTMLDivElement>) {
   return (
-    <div className={cn("text-sm text-navy-400", className)} {...props}>
+    <div className={cn("text-sm text-navy-600", className)} {...props}>
       {children}
     </div>
   );
@@ -69,7 +73,7 @@ export function CardBody({ children, className, ...props }: HTMLAttributes<HTMLD
 
 export function CardFooter({ children, className, ...props }: HTMLAttributes<HTMLDivElement>) {
   return (
-    <div className={cn("mt-4 pt-3 border-t border-navy-50 flex items-center gap-2", className)} {...props}>
+    <div className={cn("mt-4 pt-3 border-t border-border flex items-center gap-2 text-navy-500", className)} {...props}>
       {children}
     </div>
   );

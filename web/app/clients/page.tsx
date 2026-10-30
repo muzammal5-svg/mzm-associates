@@ -46,15 +46,15 @@ function FilterPill({
       className={cn(
         "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border transition-colors",
         active
-          ? "bg-navy text-white border-navy"
-          : "bg-white text-navy-400 border-navy-100 hover:border-navy hover:text-navy"
+          ? "bg-navy text-white border-navy shadow-xs"
+          : "bg-white text-navy-600 border-border hover:border-navy hover:text-navy"
       )}
     >
       {label}
       {count !== undefined && (
         <span className={cn(
           "text-[10px] font-bold rounded-full px-1.5 py-0.5 leading-none",
-          active ? "bg-white/20 text-white" : "bg-navy-50 text-navy-400"
+          active ? "bg-white/20 text-white" : "bg-navy-100 text-navy-600"
         )}>
           {count}
         </span>
@@ -308,7 +308,7 @@ function ClientsPage() {
 function CaseCountCell({ clientId }: { clientId: string }) {
   const { t } = useTranslation();
   const { data } = useClientCaseCounts(clientId);
-  if (!data) return <span className="text-navy-300 text-xs">—</span>;
+  if (!data) return <span className="text-navy-400 text-xs">—</span>;
   return (
     <div className="flex items-center gap-1.5">
       {data.running > 0 && (
@@ -317,7 +317,7 @@ function CaseCountCell({ clientId }: { clientId: string }) {
       {data.decided > 0 && (
         <Badge variant="neutral" size="sm">{data.decided} {t("cases.decided")}</Badge>
       )}
-      {data.total === 0 && <span className="text-navy-300 text-xs">{t("common.noData")}</span>}
+      {data.total === 0 && <span className="text-navy-400 text-xs">{t("common.noData")}</span>}
     </div>
   );
 }

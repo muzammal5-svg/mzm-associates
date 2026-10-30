@@ -44,18 +44,18 @@ export default function ForgotPasswordPage() {
           {sent ? (
             <div className="flex flex-col items-center gap-4 py-4 text-center">
               <CheckCircle className="w-12 h-12 text-success" />
-              <p className="text-sm text-navy-400">{t("auth.resetSent")}</p>
+              <p className="text-sm text-navy-600 font-medium">{t("auth.resetSent")}</p>
               <Link href="/auth/sign-in" className="btn-primary px-6">
                 {t("auth.backToLogin")}
               </Link>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4" noValidate>
-              <p className="text-sm text-navy-400">{t("auth.resetEmailLabel")}</p>
+              <p className="text-sm text-navy-600">{t("auth.resetEmailLabel")}</p>
               <div className="space-y-1.5">
-                <label htmlFor="reset-email" className="label">{t("auth.email")}</label>
+                <label htmlFor="reset-email" className="label text-navy-700">{t("auth.email")}</label>
                 <div className="relative">
-                  <Mail className="absolute start-3 top-1/2 -translate-y-1/2 w-4 h-4 text-navy-300 pointer-events-none" />
+                  <Mail className="absolute start-3 top-1/2 -translate-y-1/2 w-4 h-4 text-navy-400 pointer-events-none" />
                   <input
                     id="reset-email" type="email" autoComplete="email" required
                     value={email} onChange={e => setEmail(e.target.value)}
@@ -65,7 +65,7 @@ export default function ForgotPasswordPage() {
                   />
                 </div>
               </div>
-              {error && <p role="alert" className="text-danger text-xs">{error}</p>}
+              {error && <p role="alert" className="text-danger text-xs font-medium">{error}</p>}
               <button
                 type="submit"
                 disabled={loading || !email}
@@ -76,11 +76,11 @@ export default function ForgotPasswordPage() {
             </form>
           )}
 
-          <div className="text-center">
-            <Link href="/auth/sign-in" className="flex items-center justify-center gap-1 text-xs text-gold hover:underline">
+          <div className="flex flex-col items-center gap-2 pt-2 text-center">
+            <Link href="/auth/sign-in" className="flex items-center justify-center gap-1 text-xs font-semibold text-gold-600 hover:underline">
               <ArrowLeft className="w-3.5 h-3.5" /> {t("auth.backToLogin")}
             </Link>
-            <Link href="/register" className="text-xs text-navy-400 hover:text-gold hover:underline">
+            <Link href="/register" className="text-xs text-navy-500 hover:text-gold hover:underline">
               {t("marketing.signUp")}
             </Link>
           </div>

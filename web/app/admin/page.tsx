@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useState, useCallback, useMemo } from "react";
 import Link from "next/link";
@@ -25,6 +25,8 @@ import {
   Power,
   Calendar,
   Users,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 
 import { RouteGuard } from "@/components/shared/RouteGuard";
@@ -86,6 +88,14 @@ function AdminDashboard() {
   const [firmFilter, setFirmFilter] = useState<SubStatus | "all">("all");
   const [searchQuery, setSearchQuery] = useState("");
 
+  // Pagination
+  const [paymentPage, setPaymentPage] = useState(1);
+  const [firmPage, setFirmPage] = useState(1);
+  const [eventsPage, setEventsPage] = useState(1);
+  const PAYMENTS_PER_PAGE = 8;
+  const FIRMS_PER_PAGE = 8;
+  const EVENTS_PER_PAGE = 15;
+
   // Modals
   const [slipUrl, setSlipUrl] = useState<string | null>(null);
   const [rejectPaymentId, setRejectPaymentId] = useState<string | null>(null);
@@ -122,9 +132,12 @@ function AdminDashboard() {
       const rawSubs = (subsData as unknown as Subscription[]) || [];
       const rawProfiles = (profilesData as any[]) || [];
 
-      // Map firm details
+      // Map firm details with latest subscription
       const mappedFirms: FirmWithSub[] = rawFirms.map((f) => {
-        const sub = rawSubs.find((s) => s.firm_id === f.id);
+        const firmSubs = rawSubs
+          .filter((s) => s.firm_id === f.id)
+          .sort((a, b) => new Date(b.ends_at).getTime() - new Date(a.ends_at).getTime());
+        const sub = firmSubs[0];
         const owner = rawProfiles.find((p) => p.firm_id === f.id && p.is_owner);
         const plan = sub ? fetchedPlans.find((p) => p.id === sub.plan_id) : undefined;
         const membersCount = rawProfiles.filter((p) => p.firm_id === f.id && p.is_active !== false).length;
@@ -370,7 +383,7 @@ function AdminDashboard() {
     }
   };
 
-  // Filtered Payments
+  // Filtered & Paginated Payments
   const filteredPayments = useMemo(() => {
     return payments.filter((p) => {
       const matchesFilter = paymentFilter === "all" || p.status === paymentFilter;
@@ -382,7 +395,13 @@ function AdminDashboard() {
     });
   }, [payments, paymentFilter, searchQuery]);
 
-  // Filtered Firms
+  const totalPaymentPages = Math.ceil(filteredPayments.length / PAYMENTS_PER_PAGE) || 1;
+  const paginatedPayments = useMemo(() => {
+    const from = (paymentPage - 1) * PAYMENTS_PER_PAGE;
+    return filteredPayments.slice(from, from + PAYMENTS_PER_PAGE);
+  }, [filteredPayments, paymentPage]);
+
+  // Filtered & Paginated Firms
   const filteredFirms = useMemo(() => {
     return firms.filter((f) => {
       const matchesFilter = firmFilter === "all" || f.subscription?.status === firmFilter;
@@ -394,6 +413,19 @@ function AdminDashboard() {
       return matchesFilter && matchesSearch;
     });
   }, [firms, firmFilter, searchQuery]);
+
+  const totalFirmPages = Math.ceil(filteredFirms.length / FIRMS_PER_PAGE) || 1;
+  const paginatedFirms = useMemo(() => {
+    const from = (firmPage - 1) * FIRMS_PER_PAGE;
+    return filteredFirms.slice(from, from + FIRMS_PER_PAGE);
+  }, [filteredFirms, firmPage]);
+
+  // Paginated Audit Events
+  const totalEventsPages = Math.ceil(events.length / EVENTS_PER_PAGE) || 1;
+  const paginatedEvents = useMemo(() => {
+    const from = (eventsPage - 1) * EVENTS_PER_PAGE;
+    return events.slice(from, from + EVENTS_PER_PAGE);
+  }, [events, eventsPage]);
 
   return (
     <div className="min-h-screen bg-mesh-surface pb-16">
@@ -439,63 +471,63 @@ function AdminDashboard() {
       </header>
 
       {/* Main Container */}
-      <main className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 pt-4 sm:pt-6 space-y-4 sm:space-y-6">
-        {/* Metric Highlights - Mobile responsive */}
-        <div className="grid grid-cols-2 gap-2 sm:gap-3 md:gap-4 md:grid-cols-4">
-          <Card className="glass-card p-3 sm:p-4">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 pt-6 space-y-6">
+        {/* Metric Highlights */}
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+          <Card className="glass-card p-4">
+            <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-wider text-muted line-clamp-2">Pending Payments</p>
-                <p className="mt-1 sm:mt-2 font-heading text-xl sm:text-2xl font-bold text-navy">{metrics.pendingCount}</p>
+                <p className="text-xs font-semibold uppercase tracking-wider text-muted">Pending Payments</p>
+                <p className="mt-1 font-heading text-2xl font-bold text-navy">{metrics.pendingCount}</p>
               </div>
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-100 text-amber-600 flex-shrink-0">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-100 text-amber-600">
                 <Clock className="h-5 w-5" aria-hidden="true" />
               </div>
             </div>
           </Card>
 
-          <Card className="glass-card p-3 sm:p-4">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+          <Card className="glass-card p-4">
+            <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-wider text-muted line-clamp-2">Active Firms</p>
-                <p className="mt-1 sm:mt-2 font-heading text-xl sm:text-2xl font-bold text-navy">{metrics.activeFirmsCount}</p>
+                <p className="text-xs font-semibold uppercase tracking-wider text-muted">Active Firms</p>
+                <p className="mt-1 font-heading text-2xl font-bold text-navy">{metrics.activeFirmsCount}</p>
               </div>
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-100 text-emerald-600 flex-shrink-0">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-100 text-emerald-600">
                 <Building2 className="h-5 w-5" aria-hidden="true" />
               </div>
             </div>
           </Card>
 
-          <Card className="glass-card p-3 sm:p-4">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+          <Card className="glass-card p-4">
+            <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-wider text-muted line-clamp-2">Trialing Firms</p>
-                <p className="mt-1 sm:mt-2 font-heading text-xl sm:text-2xl font-bold text-navy">{metrics.trialingFirmsCount}</p>
+                <p className="text-xs font-semibold uppercase tracking-wider text-muted">Trialing Firms</p>
+                <p className="mt-1 font-heading text-2xl font-bold text-navy">{metrics.trialingFirmsCount}</p>
               </div>
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-sky-100 text-sky-600 flex-shrink-0">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-sky-100 text-sky-600">
                 <Users className="h-5 w-5" aria-hidden="true" />
               </div>
             </div>
           </Card>
 
-          <Card className="glass-card p-3 sm:p-4">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+          <Card className="glass-card p-4">
+            <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-wider text-muted line-clamp-2">Verified Revenue</p>
-                <p className="mt-1 sm:mt-2 font-heading text-xl sm:text-2xl font-bold text-gold-700">
+                <p className="text-xs font-semibold uppercase tracking-wider text-muted">Verified Revenue</p>
+                <p className="mt-1 font-heading text-2xl font-bold text-gold-700">
                   Rs {metrics.totalRevenue.toLocaleString()}
                 </p>
               </div>
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gold-100 text-gold-700 flex-shrink-0">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gold-100 text-gold-700">
                 <Wallet className="h-5 w-5" aria-hidden="true" />
               </div>
             </div>
           </Card>
         </div>
 
-        {/* Tab Navigation - Mobile responsive */}
+        {/* Tab Navigation */}
         <div
-          className="scrollbar-hide flex items-center gap-1 overflow-x-auto rounded-2xl border border-slate-200/80 bg-white/80 p-1 sm:p-1.5 shadow-sm backdrop-blur-md"
+          className="scrollbar-hide flex items-center gap-1 overflow-x-auto rounded-2xl border border-slate-200/80 bg-white/80 p-1.5 shadow-sm backdrop-blur-md"
           role="tablist"
           aria-label="Admin sections"
         >
@@ -516,18 +548,24 @@ function AdminDashboard() {
                 key={tab.id}
                 role="tab"
                 aria-selected={isActive}
-                onClick={() => { setActiveTab(tab.id); setSearchQuery(""); }}
-                className={`flex shrink-0 items-center gap-1 sm:gap-2 rounded-xl px-2 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm font-semibold whitespace-nowrap transition-all duration-200 ease-in-out active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold ${
+                onClick={() => {
+                  setActiveTab(tab.id);
+                  setSearchQuery("");
+                  setPaymentPage(1);
+                  setFirmPage(1);
+                  setEventsPage(1);
+                }}
+                className={`flex shrink-0 items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold whitespace-nowrap transition-all duration-200 ease-in-out active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold ${
                   isActive
                     ? "bg-navy-800 text-white shadow-md"
                     : "text-muted hover:bg-white hover:text-navy"
                 }`}
               >
                 <Icon className="h-4 w-4" aria-hidden="true" />
-                <span className="hidden sm:inline">{tab.label}</span>
+                <span>{tab.label}</span>
                 {tab.count > 0 && (
                   <span
-                    className={`rounded-full px-1 py-0.5 text-[10px] sm:text-[11px] font-bold leading-none ${
+                    className={`rounded-full px-1.5 py-0.5 text-[11px] font-bold leading-none ${
                       isActive ? "bg-gold-cta text-navy-900" : "bg-navy-50 text-navy-500"
                     }`}
                   >
@@ -541,15 +579,15 @@ function AdminDashboard() {
 
         {/* Tab 1: Payments Queue */}
         {activeTab === "payments" && (
-          <div className="space-y-3 sm:space-y-4">
-            <div className="flex flex-col gap-3 sm:gap-4">
-              {/* Filter pills - Mobile responsive */}
-              <div className="flex items-center gap-1 overflow-x-auto scrollbar-hide">
+          <div className="space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              {/* Filter pills */}
+              <div className="flex items-center gap-1.5 overflow-x-auto">
                 {(["pending", "verified", "rejected", "all"] as const).map((st) => (
                   <button
                     key={st}
-                    onClick={() => setPaymentFilter(st)}
-                    className={`px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg text-xs font-semibold uppercase tracking-wider whitespace-nowrap transition-all ${
+                    onClick={() => { setPaymentFilter(st); setPaymentPage(1); }}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all ${
                       paymentFilter === st
                         ? "bg-gold text-white shadow-xs"
                         : "bg-white text-muted hover:text-navy border border-border"
@@ -560,15 +598,15 @@ function AdminDashboard() {
                 ))}
               </div>
 
-              {/* Search box - Mobile responsive */}
-              <div className="relative w-full">
+              {/* Search box */}
+              <div className="relative w-full sm:w-64">
                 <Search className="w-4 h-4 absolute start-3 top-1/2 -translate-y-1/2 text-muted" />
                 <input
                   type="text"
                   placeholder="Search firm or ref no..."
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full ps-9 pe-3 py-2 sm:py-2.5 text-xs sm:text-sm rounded-lg border border-border bg-white focus:outline-none focus:ring-2 focus:ring-gold/30"
+                  onChange={(e) => { setSearchQuery(e.target.value); setPaymentPage(1); }}
+                  className="w-full ps-9 pe-3 py-1.5 text-xs text-navy rounded-lg border border-border bg-white placeholder:text-navy-400 focus:outline-none focus:ring-2 focus:ring-gold/30"
                 />
               </div>
             </div>
@@ -590,7 +628,7 @@ function AdminDashboard() {
               </Card>
             ) : (
               <div className="space-y-3">
-                {filteredPayments.map((p) => (
+                {paginatedPayments.map((p) => (
                   <Card key={p.id} className="p-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div className="flex items-start gap-3">
                       <div
@@ -688,6 +726,37 @@ function AdminDashboard() {
                     </div>
                   </Card>
                 ))}
+
+                {totalPaymentPages > 1 && (
+                  <div className="flex items-center justify-between pt-3 px-1 text-xs text-muted border-t border-slate-200">
+                    <span>
+                      Showing {(paymentPage - 1) * PAYMENTS_PER_PAGE + 1} to {Math.min(paymentPage * PAYMENTS_PER_PAGE, filteredPayments.length)} of {filteredPayments.length} entries
+                    </span>
+                    <div className="flex items-center gap-1.5">
+                      <Button
+                        variant="secondary"
+                        size="xs"
+                        disabled={paymentPage <= 1}
+                        onClick={() => setPaymentPage((p) => Math.max(1, p - 1))}
+                        className="px-2 py-1"
+                      >
+                        <ChevronLeft className="w-3.5 h-3.5" />
+                      </Button>
+                      <span className="font-medium text-navy px-1">
+                        {paymentPage} / {totalPaymentPages}
+                      </span>
+                      <Button
+                        variant="secondary"
+                        size="xs"
+                        disabled={paymentPage >= totalPaymentPages}
+                        onClick={() => setPaymentPage((p) => Math.min(totalPaymentPages, p + 1))}
+                        className="px-2 py-1"
+                      >
+                        <ChevronRight className="w-3.5 h-3.5" />
+                      </Button>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -701,7 +770,7 @@ function AdminDashboard() {
                 {(["all", "active", "trialing", "grace", "expired", "suspended"] as const).map((st) => (
                   <button
                     key={st}
-                    onClick={() => setFirmFilter(st)}
+                    onClick={() => { setFirmFilter(st); setFirmPage(1); }}
                     className={`px-3 py-1.5 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all ${
                       firmFilter === st
                         ? "bg-gold text-white shadow-xs"
@@ -719,8 +788,8 @@ function AdminDashboard() {
                   type="text"
                   placeholder="Search firm, email, phone..."
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full ps-9 pe-3 py-1.5 text-xs rounded-lg border border-border bg-white focus:outline-none focus:ring-2 focus:ring-gold/30"
+                  onChange={(e) => { setSearchQuery(e.target.value); setFirmPage(1); }}
+                  className="w-full ps-9 pe-3 py-1.5 text-xs text-navy rounded-lg border border-border bg-white placeholder:text-navy-400 focus:outline-none focus:ring-2 focus:ring-gold/30"
                 />
               </div>
             </div>
@@ -742,7 +811,7 @@ function AdminDashboard() {
               </Card>
             ) : (
               <div className="space-y-3">
-                {filteredFirms.map((f) => {
+                {paginatedFirms.map((f) => {
                   const sub = f.subscription;
                   const isSuspended = sub?.status === "suspended";
                   return (
@@ -831,6 +900,37 @@ function AdminDashboard() {
                     </Card>
                   );
                 })}
+
+                {totalFirmPages > 1 && (
+                  <div className="flex items-center justify-between pt-3 px-1 text-xs text-muted border-t border-slate-200">
+                    <span>
+                      Showing {(firmPage - 1) * FIRMS_PER_PAGE + 1} to {Math.min(firmPage * FIRMS_PER_PAGE, filteredFirms.length)} of {filteredFirms.length} firms
+                    </span>
+                    <div className="flex items-center gap-1.5">
+                      <Button
+                        variant="secondary"
+                        size="xs"
+                        disabled={firmPage <= 1}
+                        onClick={() => setFirmPage((p) => Math.max(1, p - 1))}
+                        className="px-2 py-1"
+                      >
+                        <ChevronLeft className="w-3.5 h-3.5" />
+                      </Button>
+                      <span className="font-medium text-navy px-1">
+                        {firmPage} / {totalFirmPages}
+                      </span>
+                      <Button
+                        variant="secondary"
+                        size="xs"
+                        disabled={firmPage >= totalFirmPages}
+                        onClick={() => setFirmPage((p) => Math.min(totalFirmPages, p + 1))}
+                        className="px-2 py-1"
+                      >
+                        <ChevronRight className="w-3.5 h-3.5" />
+                      </Button>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -1020,7 +1120,7 @@ function AdminDashboard() {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-border">
-                      {events.map((ev) => (
+                      {paginatedEvents.map((ev) => (
                         <tr key={ev.id} className="hover:bg-offwhite transition-colors">
                           <td className="px-4 py-2.5 text-muted whitespace-nowrap">
                             {new Date(ev.created_at).toLocaleString()}
@@ -1039,6 +1139,37 @@ function AdminDashboard() {
                     </tbody>
                   </table>
                 </div>
+
+                {totalEventsPages > 1 && (
+                  <div className="flex items-center justify-between p-3 text-xs text-muted border-t border-slate-200">
+                    <span>
+                      Showing {(eventsPage - 1) * EVENTS_PER_PAGE + 1} to {Math.min(eventsPage * EVENTS_PER_PAGE, events.length)} of {events.length} events
+                    </span>
+                    <div className="flex items-center gap-1.5">
+                      <Button
+                        variant="secondary"
+                        size="xs"
+                        disabled={eventsPage <= 1}
+                        onClick={() => setEventsPage((p) => Math.max(1, p - 1))}
+                        className="px-2 py-1"
+                      >
+                        <ChevronLeft className="w-3.5 h-3.5" />
+                      </Button>
+                      <span className="font-medium text-navy px-1">
+                        {eventsPage} / {totalEventsPages}
+                      </span>
+                      <Button
+                        variant="secondary"
+                        size="xs"
+                        disabled={eventsPage >= totalEventsPages}
+                        onClick={() => setEventsPage((p) => Math.min(totalEventsPages, p + 1))}
+                        className="px-2 py-1"
+                      >
+                        <ChevronRight className="w-3.5 h-3.5" />
+                      </Button>
+                    </div>
+                  </div>
+                )}
               </Card>
             )}
           </div>
@@ -1231,7 +1362,7 @@ function AdminDashboard() {
                 value={editAccount.instructions || ""}
                 onChange={(e) => setEditAccount({ ...editAccount, instructions: e.target.value })}
                 rows={3}
-                className="w-full text-xs p-2.5 rounded-lg border border-border bg-white focus:outline-none focus:ring-2 focus:ring-gold/30"
+                className="w-full text-xs text-navy p-2.5 rounded-lg border border-border bg-white placeholder:text-navy-400 focus:outline-none focus:ring-2 focus:ring-gold/30"
               />
             </div>
             <label className="flex items-center gap-2 cursor-pointer text-xs font-medium text-navy">

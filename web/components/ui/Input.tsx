@@ -7,6 +7,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   hint?:        string;
   leftElement?: ReactNode;
   rightElement?: ReactNode;
+  variant?:     "light" | "dark";
   containerClassName?: string;
 }
 
@@ -18,6 +19,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       hint,
       leftElement,
       rightElement,
+      variant = "light",
       containerClassName,
       className,
       id,
@@ -27,11 +29,12 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     ref
   ) => {
     const inputId = id ?? label?.toLowerCase().replace(/\s+/g, "-");
+    const isDark = variant === "dark";
 
     return (
       <div className={cn("flex flex-col gap-1.5", containerClassName)}>
         {label && (
-          <label htmlFor={inputId} className="label">
+          <label htmlFor={inputId} className={isDark ? "label-dark" : "label"}>
             {label}
             {required && <span className="text-danger ms-0.5" aria-hidden="true">*</span>}
           </label>
@@ -39,7 +42,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 
         <div className="relative flex items-center">
           {leftElement && (
-            <div className="absolute start-3 flex items-center pointer-events-none text-navy-300">
+            <div className={cn("absolute start-3 flex items-center pointer-events-none", isDark ? "text-white/50" : "text-navy-400")}>
               {leftElement}
             </div>
           )}
@@ -51,7 +54,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             aria-invalid={!!error}
             aria-describedby={error ? `${inputId}-error` : hint ? `${inputId}-hint` : undefined}
             className={cn(
-              "input min-h-[48px]",
+              isDark ? "input-dark min-h-[44px]" : "input min-h-[44px]",
               leftElement  && "ps-9",
               rightElement && "pe-9",
               error && "border-danger focus:ring-danger",
@@ -61,7 +64,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           />
 
           {rightElement && (
-            <div className="absolute end-3 flex items-center text-navy-300">
+            <div className={cn("absolute end-3 flex items-center", isDark ? "text-white/50" : "text-navy-400")}>
               {rightElement}
             </div>
           )}
@@ -73,7 +76,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           </p>
         )}
         {hint && !error && (
-          <p id={`${inputId}-hint`} className="text-navy-300 text-xs">
+          <p id={`${inputId}-hint`} className={cn("text-xs", isDark ? "text-white/60" : "text-navy-500")}>
             {hint}
           </p>
         )}

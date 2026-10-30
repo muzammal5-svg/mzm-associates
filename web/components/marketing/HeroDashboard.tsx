@@ -123,23 +123,23 @@ export function HeroDashboard() {
       </div>
 
       {/* Floating feature cards */}
-      <div className="pointer-events-none absolute -top-5 -start-3 hidden animate-float-slow rounded-xl border border-slate-200/80 bg-white/90 px-3.5 py-2.5 shadow-lg backdrop-blur-md sm:block lg:-start-8">
-        <p className="flex items-center gap-2 text-[11px] font-bold text-navy">
-          <CalendarClock className="h-3.5 w-3.5 text-gold" aria-hidden="true" />
+      <div className="pointer-events-none absolute -top-5 -start-3 hidden animate-float-slow rounded-xl border border-white/15 bg-[#0F172A]/90 px-3.5 py-2.5 shadow-2xl backdrop-blur-md sm:block lg:-start-8 z-20">
+        <p className="flex items-center gap-2 text-[11px] font-semibold text-white">
+          <CalendarClock className="h-3.5 w-3.5 text-gold-400" aria-hidden="true" />
           {t("marketing.floatCard1")}
         </p>
       </div>
 
-      <div className="pointer-events-none absolute -bottom-5 -end-3 hidden animate-float-slow rounded-xl border border-slate-200/80 bg-white/90 px-3.5 py-2.5 shadow-lg backdrop-blur-md sm:block lg:-end-8" style={{ animationDelay: "1.4s" }}>
-        <p className="flex items-center gap-2 text-[11px] font-bold text-navy">
-          <CheckCircle2 className="h-3.5 w-3.5 text-success" aria-hidden="true" />
+      <div className="pointer-events-none absolute -bottom-5 -end-3 hidden animate-float-slow rounded-xl border border-white/15 bg-[#0F172A]/90 px-3.5 py-2.5 shadow-2xl backdrop-blur-md sm:block lg:-end-8 z-20" style={{ animationDelay: "1.4s" }}>
+        <p className="flex items-center gap-2 text-[11px] font-semibold text-white">
+          <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" aria-hidden="true" />
           {t("marketing.floatCard2")}
         </p>
       </div>
 
-      <div className="pointer-events-none absolute -bottom-3 start-1/4 hidden animate-float-slow rounded-xl border border-slate-200/80 bg-white/90 px-3.5 py-2.5 shadow-lg backdrop-blur-md lg:block" style={{ animationDelay: ".7s" }}>
-        <p className="flex items-center gap-2 text-[11px] font-bold text-navy">
-          <Wallet className="h-3.5 w-3.5 text-gold" aria-hidden="true" />
+      <div className="pointer-events-none absolute -bottom-3 start-1/4 hidden animate-float-slow rounded-xl border border-white/15 bg-[#0F172A]/90 px-3.5 py-2.5 shadow-2xl backdrop-blur-md lg:block z-20" style={{ animationDelay: ".7s" }}>
+        <p className="flex items-center gap-2 text-[11px] font-semibold text-white">
+          <Wallet className="h-3.5 w-3.5 text-gold-400" aria-hidden="true" />
           {t("marketing.floatCard3")}
         </p>
       </div>

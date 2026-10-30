@@ -111,29 +111,24 @@ function AddClientPage() {
       const { data: row, error } = await insert.client({
         firm_id:             profile.firm_id,
         full_name:           data.full_name.trim(),
-        father_husband_name: data.father_husband_name && data.father_husband_name.trim() ? data.father_husband_name.trim() : null,
-        cnic:                data.cnic && data.cnic.trim() ? data.cnic.trim() : null,
+        father_husband_name: data.father_husband_name || null,
+        cnic:                data.cnic || null,
         phone,
         whatsapp,
-        email:               data.email && data.email.trim() ? data.email.trim() : null,
-        address:             data.address && data.address.trim() ? data.address.trim() : null,
-        city:                data.city && data.city.trim() ? data.city.trim() : null,
+        email:               data.email || null,
+        address:             data.address || null,
+        city:                data.city || null,
         created_by:          profile.id,
         is_active:           true,
       });
 
-      if (error) {
-        console.error("[client-creation] Insert error:", error);
-        throw new Error(error.message || "Failed to create client");
-      }
-
-      if (!row) throw new Error("No client returned from database");
+      if (error) throw error;
 
       setCreatedId((row as { id: string }).id);
       localStorage.removeItem(CLIENT_DRAFT_KEY);
       qc.invalidateQueries({ queryKey: ["clients"] });
       qc.invalidateQueries({ queryKey: ["dashboard-counts"] });
-      toast.success(t("clients.new"), `${data.full_name} added successfully.`);
+      toast.success(t("clients.new"), `${data.full_name} added.`);
 
       // If no pending docs, go to profile; else go to step 2
       if (pendingFiles.length === 0) {
@@ -142,10 +137,7 @@ function AddClientPage() {
         setStep(1);
       }
     } catch (err: unknown) {
-      console.error("[client-creation] Error:", err);
-      const errorMsg = err instanceof Error ? err.message : "Failed to save client";
-      toast.error(t("common.error"), errorMsg);
-      setDupCheckError(null);
+      toast.error(t("common.error"), err instanceof Error ? err.message : "Failed to save.");
     } finally {
       setSaving(false);
     }
@@ -179,7 +171,7 @@ function AddClientPage() {
 
   return (
     <AppShell pageTitle={t("clients.new")} showBack>
-      <div className="w-full max-w-xl mx-auto px-3 sm:px-4 md:px-0 space-y-4 sm:space-y-6">
+      <div className="max-w-xl mx-auto space-y-6">
 
         {/* Step indicator */}
         <StepIndicator steps={STEPS} current={step} />
@@ -213,7 +205,7 @@ function AddClientPage() {
               <div className="space-y-1.5">
                 <label className="label">
                   {t("clients.cnic")}
-                  <span className="text-navy-300 text-xs ms-1">({t("common.optional")})</span>
+                  <span className="text-navy-400 font-normal text-xs ms-1">({t("common.optional")})</span>
                 </label>
                 <input
                   type="text"
@@ -298,19 +290,19 @@ function AddClientPage() {
               />
 
               {/* Actions */}
-              <div className="flex gap-2 sm:gap-3 pt-2">
+              <div className="flex gap-3 pt-2">
                 <Button
                   type="button"
                   variant="secondary"
                   onClick={() => router.back()}
-                  className="flex-1 text-xs sm:text-sm"
+                  className="flex-1"
                 >
                   {t("common.cancel")}
                 </Button>
                 <MutatingButton
                   type="submit"
                   loading={saving}
-                  className="flex-1 text-xs sm:text-sm"
+                  className="flex-1"
                 >
                   {t("clients.saveContinue")}
                 </MutatingButton>
@@ -329,17 +321,17 @@ function AddClientPage() {
               clientId={createdId}
               pendingMode={false}
             />
-            <div className="flex gap-2 sm:gap-3 mt-6">
+            <div className="flex gap-3 mt-6">
               <Button
                 variant="secondary"
                 onClick={() => router.push(`/clients/view?id=${createdId}`)}
-                className="flex-1 text-xs sm:text-sm"
+                className="flex-1"
               >
                 {t("documents.skip")}
               </Button>
               <Button
                 onClick={() => router.push(`/clients/view?id=${createdId}`)}
-                className="flex-1 text-xs sm:text-sm"
+                className="flex-1"
               >
                 {t("documents.done")}
               </Button>

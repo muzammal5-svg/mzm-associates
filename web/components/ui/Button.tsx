@@ -59,7 +59,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
           "disabled:opacity-50 disabled:cursor-not-allowed",
           "select-none",
-          variant !== "link" && "min-h-[48px] min-w-[44px]",
+          variant !== "link" && (size === "xs" ? "min-h-[32px]" : size === "sm" ? "min-h-[36px]" : "min-h-[44px] min-w-[44px]"),
           // Variant + size
           variants[variant],
           sizes[size],

@@ -187,8 +187,8 @@ export function PaymentGatewayTabs({
                 </div>
 
                 {acc.instructions && (
-                  <p className="flex items-start gap-2 rounded-lg bg-slate-50 px-3 py-2 text-[11px] italic leading-relaxed text-navy/70">
-                    <Info className="mt-0.5 h-3.5 w-3.5 shrink-0 text-navy-300" aria-hidden="true" />
+                  <p className="flex items-start gap-2 rounded-lg bg-slate-50 px-3 py-2 text-[11px] italic leading-relaxed text-navy-700">
+                    <Info className="mt-0.5 h-3.5 w-3.5 shrink-0 text-navy-400" aria-hidden="true" />
                     {acc.instructions}
                   </p>
                 )}

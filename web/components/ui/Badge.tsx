@@ -8,14 +8,14 @@ export type BadgeVariant =
   | "neutral" | "purple";
 
 const VARIANT_STYLES: Record<BadgeVariant, string> = {
-  gold:    "bg-gold-100    text-gold-700",
-  navy:    "bg-navy-100    text-navy-700",
-  success: "bg-green-100   text-green-700",
-  danger:  "bg-red-100     text-red-700",
-  warning: "bg-yellow-100  text-yellow-800",
-  info:    "bg-blue-100    text-blue-700",
-  neutral: "bg-gray-100    text-gray-700",
-  purple:  "bg-purple-100  text-purple-700",
+  gold:    "bg-amber-50 text-amber-800 border border-amber-300/60 shadow-xs",
+  navy:    "bg-slate-100 text-slate-800 border border-slate-300/60 shadow-xs",
+  success: "bg-emerald-50 text-emerald-800 border border-emerald-300/60 shadow-xs",
+  danger:  "bg-rose-50 text-rose-800 border border-rose-300/60 shadow-xs",
+  warning: "bg-amber-50 text-amber-900 border border-amber-300/60 shadow-xs",
+  info:    "bg-sky-50 text-sky-800 border border-sky-300/60 shadow-xs",
+  neutral: "bg-slate-50 text-slate-700 border border-slate-200 shadow-xs",
+  purple:  "bg-indigo-50 text-indigo-800 border border-indigo-300/60 shadow-xs",
 };
 
 interface BadgeProps {
@@ -36,8 +36,8 @@ export function Badge({
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1 font-semibold rounded-full",
-        size === "sm" ? "px-2 py-0.5 text-[10px]" : "px-2.5 py-0.5 text-xs",
+        "inline-flex items-center gap-1.5 font-medium rounded-full tracking-tight transition-colors",
+        size === "sm" ? "px-2 py-0.5 text-[11px]" : "px-2.5 py-1 text-xs",
         VARIANT_STYLES[variant],
         className
       )}
@@ -46,10 +46,11 @@ export function Badge({
         <span
           className={cn(
             "w-1.5 h-1.5 rounded-full flex-shrink-0",
-            variant === "success" ? "bg-success" :
-            variant === "danger"  ? "bg-danger"  :
-            variant === "warning" ? "bg-warning" :
-            variant === "gold"    ? "bg-gold"    :
+            variant === "success" ? "bg-emerald-500 ring-2 ring-emerald-500/20" :
+            variant === "danger"  ? "bg-rose-500 ring-2 ring-rose-500/20"  :
+            variant === "warning" ? "bg-amber-500 ring-2 ring-amber-500/20" :
+            variant === "gold"    ? "bg-amber-600 ring-2 ring-amber-500/20"    :
+            variant === "info"    ? "bg-sky-500 ring-2 ring-sky-500/20" :
             "bg-current"
           )}
           aria-hidden="true"
@@ -95,4 +96,16 @@ const ROLE_MAP: Record<UserRole, { variant: BadgeVariant; label: string }> = {
 export function RoleBadge({ role, className }: { role: UserRole; className?: string }) {
   const { variant, label } = ROLE_MAP[role];
   return <Badge variant={variant} className={className}>{label}</Badge>;
+}
+
+export function CourtBadge({ courtName, className }: { courtName?: string | null; className?: string }) {
+  if (!courtName) return null;
+  const isHighCourt = /high/i.test(courtName);
+  const isSupremeCourt = /supreme/i.test(courtName);
+  const variant: BadgeVariant = isSupremeCourt ? "purple" : isHighCourt ? "gold" : "navy";
+  return (
+    <Badge variant={variant} size="sm" className={className}>
+      {courtName}
+    </Badge>
+  );
 }

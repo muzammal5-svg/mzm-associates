@@ -10,7 +10,7 @@ import { Button } from "./Button";
 function Overlay({ onClick }: { onClick?: () => void }) {
   return (
     <div
-      className="fixed inset-0 bg-navy/40 backdrop-blur-sm z-50 animate-fade-in"
+      className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 animate-fade-in"
       aria-hidden="true"
       onClick={onClick}
     />
@@ -77,7 +77,7 @@ export function Modal({
           aria-modal="true"
           aria-labelledby={title ? "modal-title" : undefined}
           className={cn(
-            "relative w-full bg-white rounded-2xl shadow-modal",
+            "relative w-full bg-white rounded-2xl shadow-modal border border-border text-navy",
             "pointer-events-auto animate-slide-down",
             "flex flex-col max-h-[90dvh]",
             MODAL_SIZES[size],
@@ -86,14 +86,14 @@ export function Modal({
         >
           {/* Header */}
           {title && (
-            <div className="flex items-center justify-between px-5 pt-5 pb-4 border-b border-navy-50 flex-shrink-0">
+            <div className="flex items-center justify-between px-5 pt-5 pb-4 border-b border-border flex-shrink-0">
               <h2 id="modal-title" className="text-lg font-heading font-semibold text-navy">
                 {title}
               </h2>
               <button
                 onClick={onClose}
                 aria-label={t("common.close")}
-                className="w-8 h-8 flex items-center justify-center rounded-lg text-navy-300 hover:bg-navy-50 hover:text-navy transition-colors"
+                className="w-8 h-8 flex items-center justify-center rounded-lg text-navy-400 hover:bg-navy-50 hover:text-navy transition-colors"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -107,7 +107,7 @@ export function Modal({
 
           {/* Footer */}
           {footer && (
-            <div className="flex items-center justify-end gap-2 px-5 py-4 border-t border-navy-50 flex-shrink-0">
+            <div className="flex items-center justify-end gap-2 px-5 py-4 border-t border-border flex-shrink-0">
               {footer}
             </div>
           )}
@@ -163,7 +163,7 @@ export function BottomSheet({
         style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
         className={cn(
           "fixed bottom-0 start-0 end-0 z-50",
-          "bg-white rounded-t-3xl shadow-modal",
+          "bg-white rounded-t-3xl shadow-modal border-t border-border text-navy",
           "flex flex-col animate-slide-up",
           heightClass,
           className
@@ -171,19 +171,19 @@ export function BottomSheet({
       >
         {/* Drag handle */}
         <div className="flex justify-center pt-3 pb-1 flex-shrink-0">
-          <div className="w-10 h-1 rounded-full bg-navy-100" aria-hidden="true" />
+          <div className="w-10 h-1 rounded-full bg-navy-200" aria-hidden="true" />
         </div>
 
         {/* Header */}
         {title && (
-          <div className="flex items-center justify-between px-5 pt-2 pb-4 flex-shrink-0">
+          <div className="flex items-center justify-between px-5 pt-2 pb-4 flex-shrink-0 border-b border-border">
             <h2 id="sheet-title" className="text-base font-heading font-semibold text-navy">
               {title}
             </h2>
             <button
               onClick={onClose}
               aria-label={t("common.close")}
-              className="w-8 h-8 flex items-center justify-center rounded-lg text-navy-300 hover:bg-navy-50 transition-colors"
+              className="w-8 h-8 flex items-center justify-center rounded-lg text-navy-400 hover:bg-navy-50 hover:text-navy transition-colors"
             >
               <X className="w-4 h-4" />
             </button>
@@ -197,7 +197,7 @@ export function BottomSheet({
 
         {/* Footer */}
         {footer && (
-          <div className="px-5 py-4 border-t border-navy-50 flex-shrink-0 flex gap-2">
+          <div className="px-5 py-4 border-t border-border flex-shrink-0 flex gap-2">
             {footer}
           </div>
         )}
@@ -246,7 +246,7 @@ export function ConfirmDialog({
         </>
       }
     >
-      <p className="text-sm text-navy-400">{message}</p>
+      <p className="text-sm text-navy-600">{message}</p>
     </Modal>
   );
 }

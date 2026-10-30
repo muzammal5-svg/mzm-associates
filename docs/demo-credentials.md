@@ -6,9 +6,9 @@ Run `node supabase/scripts/seed-users.mjs` to create or reset the confirmed Auth
 
 | Role | Email | Password |
 |---|---|---|
-| Admin | `admin@mzm.pk` | `Admin1234!` |
-| Lawyer | `lawyer@mzm.pk` | `Lawyer1234!` |
-| Clerk | `clerk@mzm.pk` | `Clerk1234!` |
+| Admin | `admin@mzm.pk` | `<redacted - set by seed script>` |
+| Lawyer | `lawyer@mzm.pk` | `<redacted - set by seed script>` |
+| Clerk | `clerk@mzm.pk` | `<redacted - set by seed script>` |
 
 The seed script refuses to run unless `SUPABASE_PROJECT_REF` and `NEXT_PUBLIC_SUPABASE_URL` identify the approved development project. It reads the service-role key from the ignored `web/.env.local`; never commit that file or expose its contents.
 
@@ -19,9 +19,8 @@ node supabase/scripts/test-demo-login.mjs
 ```
 
 ## Subscription demo (dev only)
-- super@platform.test / Super1234! (super_admin)
-- owner-trial@demo.test / Owner1234!
-- owner-active@demo.test / Owner1234!
-- owner-grace@demo.test / Owner1234!
-- owner-expired@demo.test / Owner1234!
-
+- super@platform.test / `<redacted - set by seed script>` (super_admin)
+- owner-trial@demo.test / `<redacted - set by seed script>`
+- owner-active@demo.test / `<redacted - set by seed script>`
+- owner-grace@demo.test / `<redacted - set by seed script>`
+- owner-expired@demo.test / `<redacted - set by seed script>`

@@ -110,22 +110,22 @@ export function useToast() {
 }
 
 // ─── Toast Item ───────────────────────────────────────────────────────────────
-const TOAST_STYLES: Record<ToastType, { bg: string; icon: ReactNode }> = {
+const TOAST_STYLES: Record<ToastType, { border: string; icon: ReactNode }> = {
   success: {
-    bg:   "bg-white border-success",
-    icon: <CheckCircle  className="w-5 h-5 text-success flex-shrink-0" />,
+    border: "border-l-success",
+    icon:   <CheckCircle  className="w-5 h-5 text-success flex-shrink-0" />,
   },
   error: {
-    bg:   "bg-white border-danger",
-    icon: <AlertCircle  className="w-5 h-5 text-danger flex-shrink-0" />,
+    border: "border-l-danger",
+    icon:   <AlertCircle  className="w-5 h-5 text-danger flex-shrink-0" />,
   },
   warning: {
-    bg:   "bg-white border-warning",
-    icon: <AlertTriangle className="w-5 h-5 text-warning flex-shrink-0" />,
+    border: "border-l-warning",
+    icon:   <AlertTriangle className="w-5 h-5 text-warning flex-shrink-0" />,
   },
   info: {
-    bg:   "bg-white border-info",
-    icon: <Info          className="w-5 h-5 text-info flex-shrink-0" />,
+    border: "border-l-info",
+    icon:   <Info          className="w-5 h-5 text-info flex-shrink-0" />,
   },
 };
 
@@ -137,28 +137,28 @@ function ToastItem({
   onDismiss: (id: string) => void;
 }) {
   const { t } = useTranslation();
-  const { bg, icon } = TOAST_STYLES[item.type];
+  const { border, icon } = TOAST_STYLES[item.type];
 
   return (
     <div
       role="alert"
       className={cn(
-        "pointer-events-auto flex items-start gap-3 px-4 py-3",
-        "rounded-xl border-l-4 shadow-lg bg-white animate-slide-up",
-        bg
+        "pointer-events-auto flex items-start gap-3 px-4 py-3.5",
+        "rounded-xl border border-slate-200 border-s-4 shadow-lg bg-white animate-slide-up text-navy",
+        border
       )}
     >
       {icon}
       <div className="flex-1 min-w-0">
         <p className="text-sm font-semibold text-navy leading-tight">{item.title}</p>
         {item.message && (
-          <p className="text-xs text-navy-400 mt-0.5">{item.message}</p>
+          <p className="text-xs text-navy-600 mt-1">{item.message}</p>
         )}
       </div>
       <button
         onClick={() => onDismiss(item.id)}
         aria-label={t("common.dismiss")}
-        className="w-6 h-6 flex items-center justify-center rounded text-navy-300 hover:text-navy hover:bg-navy-50 transition-colors flex-shrink-0"
+        className="w-6 h-6 flex items-center justify-center rounded text-navy-400 hover:text-navy hover:bg-navy-50 transition-colors flex-shrink-0"
       >
         <X className="w-3.5 h-3.5" />
       </button>

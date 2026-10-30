@@ -73,7 +73,7 @@ function ActivityTab({ caseId }: { caseId: string }) {
             </div>
             <div className="flex-1 min-w-0 pt-0.5">
               <p className="text-sm text-navy leading-snug">{entry.summary}</p>
-              <p className="text-[11px] text-navy-300 mt-0.5">
+              <p className="text-[11px] text-navy-500 mt-0.5">
                 {entry.actor_name ?? t("common.system")} · {fmtDate(entry.created_at)}
               </p>
             </div>
@@ -111,9 +111,9 @@ function HearingTimeline({ caseId }: { caseId: string }) {
               </div>
               {idx === 0 && <Badge variant="gold" size="sm">{t("common.update")}</Badge>}
             </div>
-            {h.current_proceeding && <p className="text-xs text-navy-400 mt-1.5">{h.current_proceeding}</p>}
+            {h.current_proceeding && <p className="text-xs text-navy-600 mt-1.5">{h.current_proceeding}</p>}
             {h.next_date && (
-              <div className="mt-2 pt-2 border-t border-navy-50 flex items-center gap-1.5 text-xs text-navy-400">
+              <div className="mt-2 pt-2 border-t border-border flex items-center gap-1.5 text-xs text-navy-600">
                 <CalendarPlus className="w-3.5 h-3.5 text-gold" />
                 {t("hearings.nextDate")}: <strong className="text-navy">{fmtDate(h.next_date)}</strong>
                 {h.next_proceeding && <span> — {h.next_proceeding}</span>}
@@ -170,17 +170,17 @@ function NotesTab({ caseId, readOnly = false }: { caseId: string; readOnly?: boo
         !notes?.length ? <EmptyState icon={FileText} title={t("common.noData")} className="py-8" /> :
         <div className="space-y-2">
           {notes.map(n => (
-            <div key={n.id} className="bg-white rounded-xl border border-navy-50 p-3 space-y-1">
+            <div key={n.id} className="bg-white rounded-xl border border-border p-3 space-y-1 shadow-xs">
               <div className="flex items-start justify-between gap-2">
                 <p className="text-sm text-navy flex-1">{n.body}</p>
                 {isAdminOrAbove && !readOnly && (
                   <button onClick={() => setConfirmNote(n.id)} {...lock}
-                    className="text-navy-200 hover:text-danger transition-colors flex-shrink-0 disabled:opacity-40">
+                    className="text-navy-400 hover:text-danger transition-colors flex-shrink-0 disabled:opacity-40">
                     <Trash2 className="w-3.5 h-3.5" />
                   </button>
                 )}
               </div>
-              <p className="text-[10px] text-navy-300">
+              <p className="text-[10px] text-navy-500">
                 {n.author?.full_name ?? "—"} · {fmtDate(n.created_at)}
               </p>
             </div>
@@ -204,9 +204,9 @@ function OverviewTab({ caseId }: { caseId: string }) {
   function Row({ label, value, mono = false }: { label: string; value?: string | null; mono?: boolean }) {
     if (!value) return null;
     return (
-      <div className="flex items-start justify-between gap-4 py-2.5 border-b border-navy-50 last:border-0">
-        <span className="text-sm text-navy-400 flex-shrink-0 w-28">{label}</span>
-        <span className={`text-sm text-navy text-end flex-1 ${mono ? "font-mono" : ""} ${isUrdu(value) ? "font-urdu" : ""}`}
+      <div className="flex items-start justify-between gap-4 py-2.5 border-b border-border last:border-0">
+        <span className="text-sm text-navy-500 font-medium flex-shrink-0 w-28">{label}</span>
+        <span className={`text-sm font-semibold text-navy text-end flex-1 ${mono ? "font-mono" : ""} ${isUrdu(value) ? "font-urdu" : ""}`}
           dir={textDir(value)}>{value}</span>
       </div>
     );
@@ -216,28 +216,28 @@ function OverviewTab({ caseId }: { caseId: string }) {
     <div className="space-y-4">
       {/* Decision summary for decided cases */}
       {c.status === "decided" && (
-        <div className="bg-navy-50 rounded-xl border border-navy-100 p-4 space-y-2">
-          <p className="text-xs font-semibold text-navy-400 uppercase tracking-wider">{t("cases.decisionSummary")}</p>
+        <div className="bg-navy-50/70 rounded-xl border border-navy-100 p-4 space-y-2">
+          <p className="text-xs font-semibold text-navy-500 uppercase tracking-wider">{t("cases.decisionSummary")}</p>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <p className="text-xs text-navy-400">{t("cases.decidedDate")}</p>
+              <p className="text-xs text-navy-500">{t("cases.decidedDate")}</p>
               <p className="text-sm font-semibold text-navy">{c.decision_date ? fmtDate(c.decision_date) : "—"}</p>
             </div>
             <div>
-              <p className="text-xs text-navy-400">{t("cases.outcome")}</p>
-              {c.outcome ? <OutcomeBadge outcome={c.outcome} /> : <span className="text-navy-300 text-sm">—</span>}
+              <p className="text-xs text-navy-500">{t("cases.outcome")}</p>
+              {c.outcome ? <OutcomeBadge outcome={c.outcome} /> : <span className="text-navy-400 text-sm">—</span>}
             </div>
           </div>
           {c.decision_notes && (
-            <p className="text-sm text-navy-400 mt-2 pt-2 border-t border-navy-100">{c.decision_notes}</p>
+            <p className="text-sm text-navy-600 mt-2 pt-2 border-t border-navy-100">{c.decision_notes}</p>
           )}
         </div>
       )}
 
       <Card padding="sm">
-        <Row label={t("cases.caseNo")}      value={c.case_ref_no}    mono />
+        <Row label={t("cases.caseNo")}      value={c.case_ref_no || "—"}    mono />
         <Row label={t("cases.caseType")}    value={c.case_type?.name} />
-        <Row label={t("cases.From")} value={c.From === "plaintiff" ? "Plaintiff" : "Defendant"} />
+        <Row label={t("cases.From")} value={((c as any).representing ?? c.From) === "plaintiff" ? (t("cases.plaintiff") || "Plaintiff") : (t("cases.defendant") || "Defendant")} />
         <Row label={t("cases.offence")}     value={c.offence} />
         <Row label={t("cases.judge")}       value={c.judge_name} />
         <Row label={t("cases.courtNo")}     value={c.court_no} />
@@ -256,7 +256,7 @@ function OverviewTab({ caseId }: { caseId: string }) {
                 {c.client.full_name}
               </p>
             </div>
-            <ChevronRight className="w-4 h-4 text-navy-200 flex-shrink-0" />
+            <ChevronRight className="w-4 h-4 text-navy-400 flex-shrink-0 rtl:rotate-180" />
           </Card>
         </Link>
       )}
@@ -299,32 +299,32 @@ function CaseActionsMenu({
         {open && (
           <>
             <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
-            <div className="absolute end-0 top-full mt-1.5 w-52 bg-white rounded-xl shadow-modal border border-navy-50 z-50 animate-slide-down overflow-hidden">
+            <div className="absolute end-0 top-full mt-1.5 w-52 bg-white rounded-xl shadow-modal border border-border z-50 animate-slide-down overflow-hidden">
               {status === "running" && (
                 <>
                   <Link href={`/cases/running?updateCaseId=${caseId}`} onClick={() => setOpen(false)}
                     className="flex items-center gap-2.5 px-4 py-3 text-sm text-navy hover:bg-navy-50 transition-colors">
-                    <CalendarPlus className="w-4 h-4 text-navy-300" /> {t("common.updateHearing")}
+                    <CalendarPlus className="w-4 h-4 text-navy-400" /> {t("common.updateHearing")}
                   </Link>
                   <Link href={`/cases/edit?id=${caseId}`} onClick={() => setOpen(false)}
                     className="flex items-center gap-2.5 px-4 py-3 text-sm text-navy hover:bg-navy-50 transition-colors">
-                    <Edit className="w-4 h-4 text-navy-300" /> {t("common.edit")}
+                    <Edit className="w-4 h-4 text-navy-400" /> {t("common.edit")}
                   </Link>
                     <button onClick={() => { setOpen(false); onDecide(); }} {...lock}
                       className="flex items-center gap-2.5 w-full px-4 py-3 text-sm text-navy hover:bg-navy-50 transition-colors disabled:opacity-40">
-                      <CheckSquare className="w-4 h-4 text-navy-300" /> {t("common.markAsDecided")}
+                      <CheckSquare className="w-4 h-4 text-navy-400" /> {t("common.markAsDecided")}
                     </button>
                 </>
               )}
               {status === "decided" && isAdminOrAbove && (
                   <button onClick={() => { setOpen(false); onReopen(); }} {...lock}
                     className="flex items-center gap-2.5 w-full px-4 py-3 text-sm text-navy hover:bg-navy-50 transition-colors disabled:opacity-40">
-                    <RefreshCw className="w-4 h-4 text-navy-300" /> {t("common.reopenCase")}
+                    <RefreshCw className="w-4 h-4 text-navy-400" /> {t("common.reopenCase")}
                   </button>
               )}
               {canDelete && (
                 <>
-                  <div className="border-t border-navy-50" />
+                  <div className="border-t border-border" />
                   <button onClick={() => { setOpen(false); setConfirm(true); }} {...lock}
                     className="flex items-center gap-2.5 w-full px-4 py-3 text-sm text-danger hover:bg-red-50 transition-colors disabled:opacity-40">
                     <Trash2 className="w-4 h-4" /> {t("common.delete")}
@@ -363,12 +363,12 @@ function CaseViewPage() {
 
   return (
     <AppShell
-      pageTitle={c.case_ref_no}
+      pageTitle={c.case_ref_no || parties}
       showBack
       headerActions={
         canWrite ? (
           <CaseActionsMenu
-            caseId={c.id} caseRef={c.case_ref_no} parties={parties} status={c.status}
+            caseId={c.id} caseRef={c.case_ref_no || "—"} parties={parties} status={c.status}
             onDecide={() => setDecidedOpen(true)}
             onReopen={() => setReopenOpen(true)}
           />
@@ -381,18 +381,18 @@ function CaseViewPage() {
         <Card>
           <div className="flex items-start justify-between gap-3">
             <div className="flex-1 min-w-0">
-              <p className="text-xs font-mono text-gold font-semibold">{c.case_ref_no}</p>
+              <p className="text-xs font-mono text-gold font-semibold">{c.case_ref_no || "—"}</p>
               <h1 className="text-base font-heading font-bold text-navy mt-0.5 leading-snug"
                 dir={isUrdu(c.plaintiff_name) || isUrdu(c.defendant_name) ? "rtl" : "ltr"}>
                 {c.plaintiff_name}
-                <span className="text-navy-300 font-normal mx-1.5 text-sm">{t("cases.vs")}</span>
+                <span className="text-navy-400 font-normal mx-1.5 text-sm">{t("cases.vs")}</span>
                 {c.defendant_name}
               </h1>
               <div className="flex items-center gap-2 flex-wrap mt-2">
                 <CaseStatusBadge status={c.status} />
                 {c.case_type && <Badge variant="navy" size="sm">{c.case_type.name}</Badge>}
-                <Badge variant={c.From === "plaintiff" ? "gold" : "info"} size="sm">
-                  {c.From === "plaintiff" ? "For Plaintiff" : "For Defendant"}
+                <Badge variant={((c as any).representing ?? c.From) === "plaintiff" ? "gold" : "info"} size="sm">
+                  {((c as any).representing ?? c.From) === "plaintiff" ? (t("cases.plaintiff") || "For Plaintiff") : (t("cases.defendant") || "For Defendant")}
                 </Badge>
                 {isDecided && c.outcome && <OutcomeBadge outcome={c.outcome} />}
               </div>
@@ -400,7 +400,7 @@ function CaseViewPage() {
             <div className="hidden md:flex gap-2 flex-shrink-0">
               {canWrite && (
                 <CaseActionsMenu
-                  caseId={c.id} caseRef={c.case_ref_no} parties={parties} status={c.status}
+                  caseId={c.id} caseRef={c.case_ref_no || "—"} parties={parties} status={c.status}
                   onDecide={() => setDecidedOpen(true)}
                   onReopen={() => setReopenOpen(true)}
                 />
@@ -439,11 +439,11 @@ function CaseViewPage() {
 
       {/* Modals */}
       <MarkDecidedModal
-        caseId={c.id} caseRef={c.case_ref_no} parties={parties}
+        caseId={c.id} caseRef={c.case_ref_no || "—"} parties={parties}
         open={decidedOpen} onClose={() => setDecidedOpen(false)}
       />
       <ReopenCaseModal
-        caseId={c.id} caseRef={c.case_ref_no}
+        caseId={c.id} caseRef={c.case_ref_no || "—"}
         open={reopenOpen} onClose={() => setReopenOpen(false)}
       />
     </AppShell>

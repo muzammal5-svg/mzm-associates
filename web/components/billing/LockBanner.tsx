@@ -125,7 +125,7 @@ export function LockBanner({ severity, status, message }: LockBannerProps) {
           )}
         </div>
 
-        <ShieldAlert className="hidden h-5 w-5 shrink-0 text-navy-200 sm:block" aria-hidden="true" />
+        <ShieldAlert className="hidden h-5 w-5 shrink-0 text-navy-400 sm:block" aria-hidden="true" />
       </div>
     </section>
   );

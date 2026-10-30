@@ -23,7 +23,7 @@ import { useCourts }          from "@/hooks/useCourts";
 import { useCase, useUpdateCase } from "@/hooks/useCases";
 
 const schema = z.object({
-  case_ref_no:     z.string().min(1),
+  case_ref_no:     z.string().max(80).optional().or(z.literal("")),
   plaintiff_name:  z.string().min(1),
   defendant_name:  z.string().min(1),
   From:    z.enum(["plaintiff", "defendant"]),
@@ -61,7 +61,7 @@ function EditCasePage() {
       case_ref_no:    c.case_ref_no,
       plaintiff_name: c.plaintiff_name,
       defendant_name: c.defendant_name,
-      From:   c.From,
+      From:   ((c as any).representing ?? c.From ?? "plaintiff") as "plaintiff" | "defendant",
       case_type_id:   c.case_type_id,
       offence:        c.offence ?? "",
       court_no:       c.court_no ?? "",
@@ -77,10 +77,10 @@ function EditCasePage() {
   async function onSubmit(data: FormData) {
     try {
       await updateCase.mutateAsync({
-        case_ref_no:    data.case_ref_no.trim(),
+        case_ref_no:    (data.case_ref_no ?? "").trim(),
         plaintiff_name: data.plaintiff_name.trim(),
         defendant_name: data.defendant_name.trim(),
-        From:   data.From,
+        representing:   data.From,
         case_type_id:   data.case_type_id,
         offence:        needsOffence ? (data.offence || null) : null,
         court_no:       data.court_no || null,
@@ -108,7 +108,7 @@ function EditCasePage() {
       <form onSubmit={handleSubmit(onSubmit)} noValidate className="max-w-2xl mx-auto space-y-5">
         <Card>
           <div className="space-y-4">
-            <Input label={t("cases.caseNo")} required error={errors.case_ref_no?.message}
+            <Input label={t("cases.caseNo")} error={errors.case_ref_no?.message}
               {...register("case_ref_no")} />
 
             <Select label={t("cases.caseType")} required options={caseTypeOptions}
@@ -121,14 +121,14 @@ function EditCasePage() {
 
             <div className="space-y-1.5">
               <label className="label">{t("cases.From")}</label>
-              <div className="flex rounded-xl overflow-hidden border border-navy-100">
+              <div className="flex rounded-xl overflow-hidden border border-border">
                 {(["plaintiff", "defendant"] as const).map(r => {
                   const active = watch("From") === r;
                   return (
                     <button key={r} type="button"
                       onClick={() => setValue("From", r)}
                       className={`flex-1 py-2.5 text-sm font-semibold transition-colors ${
-                        active ? "bg-navy text-white" : "bg-white text-navy-400 hover:bg-navy-50"
+                        active ? "bg-navy text-white shadow-xs" : "bg-white text-navy-600 hover:bg-navy-50"
                       }`}
                     >
                       {r === "plaintiff" ? t("cases.plaintiff") : t("cases.defendant")}

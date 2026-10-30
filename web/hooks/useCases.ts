@@ -140,13 +140,14 @@ export async function checkDuplicateRefNo(
   refNo: string,
   excludeId?: string
 ): Promise<Case | null> {
-  const q = supabaseRaw
+  if (!refNo?.trim()) return null;
+  let q = supabaseRaw
     .from("cases")
     .select("id,case_ref_no,plaintiff_name,defendant_name")
     .eq("case_ref_no", refNo.trim())
     .is("deleted_at", null)
     .limit(1);
-  if (excludeId) q.neq("id", excludeId);
+  if (excludeId) q = q.neq("id", excludeId);
   const { data, error } = await q;
   if (error) throw error;
   return (data as Case[])?.[0] ?? null;
@@ -157,7 +158,7 @@ export async function checkDuplicateRefNo(
 export interface NewCasePayload {
   firm_id:        string;
   client_id:      string;
-  case_ref_no:    string;
+  case_ref_no?:   string;
   plaintiff_name: string;
   defendant_name: string;
   From:   "plaintiff" | "defendant";
@@ -183,7 +184,10 @@ export function useCreateCase() {
     mutationFn: async (payload: NewCasePayload) => {
       const { first_hearing, ...caseData } = payload;
       const { data, error } = await supabaseRaw.rpc("create_case_with_first_hearing", {
-        p_case: caseData,
+        p_case: {
+          ...caseData,
+          case_ref_no: caseData.case_ref_no?.trim() ?? "",
+        },
         p_first_hearing: first_hearing ?? null,
       });
       if (error) throw error;
@@ -191,6 +195,7 @@ export function useCreateCase() {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["cases"] });
+      qc.invalidateQueries({ queryKey: ["cause-list"] });
       qc.invalidateQueries({ queryKey: ["dashboard-counts"] });
       qc.invalidateQueries({ queryKey: ["today-hearings-preview"] });
     },
@@ -209,6 +214,7 @@ export function useUpdateCase(id: string) {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["case",  id] });
       qc.invalidateQueries({ queryKey: ["cases"] });
+      qc.invalidateQueries({ queryKey: ["cause-list"] });
     },
   });
 }
@@ -224,6 +230,7 @@ export function useSoftDeleteCase() {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["cases"] });
+      qc.invalidateQueries({ queryKey: ["cause-list"] });
       qc.invalidateQueries({ queryKey: ["dashboard-counts"] });
     },
   });

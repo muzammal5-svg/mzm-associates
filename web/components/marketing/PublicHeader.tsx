@@ -45,97 +45,98 @@ export function PublicHeader({ overDark = false }: PublicHeaderProps) {
   ];
 
   return (
-    <header
-      className={cn(
-        "sticky top-0 z-50 transition-all duration-300 ease-in-out",
-        "bg-slate-900/90 backdrop-blur-lg supports-[backdrop-filter]:bg-slate-900/75",
-        "border-b border-white/10",
-        scrolled ? "shadow-xl shadow-slate-950/30" : "shadow-none"
-      )}
-    >
-      <div className="max-w-[1200px] mx-auto px-4 md:px-6 h-16 md:h-[72px] flex items-center justify-between safe-top">
-        {/* Brand */}
-        <Link href="/" className="flex items-center gap-3 group" aria-label={t("brand.name")}>
-          <span className="relative grid h-10 w-10 place-items-center rounded-xl bg-gold-cta shadow-gold ring-1 ring-gold-300/40 transition-all duration-300 group-hover:shadow-glow-gold">
-            <Scale className="h-5 w-5 text-navy-900 animate-scale-sway" aria-hidden="true" />
-            <span className="pointer-events-none absolute inset-0 rounded-xl bg-white/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100" aria-hidden="true" />
-          </span>
-          <span className="flex flex-col leading-none">
-            <span className="font-heading font-bold text-[17px] text-white tracking-tight">MZM</span>
-            <span className="text-[10px] uppercase tracking-[0.18em] text-gold-300/90">&amp; Associates</span>
-          </span>
-        </Link>
+    <>
+      <header
+        className={cn(
+          "sticky top-0 z-40 transition-all duration-300 ease-in-out",
+          "bg-slate-900/95 backdrop-blur-xl supports-[backdrop-filter]:bg-slate-900/80",
+          "border-b border-white/10",
+          scrolled ? "shadow-2xl shadow-slate-950/40" : "shadow-lg"
+        )}
+      >
+        <div className="max-w-[1200px] mx-auto px-4 md:px-6 h-16 md:h-[72px] flex items-center justify-between safe-top">
+          {/* Brand */}
+          <Link href="/" className="flex items-center gap-3 group" aria-label={t("brand.name")}>
+            <span className="relative grid h-10 w-10 place-items-center rounded-xl bg-gold-cta shadow-gold ring-1 ring-gold-300/40 transition-all duration-300 group-hover:shadow-glow-gold">
+              <Scale className="h-5 w-5 text-navy-900 animate-scale-sway" aria-hidden="true" />
+              <span className="pointer-events-none absolute inset-0 rounded-xl bg-white/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100" aria-hidden="true" />
+            </span>
+            <span className="flex flex-col leading-none">
+              <span className="font-heading font-bold text-[17px] text-white tracking-tight">MZM</span>
+              <span className="text-[10px] uppercase tracking-[0.18em] text-gold-300/90">&amp; Associates</span>
+            </span>
+          </Link>
 
-        {/* Desktop nav */}
-        <nav className="hidden md:flex items-center gap-1" aria-label={t("common.mainNavigation")}>
-          {NAV.map((n) => (
-            <Link
-              key={n.href}
-              href={n.href}
-              className="group relative rounded-lg px-3.5 py-2 text-sm font-medium text-white/75 transition-colors duration-200 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-400"
-            >
-              {n.label}
-              <span className="absolute inset-x-3 bottom-1 h-0.5 origin-center scale-x-0 rounded-full bg-gold-cta transition-transform duration-300 ease-out group-hover:scale-x-100" aria-hidden="true" />
-            </Link>
-          ))}
-        </nav>
-
-        {/* Desktop actions */}
-        <div className="hidden md:flex items-center gap-3">
-          <LangPill />
-
-          <a
-            href={phoneLink()}
-            className="inline-flex items-center gap-2 rounded-md border border-white/15 bg-white/5 px-3 py-2 text-xs font-semibold text-white/80 transition-all duration-200 hover:border-gold-400/60 hover:bg-gold-400/10 hover:text-gold-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-400"
-          >
-            <Phone className="h-3.5 w-3.5" aria-hidden="true" />
-            {SITE.phone}
-          </a>
-
-          {user ? (
-            <Link
-              href="/"
-              className="btn-ghost-gold h-10 px-4 text-xs whitespace-nowrap"
-            >
-              {t("marketing.goToDashboard")}
-              <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
-            </Link>
-          ) : (
-            <>
-              <Link href="/auth/sign-in" className="btn-ghost-gold h-10 px-4 text-xs whitespace-nowrap">
-                {t("marketing.signIn")}
-              </Link>
+          {/* Desktop nav */}
+          <nav className="hidden md:flex items-center gap-1" aria-label={t("common.mainNavigation")}>
+            {NAV.map((n) => (
               <Link
-                href="/register"
-                className="group inline-flex h-10 items-center gap-2 rounded-md bg-gold-cta px-5 text-xs font-semibold text-navy-900 shadow-gold transition-all duration-200 ease-in-out hover:shadow-glow-gold active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
+                key={n.href}
+                href={n.href}
+                className="group relative rounded-lg px-3.5 py-2 text-sm font-medium text-white/75 transition-colors duration-200 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-400"
               >
-                {t("marketing.signUp")}
-                <ArrowRight className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5" aria-hidden="true" />
+                {n.label}
+                <span className="absolute inset-x-3 bottom-1 h-0.5 origin-center scale-x-0 rounded-full bg-gold-cta transition-transform duration-300 ease-out group-hover:scale-x-100" aria-hidden="true" />
               </Link>
-            </>
-          )}
+            ))}
+          </nav>
+
+          {/* Desktop actions */}
+          <div className="hidden md:flex items-center gap-3">
+            <LangPill />
+
+            <a
+              href={phoneLink()}
+              className="inline-flex items-center gap-2 rounded-md border border-white/15 bg-white/5 px-3 py-2 text-xs font-semibold text-white/80 transition-all duration-200 hover:border-gold-400/60 hover:bg-gold-400/10 hover:text-gold-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-400"
+            >
+              <Phone className="h-3.5 w-3.5" aria-hidden="true" />
+              {SITE.phone}
+            </a>
+
+            {user ? (
+              <Link
+                href="/"
+                className="btn-ghost-gold h-10 px-4 text-xs whitespace-nowrap"
+              >
+                {t("marketing.goToDashboard")}
+                <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+              </Link>
+            ) : (
+              <>
+                <Link href="/auth/sign-in" className="btn-ghost-gold h-10 px-4 text-xs whitespace-nowrap">
+                  {t("marketing.signIn")}
+                </Link>
+                <Link
+                  href="/register"
+                  className="group inline-flex h-10 items-center gap-2 rounded-md bg-gold-cta px-5 text-xs font-semibold text-navy-900 shadow-gold transition-all duration-200 ease-in-out hover:shadow-glow-gold active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
+                >
+                  {t("marketing.signUp")}
+                  <ArrowRight className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5" aria-hidden="true" />
+                </Link>
+              </>
+            )}
+          </div>
+
+          {/* Mobile trigger */}
+          <button
+            type="button"
+            className="md:hidden grid h-10 w-10 place-items-center rounded-lg border border-white/15 text-white transition-colors duration-200 hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-400"
+            onClick={() => setOpen(true)}
+            aria-label={t("marketing.menu")}
+            aria-expanded={open}
+            aria-controls="public-mobile-menu"
+          >
+            <Menu className="h-5 w-5" aria-hidden="true" />
+          </button>
         </div>
+      </header>
 
-        {/* Mobile trigger */}
-        <button
-          type="button"
-          className="md:hidden grid h-10 w-10 place-items-center rounded-lg border border-white/15 text-white transition-colors duration-200 hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-400"
-          onClick={() => setOpen(true)}
-          aria-label={t("marketing.menu")}
-          aria-expanded={open}
-          aria-controls="public-mobile-menu"
-        >
-          <Menu className="h-5 w-5" aria-hidden="true" />
-        </button>
-      </div>
-
-      {/* Mobile drawer */}
+      {/* Mobile drawer - MOVED OUTSIDE header to escape stacking context */}
       {open && (
         <div className="fixed inset-0 z-50 md:hidden" id="public-mobile-menu">
           <button
             type="button"
-            className="absolute inset-0 h-full w-full cursor-default bg-black animate-fade-in"
-            style={{ backgroundColor: '#000000' }}
+            className="absolute inset-0 h-full w-full cursor-default bg-black/80 backdrop-blur-sm animate-fade-in pointer-events-auto"
             onClick={() => setOpen(false)}
             aria-label={t("marketing.close")}
             tabIndex={-1}
@@ -144,7 +145,7 @@ export function PublicHeader({ overDark = false }: PublicHeaderProps) {
             role="dialog"
             aria-modal="true"
             aria-label={t("marketing.menu")}
-            className="drawer-panel absolute inset-y-0 end-0 flex w-[86%] max-w-sm flex-col border-s border-white/10 bg-slate-900 p-6 shadow-2xl"
+            className="drawer-panel absolute inset-y-0 end-0 z-50 flex w-[86%] max-w-sm flex-col border-s border-white/10 bg-slate-900/98 backdrop-blur-xl p-6 shadow-2xl"
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -208,7 +209,7 @@ export function PublicHeader({ overDark = false }: PublicHeaderProps) {
           </div>
         </div>
       )}
-    </header>
+    </>
   );
 }
 

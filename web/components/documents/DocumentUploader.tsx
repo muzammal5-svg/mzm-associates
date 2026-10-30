@@ -154,7 +154,8 @@ export function DocumentUploader({
         e.id === entry.id ? { ...e, status: "done", progress: 100 } : e
       ));
 
-      qc.invalidateQueries({ queryKey: ["documents", clientId ?? null, caseId ?? null] });
+      qc.invalidateQueries({ queryKey: ["documents"] });
+      toast.success(t("common.saved") || "Document uploaded");
       onUploaded?.({ name: entry.name, file_path: upload.path, mime: entry.file.type, size: entry.file.size });
 
     } catch (err: unknown) {
@@ -166,6 +167,7 @@ export function DocumentUploader({
       setEntries(prev => prev.map(e =>
         e.id === entry.id ? { ...e, status: "error", error: msg, progress: 0 } : e
       ));
+      toast.error(t("common.error") || "Upload failed", msg);
     }
   }
 
@@ -200,7 +202,7 @@ export function DocumentUploader({
           canMutate && "cursor-pointer",
           dragging
             ? "border-gold bg-gold-50"
-            : "border-navy-100 hover:border-gold hover:bg-gold-50/30"
+            : "border-border hover:border-gold hover:bg-gold-50/30"
         )}
         onClick={canMutate ? (() => fileRef.current?.click()) : undefined}
         role="button"
@@ -210,7 +212,7 @@ export function DocumentUploader({
         title={canMutate ? undefined : renewTooltip}
         onKeyDown={e => canMutate && e.key === "Enter" && fileRef.current?.click()}
       >
-        <Upload className="w-8 h-8 text-navy-300" />
+        <Upload className="w-8 h-8 text-navy-400" />
         <div className="text-center">
           <p className="text-sm font-medium text-navy">{t("documents.upload")}</p>
           <p className="text-xs text-navy-400 mt-0.5">{t("common.fileTypeHint")}</p>
@@ -241,7 +243,12 @@ export function DocumentUploader({
         accept={ALLOWED_MIME_ACCEPT}
         className="sr-only"
         disabled={!canMutate}
-        onChange={e => e.target.files && addFiles(e.target.files)}
+        onChange={e => {
+          if (e.target.files && e.target.files.length > 0) {
+            addFiles(e.target.files);
+          }
+          e.target.value = "";
+        }}
       />
       <input
         ref={cameraRef} type="file" multiple
@@ -249,7 +256,12 @@ export function DocumentUploader({
         capture="environment"   // opens rear camera on mobile
         className="sr-only"
         disabled={!canMutate}
-        onChange={e => e.target.files && addFiles(e.target.files)}
+        onChange={e => {
+          if (e.target.files && e.target.files.length > 0) {
+            addFiles(e.target.files);
+          }
+          e.target.value = "";
+        }}
       />
 
       {/* File entries */}
@@ -262,7 +274,7 @@ export function DocumentUploader({
                 "flex items-start gap-3 p-3 rounded-xl border transition-colors",
                 entry.status === "error" ? "border-danger bg-red-50" :
                 entry.status === "done"  ? "border-success/30 bg-green-50/30" :
-                "border-navy-100 bg-white"
+                "border-border bg-white"
               )}
             >
               {/* Thumbnail / icon */}
@@ -277,7 +289,7 @@ export function DocumentUploader({
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <FileIcon className="w-5 h-5 text-navy-300" />
+                  <FileIcon className="w-5 h-5 text-navy-400" />
                 )}
               </div>
 
@@ -325,7 +337,7 @@ export function DocumentUploader({
                 type="button"
                 onClick={() => removeEntry(entry.id)}
                 aria-label={t("common.remove")}
-                className="w-6 h-6 flex items-center justify-center rounded-full hover:bg-navy-100 transition-colors text-navy-300 hover:text-danger flex-shrink-0"
+                className="w-6 h-6 flex items-center justify-center rounded-full hover:bg-navy-100 transition-colors text-navy-400 hover:text-danger flex-shrink-0"
               >
                 <X className="w-3.5 h-3.5" />
               </button>

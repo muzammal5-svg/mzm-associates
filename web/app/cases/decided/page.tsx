@@ -161,10 +161,10 @@ function DecidedCasesPage() {
                   <Link key={c.id} href={`/cases/view?id=${c.id}`}>
                     <Card hover className="flex items-start gap-3">
                       <div className="flex-1 min-w-0">
-                        <p className="text-xs font-mono text-gold font-semibold">{c.case_ref_no}</p>
+                        <p className="text-xs font-mono text-gold font-semibold">{c.case_ref_no || "—"}</p>
                         <p className="text-sm font-medium text-navy mt-0.5 line-clamp-2"
                           dir={isUrdu(c.plaintiff_name) ? "rtl" : "ltr"}>
-                          {c.plaintiff_name} <span className="text-navy-300 text-xs">{t("cases.vs")}</span> {c.defendant_name}
+                          {c.plaintiff_name} <span className="text-navy-400 text-xs">{t("cases.vs")}</span> {c.defendant_name}
                         </p>
                         <div className="flex items-center gap-1.5 mt-1 flex-wrap">
                           {c.outcome && <OutcomeBadge outcome={c.outcome} />}
@@ -173,7 +173,7 @@ function DecidedCasesPage() {
                           )}
                         </div>
                       </div>
-                      <ChevronRight className="w-4 h-4 text-navy-200 flex-shrink-0 mt-1" />
+                      <ChevronRight className="w-4 h-4 text-navy-400 flex-shrink-0 mt-1" />
                     </Card>
                   </Link>
                 ))}
@@ -192,7 +192,7 @@ function DecidedCasesPage() {
                   {
                     key: "ref",
                     header: t("cases.caseNo"),
-                    render: c => <span className="font-mono text-xs font-semibold text-gold">{c.case_ref_no}</span>,
+                    render: c => <span className="font-mono text-xs font-semibold text-gold">{c.case_ref_no || "—"}</span>,
                     width: "130px",
                   },
                   {
@@ -201,7 +201,7 @@ function DecidedCasesPage() {
                     render: c => (
                       <span className="text-sm font-medium text-navy"
                         dir={isUrdu(c.plaintiff_name) ? "rtl" : "ltr"}>
-                        {c.plaintiff_name} <span className="text-navy-300 text-xs">{t("cases.vs")}</span> {c.defendant_name}
+                        {c.plaintiff_name} <span className="text-navy-400 text-xs">{t("cases.vs")}</span> {c.defendant_name}
                       </span>
                     ),
                   },
@@ -214,7 +214,7 @@ function DecidedCasesPage() {
                   {
                     key: "outcome",
                     header: t("cases.outcome"),
-                    render: c => c.outcome ? <OutcomeBadge outcome={c.outcome} /> : <span className="text-navy-300 text-xs">—</span>,
+                    render: c => c.outcome ? <OutcomeBadge outcome={c.outcome} /> : <span className="text-navy-400 text-xs">—</span>,
                     width: "110px",
                   },
                   {

@@ -123,7 +123,7 @@ export function useDeleteDocument() {
       if (error) throw error;
     },
     onSuccess: (_d, { doc }) => {
-      qc.invalidateQueries({ queryKey: ["documents", doc.client_id ?? null, doc.case_id ?? null] });
+      qc.invalidateQueries({ queryKey: ["documents"] });
     },
   });
 }

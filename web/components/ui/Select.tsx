@@ -14,6 +14,7 @@ interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
   hint?:        string;
   options:      SelectOption[];
   placeholder?: string;
+  variant?:     "light" | "dark";
   containerClassName?: string;
 }
 
@@ -25,6 +26,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
       hint,
       options,
       placeholder = "Select an option",
+      variant = "light",
       containerClassName,
       className,
       id,
@@ -34,11 +36,12 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
     ref
   ) => {
     const selectId = id ?? label?.toLowerCase().replace(/\s+/g, "-");
+    const isDark = variant === "dark";
 
     return (
       <div className={cn("flex flex-col gap-1.5", containerClassName)}>
         {label && (
-          <label htmlFor={selectId} className="label">
+          <label htmlFor={selectId} className={isDark ? "label-dark" : "label"}>
             {label}
             {required && <span className="text-danger ms-0.5" aria-hidden="true">*</span>}
           </label>
@@ -51,25 +54,25 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
             required={required}
             aria-invalid={!!error}
             className={cn(
-              "input appearance-none pe-9",
+              isDark ? "input-dark appearance-none pe-9 min-h-[44px]" : "input appearance-none pe-9 min-h-[44px]",
               error && "border-danger focus:ring-danger",
               className
             )}
             {...props}
           >
             {placeholder && (
-              <option value="" disabled>
+              <option value="" disabled className={isDark ? "bg-slate-900 text-white/50" : "bg-white text-navy-400"}>
                 {placeholder}
               </option>
             )}
             {options.map((opt) => (
-              <option key={opt.value} value={opt.value} disabled={opt.disabled}>
+              <option key={opt.value} value={opt.value} disabled={opt.disabled} className={isDark ? "bg-slate-900 text-white" : "bg-white text-navy"}>
                 {opt.label}
               </option>
             ))}
           </select>
           <ChevronDown
-            className="absolute end-3 top-1/2 -translate-y-1/2 w-4 h-4 text-navy-300 pointer-events-none"
+            className={cn("absolute end-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none", isDark ? "text-white/50" : "text-navy-400")}
             aria-hidden="true"
           />
         </div>
@@ -78,7 +81,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
           <p role="alert" className="text-danger text-xs font-medium">{error}</p>
         )}
         {hint && !error && (
-          <p className="text-navy-300 text-xs">{hint}</p>
+          <p className={cn("text-xs", isDark ? "text-white/60" : "text-navy-500")}>{hint}</p>
         )}
       </div>
     );

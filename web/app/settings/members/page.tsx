@@ -121,7 +121,7 @@ function MembersView() {
 
       if (error) throw error;
 
-      setTempPassword(data?.temp_password ?? password);
+      setTempPassword(password);
       setEmail("");
       setFullName("");
       toast.success(t("members.memberAdded"));
@@ -283,6 +283,12 @@ function MembersView() {
             <p className="text-[11px] text-muted">
               Share this password securely with your colleague. They will be prompted to set a permanent password upon first login.
             </p>
+            <div className="flex items-start gap-1.5 mt-1 p-2.5 rounded-lg bg-warning/10 border border-warning/30">
+              <AlertTriangle className="w-3.5 h-3.5 text-warning shrink-0 mt-0.5" />
+              <p className="text-[11px] text-warning font-medium leading-relaxed">
+                <span className="font-bold">⚠️ Security notice:</span> Share this password privately (e.g. WhatsApp direct message). Do not email it or post it in group chats. The member must change it on first login.
+              </p>
+            </div>
           </div>
         )}
       </Card>

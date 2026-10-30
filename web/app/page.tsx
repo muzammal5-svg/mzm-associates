@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 import {
   UserPlus, Briefcase, Calendar, List, Bell,
   CheckSquare, Users, BellRing, Settings,
-  FolderOpen, ChevronRight,
+  FolderOpen, ChevronRight, Plus, CalendarCheck, Scale, Gavel, Clock,
 } from "lucide-react";
 
 import { AppShell }          from "@/components/layout/AppShell";
@@ -18,6 +18,7 @@ import { Skeleton }          from "@/components/ui/Skeleton";
 import { EmptyState }        from "@/components/ui/EmptyState";
 import { QueryErrorState } from "@/components/ui/QueryErrorState";
 import { useAuth }           from "@/providers/AuthProvider";
+import { cn }                from "@/lib/utils";
 import { useStoredSession }   from "@/hooks/useStoredSession";
 import { Landing }           from "@/components/marketing/Landing";
 import { useDashboardCounts } from "@/hooks/useDashboardCounts";
@@ -135,144 +136,264 @@ function DashboardPage() {
 
   return (
     <AppShell hideTopBar>
-      <div className="space-y-6">
-        {/* ── Header ── */}
-        <div className="bg-navy-header rounded-2xl p-5 text-white shadow-lg relative overflow-hidden">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Logo size="sm" variant="mark" />
-              <div>
-                <p className="text-xs text-white/70 font-medium">{todayLabel}</p>
-                <h1 className="text-xl md:text-2xl font-heading font-bold text-white">
-                  {t("dashboard.greeting", { time: timeOfDay, name: firstName })}
-                </h1>
-              </div>
-            </div>
-            <Link href="/notifications" className="relative w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
-              <Bell className="w-5 h-5 text-white" />
-              {(counts.data?.unreadNotifications ?? 0) > 0 && (
-                <span className="absolute -top-1 -end-1 min-w-[16px] h-4 px-0.5 rounded-full bg-danger text-white text-[10px] font-bold flex items-center justify-center">
-                  {counts.data?.unreadNotifications}
+      <div className="space-y-7">
+        {/* ── Executive Command Header ── */}
+        <div className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-navy-800 to-navy-950 border border-slate-700/60 rounded-3xl p-6 md:p-8 text-white shadow-lg">
+          <div className="absolute top-0 end-0 -translate-y-1/2 translate-x-1/4 w-96 h-96 bg-gold/15 rounded-full blur-3xl pointer-events-none" />
+          <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div className="space-y-2.5">
+              <div className="flex items-center gap-2.5 flex-wrap">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-gold/20 text-gold-200 border border-gold/30">
+                  <span className="w-1.5 h-1.5 rounded-full bg-gold animate-pulse" />
+                  {profile?.role === "super_admin" ? "Platform Super Admin" : "Active Firm Practice"}
                 </span>
-              )}
-            </Link>
+                <span className="text-white/70 text-xs flex items-center gap-1.5 font-medium">
+                  <Clock className="w-3.5 h-3.5 text-white/50" />
+                  {todayLabel}
+                </span>
+              </div>
+              <h1 className="text-2xl md:text-3xl lg:text-4xl font-heading font-bold text-white tracking-tight">
+                {t("dashboard.greeting", { time: timeOfDay, name: firstName })}
+              </h1>
+              <p className="text-white/70 text-sm max-w-xl leading-relaxed">
+                {t("dashboard.subtitle") || "Real-time overview of active litigation, scheduled court cause lists, and client matters."}
+              </p>
+            </div>
+
+            {/* Quick Action Buttons */}
+            <div className="flex items-center gap-2.5 flex-wrap flex-shrink-0">
+              <Link
+                href="/cases/new"
+                className="btn-primary text-xs md:text-sm font-semibold shadow-gold hover:shadow-gold-lg flex items-center gap-2"
+              >
+                <Plus className="w-4 h-4" />
+                <span>{t("cases.newCase") || "New Case"}</span>
+              </Link>
+              <Link
+                href="/cause-list"
+                className="inline-flex items-center gap-2 px-4 py-3 rounded-md bg-white/10 hover:bg-white/15 border border-white/20 text-white text-xs md:text-sm font-semibold backdrop-blur-sm transition-all duration-150"
+              >
+                <CalendarCheck className="w-4 h-4 text-gold-300" />
+                <span>{t("nav.causeList") || "Cause List"}</span>
+              </Link>
+              <Link
+                href="/cases/running"
+                className="inline-flex items-center gap-2 px-4 py-3 rounded-md bg-white/10 hover:bg-white/15 border border-white/20 text-white text-xs md:text-sm font-semibold backdrop-blur-sm transition-all duration-150"
+              >
+                <Scale className="w-4 h-4 text-sky-300" />
+                <span>{t("nav.runningCases") || "Running"}</span>
+              </Link>
+            </div>
           </div>
-          <p className="text-sm text-white/70 mt-2">{profile?.email ?? ""}</p>
         </div>
 
-        {/* ── Stat chips (4 key numbers) ── */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          {counts.isError ? (
-            <div className="col-span-full"><QueryErrorState onRetry={() => void counts.refetch()} /></div>
-          ) : counts.isLoading
-            ? Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="card flex flex-col gap-1">
-                  <div className="h-7 w-1/3 bg-navy-50 rounded animate-shimmer" />
-                  <div className="h-3 w-2/3 bg-navy-50 rounded animate-shimmer" />
-                </div>
-              ))
-            : [
-                { label: t("dashboard.todayCases"),   value: counts.data?.todayHearings,   color: "text-blue-600" },
-                { label: t("dashboard.runningCases"),  value: counts.data?.runningCases,    color: "text-gold" },
-                { label: t("dashboard.totalClients"),  value: counts.data?.totalClients,    color: "text-purple-600" },
-                { label: t("dashboard.upcoming"),      value: counts.data?.upcomingReminders, color: "text-yellow-600" },
-              ].map(stat => (
-                <div key={stat.label} className="card flex flex-col gap-0.5">
-                  <span className={`text-2xl font-heading font-bold ${stat.color}`}>
-                    {stat.value ?? "—"}
-                  </span>
-                  <span className="text-xs text-navy-400 leading-tight">{stat.label}</span>
-                </div>
-              ))
-          }
-        </div>
-
-        {/* ── Services grid ── */}
+        {/* ── Stats Grid (4 KPI Cards) ── */}
         <div>
-          <h2 className="text-sm font-semibold text-navy-400 uppercase tracking-wider mb-3">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-base md:text-lg font-heading font-bold text-navy flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-gold" />
+              {t("dashboard.stats") || "Key Practice Metrics"}
+            </h2>
+            <span className="text-xs text-navy-400 font-medium">{t("common.realTime") || "Live database sync"}</span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {counts.isError ? (
+              <div className="col-span-full"><QueryErrorState onRetry={() => void counts.refetch()} /></div>
+            ) : counts.isLoading ? (
+              Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-xs animate-pulse">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="w-10 h-10 rounded-xl bg-slate-100" />
+                    <div className="w-16 h-5 rounded-full bg-slate-100" />
+                  </div>
+                  <div className="h-4 w-24 bg-slate-100 rounded mb-2" />
+                  <div className="h-8 w-16 bg-slate-100 rounded" />
+                </div>
+              ))
+            ) : (
+              [
+                {
+                  id: "running",
+                  icon: Briefcase,
+                  iconBox: "bg-blue-50 text-blue-700 border-blue-200/80",
+                  label: t("dashboard.runningCases"),
+                  value: counts.data?.runningCases ?? 0,
+                  trend: t("dashboard.active") || "Active Litigation",
+                  trendVariant: "info" as const,
+                  href: "/cases/running",
+                },
+                {
+                  id: "today",
+                  icon: CalendarCheck,
+                  iconBox: "bg-amber-50 text-amber-700 border-amber-200/80",
+                  label: t("dashboard.todayCases"),
+                  value: counts.data?.todayHearings ?? 0,
+                  trend: (counts.data?.todayHearings ?? 0) > 0 ? "Scheduled Today" : "None Today",
+                  trendVariant: (counts.data?.todayHearings ?? 0) > 0 ? ("gold" as const) : ("neutral" as const),
+                  href: "/cause-list",
+                },
+                {
+                  id: "clients",
+                  icon: Users,
+                  iconBox: "bg-emerald-50 text-emerald-700 border-emerald-200/80",
+                  label: t("dashboard.totalClients"),
+                  value: counts.data?.totalClients ?? 0,
+                  trend: t("dashboard.registered") || "Retained Clients",
+                  trendVariant: "success" as const,
+                  href: "/clients",
+                },
+                {
+                  id: "reminders",
+                  icon: BellRing,
+                  iconBox: "bg-indigo-50 text-indigo-700 border-indigo-200/80",
+                  label: t("dashboard.upcoming"),
+                  value: counts.data?.upcomingReminders ?? 0,
+                  trend: (counts.data?.upcomingReminders ?? 0) > 0 ? "Pending Actions" : "Up to Date",
+                  trendVariant: (counts.data?.upcomingReminders ?? 0) > 0 ? ("warning" as const) : ("neutral" as const),
+                  href: "/reminders",
+                },
+              ].map(stat => {
+                const Icon = stat.icon;
+                return (
+                  <Link
+                    key={stat.id}
+                    href={stat.href}
+                    className="group bg-white border border-slate-200/80 hover:border-gold/50 rounded-2xl p-5 transition-all duration-200 hover:shadow-md shadow-xs active:scale-[0.99] block"
+                  >
+                    <div className="flex items-center justify-between mb-3">
+                      <div className={cn("w-10 h-10 rounded-xl border flex items-center justify-center transition-transform group-hover:scale-105", stat.iconBox)}>
+                        <Icon className="w-5 h-5" />
+                      </div>
+                      <Badge variant={stat.trendVariant} size="sm" dot>
+                        {stat.trend}
+                      </Badge>
+                    </div>
+                    <p className="text-slate-500 text-xs font-semibold uppercase tracking-wider mb-1">
+                      {stat.label}
+                    </p>
+                    <div className="flex items-baseline justify-between">
+                      <span className="text-3xl font-heading font-bold text-navy tracking-tight">
+                        {stat.value}
+                      </span>
+                      <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-gold group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5 transition-all" />
+                    </div>
+                  </Link>
+                );
+              })
+            )}
+          </div>
+        </div>
+
+        {/* ── Services Grid ── */}
+        <div>
+          <h2 className="text-base md:text-lg font-heading font-bold text-navy mb-4 flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-gold" />
             {t("dashboard.services")}
           </h2>
-          <div className="grid grid-cols-2 xs:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 stagger-children">
-            {services.map(svc => (
-              <Link
-                key={svc.key}
-                href={svc.href}
-                className="group flex flex-col items-center gap-2 p-4 bg-gradient-to-br from-white to-navy-50 rounded-xl border border-border shadow-sm hover:shadow-md hover:border-gold/30 transition-all duration-150 active:scale-[.98] focus-visible:ring-2 focus-visible:ring-gold focus-visible:outline-none"
-              >
-                <div className={`w-11 h-11 rounded-xl flex items-center justify-center ${svc.color} relative shadow-xs bg-gradient-to-br`}>
-                  <svc.icon className="w-5 h-5" />
+          <div className="grid grid-cols-2 xs:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3.5">
+            {services.map(svc => {
+              const Icon = svc.icon;
+              return (
+                <Link
+                  key={svc.key}
+                  href={svc.href}
+                  className="group flex flex-col items-center gap-3 p-4 bg-white border border-slate-200/80 hover:border-gold/60 rounded-2xl transition-all duration-200 hover:shadow-md shadow-xs active:scale-[0.98]"
+                >
+                  <div className="w-12 h-12 rounded-xl bg-gold/10 border border-gold/20 flex items-center justify-center group-hover:bg-gold/20 group-hover:scale-105 transition-all duration-200">
+                    <Icon className="w-6 h-6 text-gold transition-transform duration-200" />
+                  </div>
+                  <span className="text-xs font-semibold text-navy text-center leading-tight group-hover:text-gold transition-colors">
+                    {t(`services.${svc.key}`)}
+                  </span>
                   {svc.badge > 0 && (
-                    <Badge
-                      variant={svc.key === "notifications" ? "danger" : "gold"}
-                      size="sm"
-                      className="absolute -top-1.5 -end-1.5 min-w-[18px] h-[18px] flex items-center justify-center px-1"
-                    >
+                    <span className="text-[10px] font-bold bg-danger text-white rounded-full px-2 py-0.5">
                       {svc.badge > 99 ? "99+" : svc.badge}
-                    </Badge>
+                    </span>
                   )}
-                </div>
-                <span className="text-xs font-medium text-navy text-center leading-tight group-hover:text-gold transition-colors">
-                  {svc.label}
-                </span>
-              </Link>
-            ))}
+                </Link>
+              );
+            })}
           </div>
         </div>
 
-        {/* ── Today's hearings preview ── */}
-        <div>
-          <div className="flex items-center justify-between mb-3">
-            <h2 className="text-sm font-semibold text-navy-400 uppercase tracking-wider">
-              {t("dashboard.todayPreview")}
-            </h2>
-            <Link href="/cause-list" className="text-xs text-gold hover:underline font-medium flex items-center gap-0.5">
-              {t("dashboard.viewAll")} <ChevronRight className="w-3 h-3" />
+        {/* ── Today's Hearings Preview ── */}
+        <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs space-y-4">
+          <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+            <div>
+              <h2 className="text-base md:text-lg font-heading font-bold text-navy flex items-center gap-2">
+                <Gavel className="w-4.5 h-4.5 text-gold" />
+                {t("dashboard.todayPreview")}
+              </h2>
+              <p className="text-xs text-slate-500 mt-0.5">
+                {hearings.data?.length ?? 0} {t("hearings.scheduledToday") || "cases listed for today"}
+              </p>
+            </div>
+            <Link
+              href="/cause-list"
+              className="inline-flex items-center gap-1.5 text-xs font-semibold text-gold-700 hover:text-gold-800 bg-gold/10 hover:bg-gold/15 px-3 py-1.5 rounded-lg transition-colors"
+            >
+              <span>{t("dashboard.viewAll")}</span>
+              <ChevronRight className="w-3.5 h-3.5 rtl:rotate-180" />
             </Link>
           </div>
 
           {hearings.isError ? (
             <QueryErrorState onRetry={() => void hearings.refetch()} />
           ) : hearings.isLoading ? (
-            <div className="space-y-2">
-              {[1,2,3].map(i => <Skeleton key={i} className="h-16 rounded-xl" />)}
+            <div className="space-y-3">
+              {[1, 2, 3].map(i => <Skeleton key={i} className="h-16 rounded-xl" />)}
             </div>
           ) : hearings.data?.length === 0 ? (
-            <Card>
-              <EmptyState
-                icon={Calendar}
-                title={t("dashboard.noHearingsToday")}
-                className="py-8"
-              />
-            </Card>
+            <EmptyState
+              icon={Calendar}
+              title={t("dashboard.noHearingsToday")}
+              description={t("dashboard.noHearingsSub") || "No court appearances scheduled on your calendar for today."}
+              className="py-6"
+            />
           ) : (
-            <div className="space-y-2">
+            <div className="space-y-2.5">
               {hearings.data?.map(h => (
                 <Link
                   key={h.hearing_id}
                   href={`/cases/view?id=${h.case_id}`}
-                  className="block"
+                  className="group block"
                 >
-                  <Card hover className="flex items-center gap-3">
-                    {/* Serial */}
-                    <div className="w-8 h-8 rounded-lg bg-gold/10 flex items-center justify-center flex-shrink-0">
-                      <span className="text-xs font-bold text-gold">{h.serial_no ?? "—"}</span>
+                  <div className="bg-slate-50/70 hover:bg-white border border-slate-200/70 hover:border-gold/50 rounded-xl p-3.5 transition-all duration-200 flex items-center gap-3.5 shadow-2xs hover:shadow-xs">
+                    {/* Serial badge */}
+                    <div className="min-w-[42px] max-w-[56px] h-10 px-2 rounded-xl bg-gold/10 border border-gold/25 flex items-center justify-center flex-shrink-0 group-hover:bg-gold/20 transition-colors overflow-hidden">
+                      <span className="text-xs font-bold text-gold font-mono truncate whitespace-nowrap">
+                        {h.serial_no ? (h.serial_no.startsWith("#") ? h.serial_no : `#${h.serial_no.trim()}`) : "—"}
+                      </span>
                     </div>
-                    {/* Case info */}
+
+                    {/* Case parties */}
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold text-navy truncate">
-                        {h.plaintiff_name} {t("cases.vs")} {h.defendant_name}
+                      <p className="text-sm font-semibold text-navy truncate group-hover:text-gold transition-colors">
+                        {h.plaintiff_name} <span className="text-slate-400 font-normal text-xs mx-1">{t("cases.vs")}</span> {h.defendant_name}
                       </p>
-                      <p className="text-xs text-navy-400 truncate">{h.case_ref_no} · {h.case_type_name}</p>
+                      <div className="flex items-center gap-2 text-xs text-slate-500 truncate mt-0.5">
+                        {h.case_ref_no && <span className="font-mono text-gold-700 font-medium">{h.case_ref_no}</span>}
+                        {h.case_type_name && <span>• {h.case_type_name}</span>}
+                      </div>
                     </div>
-                    {/* Court info */}
-                    <div className="text-end flex-shrink-0">
-                      <p className="text-xs font-medium text-navy-400">{h.hearing_court_no ?? h.case_court_no ?? ""}</p>
-                      {h.next_date && (
-                        <p className="text-[10px] text-navy-300">{fmtDate(h.next_date)}</p>
+
+                    {/* Court & Judge */}
+                    <div className="text-end flex-shrink-0 hidden sm:block">
+                      {h.hearing_court_no && (
+                        <p className="text-xs font-semibold text-navy">
+                          {t("cases.court")} {h.hearing_court_no}
+                        </p>
+                      )}
+                      {h.hearing_judge && (
+                        <p className="text-[11px] text-slate-400 truncate max-w-[140px] mt-0.5">
+                          {h.hearing_judge}
+                        </p>
                       )}
                     </div>
-                    <ChevronRight className="w-4 h-4 text-navy-300 flex-shrink-0" />
-                  </Card>
+
+                    <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-gold transition-colors flex-shrink-0 rtl:rotate-180" />
+                  </div>
                 </Link>
               ))}
             </div>

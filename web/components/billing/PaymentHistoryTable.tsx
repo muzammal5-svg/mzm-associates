@@ -47,7 +47,7 @@ export function PaymentHistoryTable({
   if (payments.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-slate-300 bg-slate-50/60 px-6 py-12 text-center">
-        <span className="grid h-12 w-12 place-items-center rounded-2xl bg-white text-navy-300 shadow-sm">
+        <span className="grid h-12 w-12 place-items-center rounded-2xl bg-white text-navy-400 shadow-sm">
           <Inbox className="h-6 w-6" aria-hidden="true" />
         </span>
         <p className="text-sm font-semibold text-navy">{t("billing.noPayments")}</p>
@@ -84,7 +84,7 @@ export function PaymentHistoryTable({
                   </td>
                   <td className="whitespace-nowrap px-4 py-3.5">
                     <span className="font-mono text-xs font-semibold text-navy">{p.reference_no}</span>
-                    <span className="mt-0.5 block text-[10px] uppercase tracking-wider text-navy-300">
+                    <span className="mt-0.5 block text-[10px] uppercase tracking-wider text-navy-400">
                       {p.method.replace("_", " ")}
                     </span>
                   </td>
@@ -116,7 +116,7 @@ export function PaymentHistoryTable({
                         {t("billing.viewReceipt")}
                       </button>
                     ) : (
-                      <span className="inline-flex items-center gap-1 text-[11px] text-navy-200">
+                      <span className="inline-flex items-center gap-1 text-[11px] text-navy-400">
                         <FileText className="h-3.5 w-3.5" aria-hidden="true" />
                         {t("billing.noReceipt")}
                       </span>
@@ -130,7 +130,7 @@ export function PaymentHistoryTable({
       </div>
 
       <div className="flex items-center gap-2 border-t border-slate-100 bg-slate-50/60 px-4 py-3 text-[11px] text-muted">
-        <Receipt className="h-3.5 w-3.5 text-navy-300" aria-hidden="true" />
+        <Receipt className="h-3.5 w-3.5 text-navy-400" aria-hidden="true" />
         {t("billing.historyFooter")}
       </div>
     </div>

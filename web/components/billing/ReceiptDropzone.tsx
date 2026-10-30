@@ -114,7 +114,7 @@ export function ReceiptDropzone({
               ) : isPdf ? (
                 <FileText className="h-7 w-7 text-rose-500" aria-hidden="true" />
               ) : (
-                <FileImage className="h-7 w-7 text-navy-300" aria-hidden="true" />
+                <FileImage className="h-7 w-7 text-navy-400" aria-hidden="true" />
               )}
             </div>
 

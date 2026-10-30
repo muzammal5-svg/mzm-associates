@@ -1,6 +1,7 @@
 "use client";
 
 import { type ReactNode }  from "react";
+import { useState, useEffect } from "react";
 import { SubscriptionBanner } from "@/components/shared/SubscriptionBanner";
 import { Sidebar }         from "./Sidebar";
 import { BottomNav }       from "./BottomNav";
@@ -10,22 +11,14 @@ import { cn }              from "@/lib/utils";
 
 interface AppShellProps {
   children:      ReactNode;
-  /** Page title shown in mobile header + desktop top bar */
   pageTitle?:    string;
   pageSubtitle?: string;
   showBack?:     boolean;
-  /** Extra buttons shown in top-right (desktop) or header-right (mobile) */
   headerActions?: ReactNode;
   className?:    string;
-  /** Hide the desktop top bar (e.g. home page has its own greeting) */
   hideTopBar?:   boolean;
 }
 
-/**
- * ONE navigation pattern per breakpoint:
- * - Mobile  (<md): MobileHeader (top) + BottomNav (bottom)
- * - Desktop (md+): fixed Sidebar (left) + DesktopTopBar inside content
- */
 export function AppShell({
   children,
   pageTitle,
@@ -35,6 +28,31 @@ export function AppShell({
   className,
   hideTopBar = false,
 }: AppShellProps) {
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    const saved = localStorage.getItem("sidebar-collapsed");
+    if (saved !== null) {
+      setSidebarCollapsed(JSON.parse(saved));
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
+    const handleStorageChange = () => {
+      const saved = localStorage.getItem("sidebar-collapsed");
+      if (saved !== null) {
+        setSidebarCollapsed(JSON.parse(saved));
+      }
+    };
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
+  }, [mounted]);
+
+  const sidebarWidth = sidebarCollapsed ? "md:ms-[80px]" : "md:ms-[280px]";
+
   return (
     <div className="min-h-dvh bg-offwhite">
       {/* ── Desktop sidebar (fixed, left) ── */}
@@ -50,7 +68,8 @@ export function AppShell({
       {/* ── Main content ── */}
       <main
         className={cn(
-          "md:ms-64 min-h-dvh",
+          "min-h-dvh transition-all duration-300",
+          sidebarWidth,
           // Mobile: pad bottom for nav bar + safe area
           "pb-[calc(4.5rem+env(safe-area-inset-bottom,0px))] md:pb-0",
           className

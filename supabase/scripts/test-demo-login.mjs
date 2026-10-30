@@ -30,16 +30,20 @@ if (env.SUPABASE_PROJECT_REF !== expectedProjectRef || supabaseUrl !== `https://
 if (!anonKey) throw new Error("NEXT_PUBLIC_SUPABASE_ANON_KEY is missing from web/.env.local.");
 
 const demoUsers = [
-  { email: "admin@mzm.pk", password: "Admin1234!", role: "admin" },
-  { email: "lawyer@mzm.pk", password: "Lawyer1234!", role: "lawyer" },
-  { email: "clerk@mzm.pk", password: "Clerk1234!", role: "clerk" },
+  { email: "super@platform.test", password: "Super1234!", role: "super_admin", firmId: "00000000-0000-0000-0000-000000000099" },
+  { email: "admin@mzm.pk", password: "Admin1234!", role: "admin", firmId },
+  { email: "lawyer@mzm.pk", password: "Lawyer1234!", role: "lawyer", firmId },
+  { email: "clerk@mzm.pk", password: "Clerk1234!", role: "clerk", firmId },
 ];
 
 for (const demo of demoUsers) {
   const client = createClient(supabaseUrl, anonKey, {
     auth: { persistSession: false, autoRefreshToken: false },
   });
-  const { data: authData, error: authError } = await client.auth.signInWithPassword(demo);
+  const { data: authData, error: authError } = await client.auth.signInWithPassword({
+    email: demo.email,
+    password: demo.password,
+  });
   if (authError) throw new Error(`Login failed for ${demo.email}: ${authError.message}`);
 
   const { data: profile, error: profileError } = await client
@@ -48,8 +52,8 @@ for (const demo of demoUsers) {
     .eq("id", authData.user.id)
     .single();
   if (profileError) throw new Error(`Own-profile read failed for ${demo.email}: ${profileError.message}`);
-  if (profile.role !== demo.role || profile.firm_id !== firmId) {
-    throw new Error(`Role/firm mismatch for ${demo.email}.`);
+  if (profile.role !== demo.role || profile.firm_id !== demo.firmId) {
+    throw new Error(`Role/firm mismatch for ${demo.email} (got role=${profile.role}, firm=${profile.firm_id}).`);
   }
 
   console.log(`PASS ${demo.email}: authenticated, own profile readable, role=${profile.role}, firm verified`);

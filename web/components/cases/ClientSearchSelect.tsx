@@ -76,17 +76,17 @@ export function ClientSearchSelect({
             )}
           </span>
         ) : (
-          <span className="flex-1 text-navy-300 text-sm">{t("common.searchClient")}</span>
+          <span className="flex-1 text-navy-400 text-sm">{t("common.searchClient")}</span>
         )}
         <span className="flex items-center gap-1 flex-shrink-0">
           {value && (
             <span onClick={clear}
-              className="text-navy-300 hover:text-danger p-0.5 rounded"
+              className="text-navy-400 hover:text-danger p-0.5 rounded"
               aria-label={t("common.clear")}>
               <X className="w-3.5 h-3.5" />
             </span>
           )}
-          <ChevronDown className={cn("w-4 h-4 text-navy-300 transition-transform", open && "rotate-180")} />
+          <ChevronDown className={cn("w-4 h-4 text-navy-400 transition-transform", open && "rotate-180")} />
         </span>
       </button>
 
@@ -96,12 +96,12 @@ export function ClientSearchSelect({
       {open && (
         <div
           role="listbox"
-          className="absolute z-50 start-0 end-0 top-full mt-1 bg-white rounded-xl border border-navy-100 shadow-modal overflow-hidden animate-slide-down"
+          className="absolute z-50 start-0 end-0 top-full mt-1 bg-white rounded-xl border border-border shadow-modal overflow-hidden animate-slide-down"
         >
           {/* Search box */}
-          <div className="p-2 border-b border-navy-50">
+          <div className="p-2 border-b border-border">
             <div className="relative">
-              <Search className="absolute start-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-navy-300 pointer-events-none" />
+              <Search className="absolute start-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-navy-400 pointer-events-none" />
               <input
                 type="text"
                 autoFocus
@@ -145,11 +145,11 @@ export function ClientSearchSelect({
           </div>
 
           {/* + New client shortcut */}
-          <div className="border-t border-navy-50 p-2">
+          <div className="border-t border-border p-2">
             <Link
               href={newClientHref}
               onClick={() => setOpen(false)}
-              className="flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium text-gold hover:bg-gold-50 transition-colors"
+              className="flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold text-gold-600 hover:bg-gold-50 transition-colors"
             >
               <UserPlus className="w-3.5 h-3.5" /> {t("common.addNewClient")}
             </Link>

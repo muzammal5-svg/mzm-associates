@@ -59,35 +59,35 @@ function SettingsPage() {
       <div className="max-w-xl mx-auto space-y-5">
         {/* Account */}
         <section>
-          <p className="text-xs font-semibold uppercase tracking-wider text-navy-400 mb-2 px-1">
+          <p className="text-xs font-semibold uppercase tracking-wider text-navy-500 mb-2 px-1">
             {t("settings.account")}
           </p>
-          <Card padding="none" className="divide-y divide-navy-50">
+          <Card padding="none" className="divide-y divide-border">
             <Link
               href="/profile"
-              className="flex items-center gap-3 px-4 py-4 hover:bg-navy-50/50 transition-colors"
+              className="flex items-center gap-3 px-4 py-3.5 hover:bg-navy-50/50 transition-colors group"
             >
-              <User className="w-4 h-4 text-navy-400" />
-              <span className="flex-1 text-sm font-medium text-navy">{t("profile.title")}</span>
-              <ChevronRight className="w-4 h-4 text-navy-300" />
+              <User className="w-4 h-4 text-navy-400 group-hover:text-gold transition-colors" />
+              <span className="flex-1 text-sm font-semibold text-navy">{t("profile.title")}</span>
+              <ChevronRight className="w-4 h-4 text-navy-400 group-hover:text-gold transition-colors" />
             </Link>
             <Link
               href="/settings/notifications"
-              className="flex items-center gap-3 px-4 py-4 hover:bg-navy-50/50 transition-colors"
+              className="flex items-center gap-3 px-4 py-3.5 hover:bg-navy-50/50 transition-colors group"
             >
-              <BellRing className="w-4 h-4 text-navy-400" />
-              <span className="flex-1 text-sm font-medium text-navy">
+              <BellRing className="w-4 h-4 text-navy-400 group-hover:text-gold transition-colors" />
+              <span className="flex-1 text-sm font-semibold text-navy">
                 {t("settings.notificationPreferences")}
               </span>
-              <ChevronRight className="w-4 h-4 text-navy-300" />
+              <ChevronRight className="w-4 h-4 text-navy-400 group-hover:text-gold transition-colors" />
             </Link>
           </Card>
         </section>
 
         {/* Language */}
         <section>
-          <p className="text-xs font-semibold uppercase tracking-wider text-navy-400 mb-2 px-1 flex items-center gap-1">
-            <Globe className="w-3.5 h-3.5" /> {t("settings.language")}
+          <p className="text-xs font-semibold uppercase tracking-wider text-navy-500 mb-2 px-1 flex items-center gap-1">
+            <Globe className="w-3.5 h-3.5 text-navy-400" /> {t("settings.language")}
           </p>
           <LangSwitcher />
         </section>
@@ -95,25 +95,25 @@ function SettingsPage() {
         {/* Admin config */}
         {isAdminOrAbove && (
           <section>
-            <p className="text-xs font-semibold uppercase tracking-wider text-navy-400 mb-2 px-1 flex items-center gap-1">
-              <Shield className="w-3.5 h-3.5" /> {t("settings.adminConfig")}
+            <p className="text-xs font-semibold uppercase tracking-wider text-navy-500 mb-2 px-1 flex items-center gap-1">
+              <Shield className="w-3.5 h-3.5 text-gold" /> {t("settings.adminConfig")}
             </p>
-            <Card padding="none" className="divide-y divide-navy-50">
+            <Card padding="none" className="divide-y divide-border">
               <Link
                 href="/settings/case-types"
-                className="flex items-center gap-3 px-4 py-4 hover:bg-navy-50/50 transition-colors"
+                className="flex items-center gap-3 px-4 py-3.5 hover:bg-navy-50/50 transition-colors group"
               >
-                <Tag className="w-4 h-4 text-navy-400" />
-                <span className="flex-1 text-sm font-medium text-navy">{t("common.caseTypes")}</span>
-                <ChevronRight className="w-4 h-4 text-navy-300" />
+                <Tag className="w-4 h-4 text-navy-400 group-hover:text-gold transition-colors" />
+                <span className="flex-1 text-sm font-semibold text-navy">{t("common.caseTypes")}</span>
+                <ChevronRight className="w-4 h-4 text-navy-400 group-hover:text-gold transition-colors" />
               </Link>
               <Link
                 href="/settings/courts"
-                className="flex items-center gap-3 px-4 py-4 hover:bg-navy-50/50 transition-colors"
+                className="flex items-center gap-3 px-4 py-3.5 hover:bg-navy-50/50 transition-colors group"
               >
-                <Scale className="w-4 h-4 text-navy-400" />
-                <span className="flex-1 text-sm font-medium text-navy">{t("common.courts")}</span>
-                <ChevronRight className="w-4 h-4 text-navy-300" />
+                <Scale className="w-4 h-4 text-navy-400 group-hover:text-gold transition-colors" />
+                <span className="flex-1 text-sm font-semibold text-navy">{t("common.courts")}</span>
+                <ChevronRight className="w-4 h-4 text-navy-400 group-hover:text-gold transition-colors" />
               </Link>
             </Card>
           </section>
@@ -121,13 +121,13 @@ function SettingsPage() {
 
         {/* About */}
         <section>
-          <p className="text-xs font-semibold uppercase tracking-wider text-navy-400 mb-2 px-1 flex items-center gap-1">
-            <Info className="w-3.5 h-3.5" /> {t("settings.about")}
+          <p className="text-xs font-semibold uppercase tracking-wider text-navy-500 mb-2 px-1 flex items-center gap-1">
+            <Info className="w-3.5 h-3.5 text-navy-400" /> {t("settings.about")}
           </p>
           <Card>
-            <p className="text-sm text-navy font-medium">MZM & Associates</p>
-            <p className="text-xs text-navy-400 mt-0.5">Case Management System v1.0.0</p>
-            <p className="text-xs text-navy-300 mt-2">Next.js 14 · Supabase · Capacitor</p>
+            <p className="text-sm text-navy font-semibold">MZM & Associates</p>
+            <p className="text-xs text-navy-500 mt-0.5">Case Management System v1.0.0</p>
+            <p className="text-xs text-navy-400 mt-2">Next.js 14 · Supabase · Capacitor</p>
           </Card>
         </section>
 

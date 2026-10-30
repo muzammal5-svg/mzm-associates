@@ -164,20 +164,20 @@ export function MarkDecidedModal({
       {/* Optional final order upload */}
       <div className="space-y-1.5">
         <label className="label">
-          {t("common.finalOrderDocument")} <span className="text-navy-300 text-xs">{t("common.finalOrderOptional")}</span>
+          {t("common.finalOrderDocument")} <span className="text-navy-400 font-normal text-xs">{t("common.finalOrderOptional")}</span>
         </label>
         {docFile ? (
           <div className="flex items-center gap-2 p-3 bg-green-50 border border-success/30 rounded-xl">
             <FileText className="w-4 h-4 text-success flex-shrink-0" />
             <div className="flex-1 min-w-0">
-              <p className="text-xs font-medium text-navy truncate">{docFile.name}</p>
-              <p className="text-[11px] text-navy-400">{formatFileSize(docFile.size)}</p>
+              <p className="text-xs font-semibold text-navy truncate">{docFile.name}</p>
+              <p className="text-[11px] text-navy-500 font-medium">{formatFileSize(docFile.size)}</p>
             </div>
             {uploading &&             <progress className="w-full" max={100} value={uploadProgress} aria-label={t("common.uploadProgress", { progress: uploadProgress })} />}
             <button
               type="button"
               onClick={() => { setDocFile(null); if (fileRef.current) fileRef.current.value = ""; }}
-              className="text-navy-300 hover:text-danger transition-colors"
+              className="text-navy-400 hover:text-danger transition-colors"
             >
               <X className="w-4 h-4" />
             </button>
@@ -187,7 +187,7 @@ export function MarkDecidedModal({
             type="button"
             onClick={() => fileRef.current?.click()}
             {...lock}
-            className="w-full flex items-center gap-2 p-3 border-2 border-dashed border-navy-100 rounded-xl hover:border-gold hover:bg-gold-50/30 transition-colors text-sm text-navy-400 disabled:opacity-50"
+            className="w-full flex items-center gap-2 p-3 border-2 border-dashed border-border rounded-xl hover:border-gold hover:bg-gold-50/30 transition-colors text-sm text-navy-500 font-medium disabled:opacity-50"
           >
             <Upload className="w-4 h-4 flex-shrink-0" />
             {t("common.uploadFinalOrder")}

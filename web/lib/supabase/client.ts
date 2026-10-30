@@ -1,13 +1,17 @@
 import { createClient } from "@supabase/supabase-js";
 import type { Database, TablesInsert, TablesUpdate } from "@/types/supabase";
 
-const supabaseUrl  = process.env.NEXT_PUBLIC_SUPABASE_URL  ?? "";
-const supabaseAnon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "";
+const rawUrl  = process.env.NEXT_PUBLIC_SUPABASE_URL  ?? "";
+const rawAnon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "";
 
 export const IS_SUPABASE_CONFIGURED =
-  !!supabaseUrl &&
-  supabaseUrl !== "https://placeholder.supabase.co" &&
-  !supabaseUrl.includes("placeholder");
+  !!rawUrl &&
+  /^https?:\/\//i.test(rawUrl) &&
+  rawUrl !== "https://placeholder.supabase.co" &&
+  !rawUrl.includes("placeholder");
+
+const supabaseUrl  = IS_SUPABASE_CONFIGURED ? rawUrl : "https://placeholder.supabase.co";
+const supabaseAnon = IS_SUPABASE_CONFIGURED ? rawAnon : "placeholder-anon-key";
 
 if (typeof window !== "undefined" && !IS_SUPABASE_CONFIGURED) {
   console.warn(
@@ -21,8 +25,8 @@ if (typeof window !== "undefined" && !IS_SUPABASE_CONFIGURED) {
  * All data access goes through this — no server actions or API routes.
  */
 export const supabase = createClient<Database>(
-  supabaseUrl  || "https://placeholder.supabase.co",
-  supabaseAnon || "placeholder-anon-key",
+  supabaseUrl,
+  supabaseAnon,
   {
     auth: {
       persistSession:    true,

@@ -90,7 +90,7 @@ function MorePage() {
               <p className="text-xs text-navy-400 truncate">{profile?.email ?? ""}</p>
               {profile?.role && <RoleBadge role={profile.role} className="mt-1" />}
             </div>
-            <div className="flex items-center gap-1 text-navy-300 flex-shrink-0">
+            <div className="flex items-center gap-1 text-navy-400 flex-shrink-0">
               <User className="w-4 h-4" />
               <ChevronRight className="w-4 h-4" />
             </div>
@@ -98,7 +98,7 @@ function MorePage() {
         </Link>
 
         {/* ── Menu items ── */}
-        <Card padding="none" className="divide-y divide-navy-50 overflow-hidden">
+        <Card padding="none" className="divide-y divide-border overflow-hidden">
           {menuItems.map((item) => {
             const Inner = (
               <div className="flex items-center gap-3.5 px-4 py-4">
@@ -111,7 +111,7 @@ function MorePage() {
                 {item.badge && item.badge > 0 ? (
                   <Badge variant="danger" size="sm">{item.badge > 99 ? "99+" : item.badge}</Badge>
                 ) : (
-                  <ChevronRight className="w-4 h-4 text-navy-300" />
+                  <ChevronRight className="w-4 h-4 text-navy-400" />
                 )}
               </div>
             );
@@ -129,7 +129,7 @@ function MorePage() {
 
         {/* ── Language switcher ── */}
         <div>
-          <p className="text-xs font-semibold uppercase tracking-wider text-navy-400 mb-2 px-1">
+          <p className="text-xs font-semibold uppercase tracking-wider text-navy-500 mb-2 px-1">
             {t("settings.language")}
           </p>
           <LangSwitcher className="w-full" />
@@ -138,7 +138,7 @@ function MorePage() {
         {/* ── Logout ── */}
         <button
           onClick={() => setConfirmLogout(true)}
-          className="w-full flex items-center gap-3.5 px-4 py-4 bg-white rounded-xl border border-navy-50 shadow-card hover:bg-red-50 transition-colors active:bg-red-100"
+          className="w-full flex items-center gap-3.5 px-4 py-4 bg-white rounded-xl border border-border shadow-xs hover:bg-red-50 transition-colors active:bg-red-100"
         >
           <div className="w-8 h-8 rounded-lg bg-red-50 flex items-center justify-center flex-shrink-0">
             <LogOut className="w-4 h-4 text-danger" />
@@ -147,7 +147,7 @@ function MorePage() {
         </button>
 
         {/* ── Version ── */}
-        <p className="text-xs text-center text-navy-300 pb-2">
+        <p className="text-xs text-center text-navy-400 pb-2">
           {t("more.version", { version: "1.0.0" })}
         </p>
       </div>

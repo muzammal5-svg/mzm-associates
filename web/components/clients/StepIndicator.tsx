@@ -29,7 +29,7 @@ export function StepIndicator({ steps, current, className }: StepIndicatorProps)
                   "w-8 h-8 rounded-full flex items-center justify-center border-2 text-xs font-bold transition-colors duration-200",
                   done   && "bg-gold border-gold text-white",
                   active && "bg-white border-gold text-gold",
-                  !done && !active && "bg-white border-navy-100 text-navy-300"
+                  !done && !active && "bg-white border-navy-200 text-navy-400"
                 )}
                 aria-current={active ? "step" : undefined}
               >
@@ -37,17 +37,17 @@ export function StepIndicator({ steps, current, className }: StepIndicatorProps)
               </div>
               <span className={cn(
                 "text-[10px] font-medium whitespace-nowrap",
-                active ? "text-gold" : done ? "text-navy-400" : "text-navy-300"
+                active ? "text-gold font-semibold" : done ? "text-navy-600" : "text-navy-400"
               )}>
                 {step.label}
-                {step.optional && <span className="text-navy-300">{t("common.optional")}</span>}
+                {step.optional && <span className="text-navy-400 ms-1">({t("common.optional")})</span>}
               </span>
             </div>
             {/* Connector */}
             {i < steps.length - 1 && (
               <div className={cn(
                 "flex-1 h-0.5 mx-2 -mt-5 rounded",
-                i < current ? "bg-gold" : "bg-navy-100"
+                i < current ? "bg-gold" : "bg-navy-200"
               )} />
             )}
           </div>
