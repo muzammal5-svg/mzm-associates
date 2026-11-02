@@ -112,7 +112,7 @@ export function Sidebar() {
           <Image src={firm.logo_url} alt={firm.name} width={40} height={40}
             className="rounded-lg object-contain flex-shrink-0 w-10 h-10" unoptimized />
         ) : (
-          <Logo size="xs" variant="mark" />
+          <Logo size="sm" variant="mark" />
         )}
         {!isCollapsed && (
           <div className="min-w-0 flex-1">

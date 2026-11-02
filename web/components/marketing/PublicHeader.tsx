@@ -9,6 +9,7 @@ import { useLang } from "@/providers/LangProvider";
 import { cn } from "@/lib/utils";
 import type { SupportedLang } from "@/i18n/config";
 import { SITE, phoneLink } from "@/lib/siteConfig";
+import { Logo } from "@/components/shared/Logo";
 
 interface PublicHeaderProps {
   /** Kept for backwards compatibility — the header is always a dark glass surface. */
@@ -57,14 +58,7 @@ export function PublicHeader({ overDark = false }: PublicHeaderProps) {
         <div className="max-w-[1200px] mx-auto px-4 md:px-6 h-16 md:h-[72px] flex items-center justify-between safe-top">
           {/* Brand */}
           <Link href="/" className="flex items-center gap-3 group" aria-label={t("brand.name")}>
-            <span className="relative grid h-10 w-10 place-items-center rounded-xl bg-gold-cta shadow-gold ring-1 ring-gold-300/40 transition-all duration-300 group-hover:shadow-glow-gold">
-              <Scale className="h-5 w-5 text-navy-900 animate-scale-sway" aria-hidden="true" />
-              <span className="pointer-events-none absolute inset-0 rounded-xl bg-white/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100" aria-hidden="true" />
-            </span>
-            <span className="flex flex-col leading-none">
-              <span className="font-heading font-bold text-[17px] text-white tracking-tight">MZM</span>
-              <span className="text-[10px] uppercase tracking-[0.18em] text-gold-300/90">&amp; Associates</span>
-            </span>
+            <Logo size="sm" variant="full" inverted />
           </Link>
 
           {/* Desktop nav */}
@@ -148,12 +142,7 @@ export function PublicHeader({ overDark = false }: PublicHeaderProps) {
             className="drawer-panel absolute inset-y-0 end-0 z-50 flex w-[86%] max-w-sm flex-col border-s border-white/10 bg-slate-900/98 backdrop-blur-xl p-6 shadow-2xl"
           >
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <span className="grid h-10 w-10 place-items-center rounded-xl bg-gold-cta shadow-gold">
-                  <Scale className="h-5 w-5 text-navy-900" aria-hidden="true" />
-                </span>
-                <span className="font-heading font-bold text-white">MZM</span>
-              </div>
+              <Logo size="sm" variant="full" inverted />
               <button
                 type="button"
                 onClick={() => setOpen(false)}

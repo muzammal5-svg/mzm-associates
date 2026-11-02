@@ -517,6 +517,11 @@ export type Database = {
       }
       firms: {
         Row: {
+          city: string | null
+          district: string | null
+          tehsil: string | null
+          location: string | null
+          province: string | null
           created_at: string
           default_remind_days_before: number
           id: string
@@ -527,6 +532,11 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          city?: string | null
+          district?: string | null
+          tehsil?: string | null
+          location?: string | null
+          province?: string | null
           created_at?: string
           default_remind_days_before?: number
           id?: string
@@ -537,6 +547,11 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          city?: string | null
+          district?: string | null
+          tehsil?: string | null
+          location?: string | null
+          province?: string | null
           created_at?: string
           default_remind_days_before?: number
           id?: string
@@ -734,6 +749,9 @@ export type Database = {
       }
       profiles: {
         Row: {
+          city: string | null
+          district: string | null
+          tehsil: string | null
           created_at: string
           email: string | null
           firm_id: string
@@ -746,6 +764,9 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          city?: string | null
+          district?: string | null
+          tehsil?: string | null
           created_at?: string
           email?: string | null
           firm_id: string
@@ -758,6 +779,9 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          city?: string | null
+          district?: string | null
+          tehsil?: string | null
           created_at?: string
           email?: string | null
           firm_id?: string

@@ -10,6 +10,8 @@ import { saasRpc } from "@/lib/supabase/saas";
 import { Button } from "@/components/ui/Button";
 import { FloatingField } from "@/components/billing/FloatingField";
 import { MarketingShell } from "@/components/marketing/MarketingShell";
+import { PakistanLocationFields, type LocationValues } from "@/components/marketing/PakistanLocationFields";
+import { Logo } from "@/components/shared/Logo";
 
 function RegisterForm() {
   const { t } = useTranslation();
@@ -22,6 +24,13 @@ function RegisterForm() {
   const [firmName, setFirmName] = useState("");
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
+  const [locationValues, setLocationValues] = useState<LocationValues>({
+    city: "",
+    district: "",
+    tehsil: "",
+    location: "",
+    province: "",
+  });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [touched, setTouched] = useState(false);
@@ -30,14 +39,45 @@ function RegisterForm() {
   const passwordValid = password.length >= 8;
   const firmValid     = firmName.trim().length >= 2;
   const nameValid     = fullName.trim().length >= 2;
+  const cityValid     = locationValues.city.trim().length >= 2;
+  const districtValid = locationValues.district.trim().length >= 2;
+  const tehsilValid   = locationValues.tehsil.trim().length >= 2;
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setTouched(true);
+
+    if (
+      !firmValid ||
+      !nameValid ||
+      !emailValid ||
+      !passwordValid ||
+      !cityValid ||
+      !districtValid ||
+      !tehsilValid
+    ) {
+      return;
+    }
+
     setLoading(true);
     setError("");
 
-    const { data, error: signUpErr } = await supabase.auth.signUp({ email, password });
+    const { data, error: signUpErr } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          full_name: fullName,
+          phone,
+          firm_name: firmName,
+          city: locationValues.city,
+          district: locationValues.district,
+          tehsil: locationValues.tehsil,
+          location: locationValues.location,
+          province: locationValues.province,
+        },
+      },
+    });
     if (signUpErr) {
       setError(signUpErr.message);
       setLoading(false);
@@ -60,7 +100,18 @@ function RegisterForm() {
       }
       session = signInData.session;
     }
-    const { error: rpcErr } = await saasRpc.registerFirm(firmName, fullName, phone);
+    const { error: rpcErr } = await saasRpc.registerFirm(
+      firmName,
+      fullName,
+      phone,
+      {
+        city: locationValues.city,
+        district: locationValues.district,
+        tehsil: locationValues.tehsil,
+        location: locationValues.location,
+        province: locationValues.province,
+      }
+    );
     if (rpcErr) {
       setError(rpcErr.message);
       setLoading(false);
@@ -84,15 +135,7 @@ function RegisterForm() {
           <aside className="relative overflow-hidden bg-mesh-dark px-7 py-10 text-white sm:px-10 lg:py-14">
             <div className="pointer-events-none absolute -top-16 -start-16 h-56 w-56 rounded-full bg-gold-400/15 blur-3xl" aria-hidden="true" />
             <div className="relative">
-              <div className="flex items-center gap-3">
-                <span className="grid h-11 w-11 place-items-center rounded-xl bg-gold-cta shadow-gold">
-                  <Scale className="h-5 w-5 text-navy-900" aria-hidden="true" />
-                </span>
-                <span className="flex flex-col leading-none">
-                  <span className="font-heading text-lg font-bold text-white">MZM</span>
-                  <span className="text-[10px] uppercase tracking-[0.18em] text-gold-300">&amp; Associates</span>
-                </span>
-              </div>
+              <Logo size="md" variant="full" inverted />
 
               <span className="pill-badge mt-8 border border-gold-400/30 bg-white/[0.06] text-gold-100 backdrop-blur-md">
                 <Sparkles className="h-3.5 w-3.5 text-gold-300" aria-hidden="true" />
@@ -154,6 +197,14 @@ function RegisterForm() {
                 valid={firmValid}
                 error={touched && !firmValid ? t("marketing.regFirmNameRequired") : undefined}
               />
+
+              {/* Pakistan City / District / Tehsil / Location fields */}
+              <PakistanLocationFields
+                values={locationValues}
+                onChange={setLocationValues}
+                touched={touched}
+              />
+
               <FloatingField
                 label={t("marketing.regFullName")}
                 value={fullName}

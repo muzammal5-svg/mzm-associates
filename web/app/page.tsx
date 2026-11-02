@@ -7,6 +7,7 @@ import {
   UserPlus, Briefcase, Calendar, List, Bell,
   CheckSquare, Users, BellRing, Settings,
   FolderOpen, ChevronRight, Plus, CalendarCheck, Scale, Gavel, Clock,
+  FileText,
 } from "lucide-react";
 
 import { AppShell }          from "@/components/layout/AppShell";
@@ -109,6 +110,14 @@ function useServices(counts: ReturnType<typeof useDashboardCounts>["data"]) {
       href:  "/documents",
       icon:  FolderOpen,
       color: "bg-orange-50 text-orange-700",
+      badge: 0,
+    },
+    {
+      key:   "importantForms",
+      label: t("services.importantForms"),
+      href:  "/important-forms",
+      icon:  FileText,
+      color: "bg-emerald-50 text-emerald-700",
       badge: 0,
     },
     {

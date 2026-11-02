@@ -40,7 +40,7 @@ export function SplashScreen({ onDone, minDuration = 1400 }: SplashScreenProps) 
 
       {/* Logo mark (large) */}
       <div className="animate-fade-in flex flex-col items-center gap-6">
-        <Logo size="lg" variant="full" />
+        <Logo size="lg" variant="full" inverted />
 
         {/* Tagline */}
         <p className="text-navy-200 text-sm font-body tracking-wide text-center px-8">

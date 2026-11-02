@@ -132,11 +132,18 @@ export function DocumentList({
   }
 
   if (!docs || docs.length === 0) {
+    const isImportant = category === "important";
     return (
       <EmptyState
         icon={FileText}
-        title={t("common.noDocuments")}
-        message={t("common.uploadDocsHint")}
+        title={isImportant ? (t("documents.noCourtForms") || "No Essential Court Forms") : t("common.noDocuments")}
+        message={
+          isImportant
+            ? (canDelete
+                ? "Upload court forms to make them available for all firms and members."
+                : "No court forms have been published yet. Please check back later.")
+            : t("common.uploadDocsHint")
+        }
         className={className}
       />
     );

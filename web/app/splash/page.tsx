@@ -4,6 +4,7 @@ import { useCallback, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/providers/AuthProvider";
 import { SplashScreen } from "@/components/shared/SplashScreen";
+import { Logo } from "@/components/shared/Logo";
 import Link from "next/link";
 
 /**
@@ -38,7 +39,8 @@ export default function SplashPage() {
   if (showChoice) {
     return (
       <div className="min-h-dvh bg-navy-header flex flex-col items-center justify-center px-4 py-8 gap-6">
-        <div className="text-center">
+        <div className="text-center flex flex-col items-center">
+          <Logo size="lg" variant="mark" className="mb-4 shadow-xl" />
           <h1 className="text-2xl font-heading font-bold text-white">MZM &amp; Associates</h1>
           <p className="text-sm text-white/70 mt-2">Welcome — choose how to continue</p>
         </div>

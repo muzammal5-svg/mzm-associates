@@ -16,8 +16,17 @@ export const metadata: Metadata = {
   manifest:    "/manifest.json",
   appleWebApp: { capable: true, statusBarStyle: "black-translucent", title: BRAND.shortName },
   icons: {
-    icon:  [{ url: "/favicon.png", sizes: "64x64", type: "image/png" }, { url: "/icons/icon-192.png", sizes: "192x192" }],
-    apple: [{ url: "/icons/icon-180.png", sizes: "180x180" }],
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/favicon.png", sizes: "64x64", type: "image/png" },
+      { url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icons/icon-512.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: [
+      { url: "/apple-icon.png", sizes: "180x180", type: "image/png" },
+      { url: "/icons/icon-180.png", sizes: "180x180", type: "image/png" },
+    ],
+    shortcut: ["/favicon.ico"],
   },
 };
 

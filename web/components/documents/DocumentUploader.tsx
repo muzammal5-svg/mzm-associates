@@ -115,7 +115,15 @@ export function DocumentUploader({
     if (!profile) return;
     const firmId = profile.firm_id;
     const isSuperAdmin = profile.role === "super_admin";
-    const storagePrefix = isSuperAdmin && !firmId ? "super_admin" : firmId;
+    const storagePrefix = isSuperAdmin && !firmId ? "super_admin" : (category === "important" ? (firmId || "super_admin") : firmId);
+
+    if (category === "important" && !isSuperAdmin) {
+      setEntries(prev => prev.map(e =>
+        e.id === entry.id ? { ...e, status: "error", error: "Only Super Admin can upload Essential Court Forms.", progress: 0 } : e
+      ));
+      toast.error(t("common.accessDenied") || "Access Denied", "Only Super Admin can upload Essential Court Forms.");
+      return;
+    }
 
     if (!firmId && !isSuperAdmin) {
       setEntries(prev => prev.map(e =>

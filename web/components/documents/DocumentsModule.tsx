@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { cn } from "@/lib/utils";
 import { DocumentUploader } from "./DocumentUploader";
 import { DocumentList }     from "./DocumentList";
 import { Input } from "@/components/ui/Input";
@@ -32,52 +33,72 @@ export function DocumentsModule({ clientId, caseId, className, firmWide = false,
   const [filterClientId, setFilterClientId] = useState("");
   const [filterCaseId, setFilterCaseId] = useState("");
   const [documentType, setDocumentType] = useState("");
-  const filters = useDocumentFilterOptions(firmWide);
+  const isImportantForms = category === "important";
+  const filters = useDocumentFilterOptions(firmWide && !isImportantForms);
 
   return (
     <div className={className}>
       {firmWide && (
         <div className="mb-4 space-y-3 rounded-xl border border-border bg-white p-4 shadow-xs">
-          <Input
-            label={t("common.searchDocuments")}
-            placeholder={t("common.documentName")}
-            value={search}
-            onChange={event => setSearch(event.target.value)}
-          />
-          {filters.isError ? (
-            <QueryErrorState onRetry={() => void filters.refetch()} className="py-5" />
-          ) : (
-            <div className="grid gap-3 sm:grid-cols-3">
-              <Select
-                label={t("clients.title")}
-                value={filterClientId}
-                onChange={event => setFilterClientId(event.target.value)}
-                placeholder={t("common.allClients")}
-                options={(filters.data?.clients ?? []).map(client => ({
-                  value: client.id, label: client.full_name,
-                }))}
+          <div className={cn("grid gap-3", isImportantForms ? "sm:grid-cols-3" : "grid-cols-1")}>
+            <div className={isImportantForms ? "sm:col-span-2" : ""}>
+              <Input
+                label={isImportantForms ? (t("documents.searchForms") || "Search Court Forms") : t("common.searchDocuments")}
+                placeholder={isImportantForms ? "Search form name (e.g. Vakalatnama, Bail, Stay Order)..." : t("common.documentName")}
+                value={search}
+                onChange={event => setSearch(event.target.value)}
               />
+            </div>
+            {isImportantForms && (
               <Select
-                label={t("cases.caseReference")}
-                value={filterCaseId}
-                onChange={event => setFilterCaseId(event.target.value)}
-                placeholder={t("common.allCases")}
-                options={(filters.data?.cases ?? []).map(case_ => ({
-                  value: case_.id, label: case_.case_ref_no,
-                }))}
-              />
-              <Select
-                label={t("cases.caseType")}
+                label={t("cases.caseType") || "Format"}
                 value={documentType}
                 onChange={event => setDocumentType(event.target.value)}
                 placeholder={t("common.allTypes")}
                 options={[
-                  { value: "pdf", label: t("common.pdf") },
+                  { value: "pdf", label: t("common.pdf") || "PDF" },
                   { value: "image", label: "Images" },
-                  { value: "other", label: "Other" },
+                  { value: "other", label: "Word / Other" },
                 ]}
               />
-            </div>
+            )}
+          </div>
+          {!isImportantForms && (
+            filters.isError ? (
+              <QueryErrorState onRetry={() => void filters.refetch()} className="py-5" />
+            ) : (
+              <div className="grid gap-3 sm:grid-cols-3">
+                <Select
+                  label={t("clients.title")}
+                  value={filterClientId}
+                  onChange={event => setFilterClientId(event.target.value)}
+                  placeholder={t("common.allClients")}
+                  options={(filters.data?.clients ?? []).map(client => ({
+                    value: client.id, label: client.full_name,
+                  }))}
+                />
+                <Select
+                  label={t("cases.caseReference")}
+                  value={filterCaseId}
+                  onChange={event => setFilterCaseId(event.target.value)}
+                  placeholder={t("common.allCases")}
+                  options={(filters.data?.cases ?? []).map(case_ => ({
+                    value: case_.id, label: case_.case_ref_no,
+                  }))}
+                />
+                <Select
+                  label={t("cases.caseType")}
+                  value={documentType}
+                  onChange={event => setDocumentType(event.target.value)}
+                  placeholder={t("common.allTypes")}
+                  options={[
+                    { value: "pdf", label: t("common.pdf") },
+                    { value: "image", label: "Images" },
+                    { value: "other", label: "Other" },
+                  ]}
+                />
+              </div>
+            )
           )}
         </div>
       )}

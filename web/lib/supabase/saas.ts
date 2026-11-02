@@ -21,12 +21,58 @@ export const saasDb = {
 };
 
 export const saasRpc = {
-  async registerFirm(firmName: string, fullName: string, phone: string) {
-    return (supabase as any).rpc("register_firm", {
+  async registerFirm(
+    firmName: string,
+    fullName: string,
+    phone: string,
+    locationData?: {
+      city?: string;
+      district?: string;
+      tehsil?: string;
+      location?: string;
+      province?: string;
+    }
+  ) {
+    const { city, district, tehsil, location, province } = locationData ?? {};
+    let res = await (supabase as any).rpc("register_firm", {
       p_firm_name: firmName,
       p_full_name: fullName,
       p_phone: phone,
+      p_city: city || null,
+      p_district: district || null,
+      p_tehsil: tehsil || null,
+      p_location: location || null,
+      p_province: province || null,
     });
+
+    // Fallback if older RPC signature is encountered
+    if (res.error && res.error.message && res.error.message.includes("function public.register_firm")) {
+      res = await (supabase as any).rpc("register_firm", {
+        p_firm_name: firmName,
+        p_full_name: fullName,
+        p_phone: phone,
+      });
+    }
+
+    // Ensure firm record is updated if firm was created
+    if (!res.error && res.data?.firm_id && (city || district || tehsil || location || province)) {
+      try {
+        await supabase
+          .from("firms")
+          .update({
+            city: city || null,
+            district: district || null,
+            tehsil: tehsil || null,
+            location: location || null,
+            province: province || null,
+          } as any)
+          .eq("id", res.data.firm_id);
+      } catch (e) {
+        console.warn("[saasRpc.registerFirm] firm update error:", e);
+      }
+    }
+
+    return res;
   },
 
   async submitPayment(params: {

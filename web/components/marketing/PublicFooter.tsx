@@ -27,15 +27,7 @@ export function PublicFooter() {
         <div className="grid gap-12 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
           {/* Brand */}
           <div>
-            <div className="flex items-center gap-3">
-              <span className="grid h-11 w-11 place-items-center rounded-xl bg-gold-cta shadow-gold">
-                <Scale className="h-5 w-5 text-navy-900" aria-hidden="true" />
-              </span>
-              <span className="flex flex-col leading-none">
-                <span className="font-heading text-lg font-bold text-white">MZM</span>
-                <span className="text-[10px] uppercase tracking-[0.18em] text-gold-300/90">&amp; Associates</span>
-              </span>
-            </div>
+            <Logo size="md" variant="full" inverted />
             <p className="mt-5 max-w-xs text-sm leading-relaxed text-white/60">
               {t("marketing.heroSubtitle")}
             </p>
