@@ -106,6 +106,12 @@ function NewCasePage() {
     if (!profile) return;
     try {
       const refNo = (data.case_ref_no ?? "").trim();
+      const customColsText = customCols.map(c => c.trim()).filter(Boolean);
+      const combinedDescription = [
+        data.description?.trim(),
+        customColsText.length > 0 ? customColsText.join("\n") : "",
+      ].filter(Boolean).join("\n\n");
+
       const newCase = await createCase.mutateAsync({
         firm_id:        profile.firm_id,
         client_id:      data.client_id,
@@ -117,7 +123,7 @@ function NewCasePage() {
         court_no:       data.court_no     || undefined,
         case_type_id:   data.case_type_id,
         offence:        needsOffence ? (data.offence || undefined) : undefined,
-        description:    data.description  || undefined,
+        description:    combinedDescription || undefined,
         assigned_to:    profile.id,
         created_by:     profile.id,
         first_hearing: {
@@ -190,22 +196,38 @@ function NewCasePage() {
               error={errors.case_type_id?.message}
               {...register("case_type_id")}
             />
-            <button
-              type="button"
-              onClick={() => setCustomCols((c) => [...c, ""])}
-              className="px-3 py-1.5 rounded-lg bg-gold/10 border border-gold text-gold text-xs font-medium hover:bg-gold/20"
-            >
-              + Add column
-            </button>
+
+            {/* Custom columns rendered above the "+ Add column" button */}
             {customCols.map((v, i) => (
               <div key={i} className="p-3 rounded-xl bg-navy-50 border border-navy-100">
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="text-xs font-semibold text-navy-700 uppercase tracking-wider">
+                    Write Down the Colum {customCols.length > 1 ? `#${i + 1}` : ""}
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => setCustomCols((c) => c.filter((_, idx) => idx !== i))}
+                    className="text-xs text-danger hover:underline font-medium"
+                  >
+                    {t("common.remove") || "Remove"}
+                  </button>
+                </div>
                 <Input
-                  label="Write Down the Colum"
                   value={v}
                   onChange={(e) => setCustomCols((c) => c.map((x, idx) => (idx === i ? e.target.value : x)))}
                 />
               </div>
             ))}
+
+            <div>
+              <button
+                type="button"
+                onClick={() => setCustomCols((c) => [...c, ""])}
+                className="px-3 py-1.5 rounded-lg bg-gold/10 border border-gold text-gold text-xs font-medium hover:bg-gold/20"
+              >
+                + Add column
+              </button>
+            </div>
 
             {/* Offence — only for criminal types */}
             {needsOffence && (
