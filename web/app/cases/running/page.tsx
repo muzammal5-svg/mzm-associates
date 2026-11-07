@@ -33,7 +33,7 @@ function RunningCasesPage({ updateCaseId }: { updateCaseId: string | null }) {
   const [courtNo,      setCourtNo]      = useState("");
   const [judgeFilter,  setJudgeFilter]  = useState("");
   const [caseType,     setCaseType]     = useState("");
-  const [From, setFrom] = useState<"plaintiff"|"defendant"|"">("");
+  const [From, setFrom] = useState<string>("");
   const [nextDateFrom, setNextDateFrom] = useState("");
   const [nextDateTo,   setNextDateTo]   = useState("");
   const [sortBy,       setSortBy]       = useState<CauseListFilter["sortBy"]>("next_date");
@@ -142,17 +142,33 @@ function RunningCasesPage({ updateCaseId }: { updateCaseId: string | null }) {
               />
               <div className="space-y-1.5">
                 <label className="label">{t("cases.From")}</label>
-                <div className="flex rounded-xl overflow-hidden border border-border">
-                  {(["", "plaintiff", "defendant"] as const).map(r => (
-                    <button key={r} type="button"
+                <Input
+                  placeholder={t("cases.fromPlaceholder") || "All, or e.g. Petitioner, Accused..."}
+                  value={From}
+                  onChange={e => { setFrom(e.target.value); setPage(1); }}
+                  list="from-filter-suggestions"
+                />
+                <datalist id="from-filter-suggestions">
+                  <option value="Plaintiff" />
+                  <option value="Defendant" />
+                  <option value="Petitioner" />
+                  <option value="Respondent" />
+                  <option value="Appellant" />
+                  <option value="Accused" />
+                </datalist>
+                <div className="flex flex-wrap gap-1 pt-1">
+                  {["", "Plaintiff", "Defendant", "Petitioner", "Respondent"].map((r) => (
+                    <button
+                      key={r}
+                      type="button"
                       onClick={() => { setFrom(r); setPage(1); }}
-                      className={`flex-1 py-2 text-xs font-semibold transition-colors ${
-                        From === r
-                          ? "bg-navy text-white shadow-xs"
-                          : "bg-white text-navy-600 hover:bg-navy-50"
+                      className={`text-[10px] px-2 py-0.5 rounded-md border font-medium transition-colors ${
+                        (r === "" && !From) || (r && From.toLowerCase() === r.toLowerCase())
+                          ? "bg-navy text-white border-navy"
+                          : "bg-slate-50 text-navy-600 border-slate-200 hover:bg-slate-100"
                       }`}
                     >
-                      {r === "" ? t("common.all") : r === "plaintiff" ? t("cases.plaintiff") : t("cases.defendant")}
+                      {r === "" ? (t("common.all") || "All") : r}
                     </button>
                   ))}
                 </div>

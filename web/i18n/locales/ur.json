@@ -22,6 +22,8 @@
     "admin": "ایڈمن کنٹرول"
   },
   "auth": {
+    "deviceLimitTitle": "ڈیوائس کی حد ختم",
+    "deviceLimitReached": "سیشن ختم: بیک وقت صرف 2 ڈیوائسز کی اجازت ہے۔ نیا ڈیوائس لاگ ان ہوا ہے۔",
     "configTitle": "Supabase ترتیب نہیں دیا گیا",
     "configAddKeys": "ضروری کلیدیں یہاں شامل کریں",
     "configRestart": "پھر ایپ دوبارہ شروع کریں۔",
@@ -102,6 +104,7 @@
     "plaintiff": "مدعی",
     "defendant": "مدعاعلیہ",
     "From": "نمائندگی",
+    "fromPlaceholder": "مثلاً مدعی، مدعا علیہ، سائل، رسپانڈنٹ، اپیل کنندہ...",
     "offence": "جرم",
     "status": "حیثیت",
     "decidedDate": "فیصلہ تاریخ",
@@ -188,6 +191,7 @@
     "case": "مقدمہ",
     "client": "موکل",
     "From": "نمائندگی",
+    "fromPlaceholder": "مثلاً مدعی، مدعا علیہ، سائل، رسپانڈنٹ، اپیل کنندہ...",
     "court": "عدالت",
     "restored": "یاددہانی بحال ہو گئی",
     "statusUpdated": "یاددہانی {{status}}",
@@ -221,7 +225,7 @@
     "help": "مدد اور سپورٹ",
     "logout": "لاگ آؤٹ",
     "version": "ورژن {{version}}",
-    "helpText": "رابطہ: support@mzm.pk",
+    "helpText": "رابطہ: muhammad.zahid.muneer@outlook.com",
     "helpTitle": "مدد اور سپورٹ",
     "emailSupport": "ای میل سپورٹ"
   },

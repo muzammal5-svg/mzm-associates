@@ -26,7 +26,7 @@ const schema = z.object({
   case_ref_no:     z.string().max(80).optional().or(z.literal("")),
   plaintiff_name:  z.string().min(1),
   defendant_name:  z.string().min(1),
-  From:    z.enum(["plaintiff", "defendant"]),
+  From:            z.string().min(1).max(100),
   case_type_id:    z.string().min(1),
   offence:         z.string().optional().or(z.literal("")),
   court_no:        z.string().optional().or(z.literal("")),
@@ -52,7 +52,7 @@ function EditCasePage() {
     formState: { errors, isSubmitting },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
-    defaultValues: { From: "plaintiff" },
+    defaultValues: { From: "Plaintiff" },
   });
 
   useEffect(() => {
@@ -61,7 +61,7 @@ function EditCasePage() {
       case_ref_no:    c.case_ref_no,
       plaintiff_name: c.plaintiff_name,
       defendant_name: c.defendant_name,
-      From:   ((c as any).representing ?? c.From ?? "plaintiff") as "plaintiff" | "defendant",
+      From:           String((c as any).representing ?? c.From ?? "Plaintiff"),
       case_type_id:   c.case_type_id,
       offence:        c.offence ?? "",
       court_no:       c.court_no ?? "",
@@ -119,22 +119,42 @@ function EditCasePage() {
                 {...register("offence")} />
             )}
 
+            {/* Custom From field */}
             <div className="space-y-1.5">
-              <label className="label">{t("cases.From")}</label>
-              <div className="flex rounded-xl overflow-hidden border border-border">
-                {(["plaintiff", "defendant"] as const).map(r => {
-                  const active = watch("From") === r;
-                  return (
-                    <button key={r} type="button"
-                      onClick={() => setValue("From", r)}
-                      className={`flex-1 py-2.5 text-sm font-semibold transition-colors ${
-                        active ? "bg-navy text-white shadow-xs" : "bg-white text-navy-600 hover:bg-navy-50"
-                      }`}
-                    >
-                      {r === "plaintiff" ? t("cases.plaintiff") : t("cases.defendant")}
-                    </button>
-                  );
-                })}
+              <Input
+                label={t("cases.From")}
+                required
+                placeholder={t("cases.fromPlaceholder") || "e.g. Plaintiff, Defendant, Petitioner, Respondent..."}
+                error={errors.From?.message}
+                list="from-quick-suggestions-edit"
+                {...register("From")}
+              />
+              <datalist id="from-quick-suggestions-edit">
+                <option value="Plaintiff" />
+                <option value="Defendant" />
+                <option value="Petitioner" />
+                <option value="Respondent" />
+                <option value="Appellant" />
+                <option value="Accused" />
+                <option value="Complainant" />
+                <option value="Applicant" />
+              </datalist>
+              <div className="flex flex-wrap items-center gap-1.5 pt-1">
+                <span className="text-[11px] text-muted">{t("common.suggestions") || "Suggestions:"}</span>
+                {["Plaintiff", "Defendant", "Petitioner", "Respondent", "Appellant", "Accused"].map((suggestion) => (
+                  <button
+                    key={suggestion}
+                    type="button"
+                    onClick={() => setValue("From", suggestion, { shouldValidate: true })}
+                    className={`text-[11px] px-2.5 py-1 rounded-lg border font-medium transition-all ${
+                      watch("From") === suggestion
+                        ? "bg-navy text-white border-navy shadow-xs"
+                        : "bg-slate-50 text-navy-700 border-slate-200 hover:bg-slate-100"
+                    }`}
+                  >
+                    {suggestion}
+                  </button>
+                ))}
               </div>
             </div>
 

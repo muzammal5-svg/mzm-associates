@@ -1,7 +1,7 @@
 {
-  "name": "MZM & Associates",
-  "short_name": "MZM",
-  "description": "Case Management System — MZM & Associates, Advocates & Legal Consultants",
+  "name": "Daily Diary MZM",
+  "short_name": "Daily Diary MZM",
+  "description": "Daily Diary MZM — Advocates & Legal Consultants Case Management System",
   "start_url": "/",
   "display": "standalone",
   "orientation": "portrait",

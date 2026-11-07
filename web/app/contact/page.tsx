@@ -6,6 +6,7 @@ import { MessageSquare, Mail, MapPin, Phone, Send, CheckCircle } from "lucide-re
 import { PublicHeader } from "@/components/marketing/PublicHeader";
 import { PublicFooter } from "@/components/marketing/PublicFooter";
 import { Reveal } from "@/components/marketing/Reveal";
+import { SITE, whatsappLink } from "@/lib/siteConfig";
 
 const CONTAINER = "max-w-[1200px] mx-auto px-4 md:px-6";
 const SECTION = "py-[80px] md:py-[120px]";
@@ -88,7 +89,7 @@ export default function ContactPage() {
                   {t("contact.whatsappDesc") || "Chat with us on WhatsApp for quick support"}
                 </p>
                 <a
-                  href="https://wa.me/923001234567"
+                  href={whatsappLink()}
                   target="_blank"
                   rel="noreferrer"
                   className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-600 transition-all duration-200 text-sm"
@@ -109,7 +110,7 @@ export default function ContactPage() {
                   {t("contact.emailDesc") || "Send us an email and we'll respond within 24 hours"}
                 </p>
                 <a
-                  href="mailto:support@mzm.app"
+                  href={`mailto:${SITE.email}`}
                   className="inline-flex items-center justify-center gap-2 px-6 py-3 border border-blue-400 text-blue-400 font-semibold rounded-lg hover:bg-blue-400/10 transition-all duration-200 text-sm"
                 >
                   {t("contact.sendEmail") || "Send Email"}

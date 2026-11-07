@@ -2,7 +2,7 @@ import type { CapacitorConfig } from "@capacitor/cli";
 
 const config: CapacitorConfig = {
   appId:    "com.mzmassociates.cms",
-  appName:  "MZM & Associates",
+  appName:  "Daily Diary MZM",
   webDir:   "out",          // Next.js static export output directory
 
   // Local dev server (comment out for production builds)

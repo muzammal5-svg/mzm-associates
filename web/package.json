@@ -18,7 +18,7 @@
     "test:watch": "vitest",
     "test:e2e": "playwright test",
     "i18n:check": "node scripts/check-i18n.mjs",
-    "icons:generate": "node scripts/generate-icons.mjs",
+    "icons:generate": "node scripts/generate-all-app-icons.mjs",
     "icons:check": "node scripts/check-manifest-icons.mjs"
   },
   "dependencies": {

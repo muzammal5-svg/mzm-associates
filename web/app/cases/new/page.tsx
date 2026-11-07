@@ -34,7 +34,7 @@ const schema = z.object({
   case_ref_no:     z.string().max(80).optional().or(z.literal("")),
   plaintiff_name:  z.string().min(1, "Plaintiff name is required").max(200),
   defendant_name:  z.string().min(1, "Defendant name is required").max(200),
-  From:    z.enum(["plaintiff", "defendant"]),
+  From:            z.string().min(1, "From / representing is required").max(100),
   case_type_id:    z.string().min(1, "Case type is required"),
   offence:         z.string().max(300).optional().or(z.literal("")),
   court_no:        z.string().max(100).optional().or(z.literal("")),
@@ -78,7 +78,7 @@ function NewCasePage() {
   } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: {
-      From:    "plaintiff",
+      From:            "Plaintiff",
       client_id:       prefilledClientId ?? "",
     },
   });
@@ -239,25 +239,42 @@ function NewCasePage() {
               />
             )}
 
-            {/* From toggle */}
+            {/* Custom From field */}
             <div className="space-y-1.5">
-              <label className="label">{t("cases.From")} <span className="text-danger ms-0.5">*</span></label>
-              <div className="flex rounded-xl overflow-hidden border border-border">
-                {(["plaintiff", "defendant"] as const).map(r => {
-                  const active = watch("From") === r;
-                  return (
-                    <button
-                      key={r}
-                      type="button"
-                      onClick={() => setValue("From", r, { shouldValidate: true })}
-                      className={`flex-1 py-2.5 text-sm font-semibold transition-colors ${
-                        active ? "bg-navy text-white shadow-xs" : "bg-white text-navy-600 hover:bg-navy-50"
-                      }`}
-                    >
-                      {r === "plaintiff" ? t("cases.plaintiff") : t("cases.defendant")}
-                    </button>
-                  );
-                })}
+              <Input
+                label={t("cases.From")}
+                required
+                placeholder={t("cases.fromPlaceholder") || "e.g. Plaintiff, Defendant, Petitioner, Respondent, Appellant..."}
+                error={errors.From?.message}
+                list="from-quick-suggestions"
+                {...register("From")}
+              />
+              <datalist id="from-quick-suggestions">
+                <option value="Plaintiff" />
+                <option value="Defendant" />
+                <option value="Petitioner" />
+                <option value="Respondent" />
+                <option value="Appellant" />
+                <option value="Accused" />
+                <option value="Complainant" />
+                <option value="Applicant" />
+              </datalist>
+              <div className="flex flex-wrap items-center gap-1.5 pt-1">
+                <span className="text-[11px] text-muted">{t("common.suggestions") || "Suggestions:"}</span>
+                {["Plaintiff", "Defendant", "Petitioner", "Respondent", "Appellant", "Accused"].map((suggestion) => (
+                  <button
+                    key={suggestion}
+                    type="button"
+                    onClick={() => setValue("From", suggestion, { shouldValidate: true })}
+                    className={`text-[11px] px-2.5 py-1 rounded-lg border font-medium transition-all ${
+                      watch("From") === suggestion
+                        ? "bg-navy text-white border-navy shadow-xs"
+                        : "bg-slate-50 text-navy-700 border-slate-200 hover:bg-slate-100"
+                    }`}
+                  >
+                    {suggestion}
+                  </button>
+                ))}
               </div>
             </div>
 

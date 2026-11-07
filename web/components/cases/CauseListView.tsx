@@ -83,11 +83,14 @@ function CauseCard({
         {row.hearing_judge && <span>{row.hearing_judge}</span>}
         {(() => {
           const rep = row.From ?? (row as any).representing;
-          return rep ? (
-            <Badge variant={rep === "plaintiff" ? "gold" : "info"} size="sm">
-              {rep === "plaintiff" ? t("cases.plaintiff") : t("cases.defendant")}
+          if (!rep) return null;
+          const lower = String(rep).toLowerCase();
+          const label = lower === "plaintiff" ? t("cases.plaintiff") : lower === "defendant" ? t("cases.defendant") : rep;
+          return (
+            <Badge variant={lower === "plaintiff" ? "gold" : lower === "defendant" ? "info" : "navy"} size="sm">
+              {label}
             </Badge>
-          ) : null;
+          );
         })()}
       </div>
 
@@ -148,11 +151,14 @@ function TableRow({
       <td className="px-3.5 py-3.5">
         {(() => {
           const rep = row.From ?? (row as any).representing;
-          return rep ? (
-            <Badge variant={rep === "plaintiff" ? "gold" : "info"} size="sm" dot>
-              {rep === "plaintiff" ? t("cases.plaintiff") : t("cases.defendant")}
+          if (!rep) return <span className="text-slate-400 text-xs">—</span>;
+          const lower = String(rep).toLowerCase();
+          const label = lower === "plaintiff" ? t("cases.plaintiff") : lower === "defendant" ? t("cases.defendant") : rep;
+          return (
+            <Badge variant={lower === "plaintiff" ? "gold" : lower === "defendant" ? "info" : "navy"} size="sm" dot>
+              {label}
             </Badge>
-          ) : <span className="text-slate-400 text-xs">—</span>;
+          );
         })()}
       </td>
       <td className="px-3.5 py-3.5 text-xs text-slate-600 max-w-[150px]">

@@ -23,6 +23,8 @@
     "admin": "Admin Control"
   },
   "auth": {
+    "deviceLimitTitle": "Device Limit Reached",
+    "deviceLimitReached": "Session ended: Only 2 active devices are permitted simultaneously. Another device signed in.",
     "configTitle": "Supabase is not configured",
     "configAddKeys": "Add the required keys to",
     "configRestart": "then restart the app.",
@@ -103,6 +105,7 @@
     "plaintiff": "Plaintiff",
     "defendant": "Defendant",
     "From": "From",
+    "fromPlaceholder": "e.g. Plaintiff, Defendant, Petitioner, Respondent...",
     "offence": "Offence",
     "status": "Status",
     "decidedDate": "Decision Date",
@@ -190,6 +193,7 @@
     "case": "Case",
     "client": "Client",
     "From": "From",
+    "fromPlaceholder": "e.g. Plaintiff, Defendant, Petitioner, Respondent...",
     "court": "Court",
     "restored": "Reminder restored",
     "statusUpdated": "Reminder {{status}}",
@@ -256,7 +260,7 @@
     "help": "Help & Support",
     "logout": "Logout",
     "version": "Version {{version}}",
-    "helpText": "Contact support at support@mzm.pk",
+    "helpText": "Contact support at muhammad.zahid.muneer@outlook.com",
     "helpTitle": "Help & Support",
     "emailSupport": "Email Support"
   },

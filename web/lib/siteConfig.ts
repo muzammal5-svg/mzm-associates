@@ -1,9 +1,9 @@
 export const SITE = {
   name: "MZM Case Management",
   tagline: "Run your law practice with clarity",
-  whatsapp: "+92 300 5421753",
-  phone: "+92 300 5421753",
-  email: "support@mzm.pk",
+  whatsapp: "+92 345 5421753",
+  phone: "+92 345 5421753",
+  email: "muhammad.zahid.muneer@outlook.com",
   trialDays: 7,
   social: { twitter: "", linkedin: "" },
   /** Set to true only after real reviews are added (see docs/landing-content.md). */

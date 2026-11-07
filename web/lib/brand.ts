@@ -4,8 +4,8 @@
  */
 
 export const BRAND = {
-  name:        "MZM & Associates",
-  shortName:   "MZM",
+  name:        "Daily Diary MZM",
+  shortName:   "Daily Diary MZM",
   tagline:     "Advocates & Legal Consultants",
   timezone:    "Asia/Karachi",
   dateFormat:  "dd MMM yyyy",   // date-fns format token

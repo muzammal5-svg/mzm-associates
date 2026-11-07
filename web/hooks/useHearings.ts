@@ -17,7 +17,7 @@ export interface CauseListFilter {
   courtNo?:       string;
   judgeFilter?:   string;
   caseTypeId?:    string;
-  From?:  "plaintiff" | "defendant" | "";
+  From?:          string;
   nextDateFrom?:  string;          // ISO date
   nextDateTo?:    string;          // ISO date
   latestOnly?:    boolean;         // when true: is_latest_hearing = true

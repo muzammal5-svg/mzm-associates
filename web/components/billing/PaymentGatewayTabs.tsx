@@ -15,6 +15,21 @@ const GATEWAYS: { id: PaymentMethod; icon: typeof Building2; labelKey: string; t
   { id: "easypaisa",     icon: Wallet,      labelKey: "billing.easypaisa",     tone: "from-emerald-500 to-teal-700" },
 ];
 
+const DEFAULT_FALLBACK_ACCOUNTS: PaymentAccount[] = [
+  {
+    id: "default-askari-bank",
+    method: "bank_transfer",
+    bank_name: "Askari Bank",
+    account_number: "PK82ASCM0001150200000155",
+    account_title: "Muhammad Zahid Muneer",
+    instructions: "Transfer to Askari Bank and share transaction ID / receipt",
+    is_active: true,
+    sort_order: 1,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  },
+];
+
 interface PaymentGatewayTabsProps {
   accounts:       PaymentAccount[];
   value:          PaymentMethod;
@@ -32,7 +47,10 @@ export function PaymentGatewayTabs({
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
   const active = GATEWAYS.find((g) => g.id === value) ?? GATEWAYS[0];
-  const activeAccounts = accounts.filter((a) => a.method === value);
+  const matchedAccounts = accounts.filter((a) => a.method === value);
+  const activeAccounts = matchedAccounts.length > 0
+    ? matchedAccounts
+    : DEFAULT_FALLBACK_ACCOUNTS.filter((a) => a.method === value);
 
   const handleCopy = async (id: string, text: string, label: string) => {
     let copied = false;

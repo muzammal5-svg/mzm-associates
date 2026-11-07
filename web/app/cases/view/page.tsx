@@ -237,7 +237,17 @@ function OverviewTab({ caseId }: { caseId: string }) {
       <Card padding="sm">
         <Row label={t("cases.caseNo")}      value={c.case_ref_no || "—"}    mono />
         <Row label={t("cases.caseType")}    value={c.case_type?.name} />
-        <Row label={t("cases.From")} value={((c as any).representing ?? c.From) === "plaintiff" ? (t("cases.plaintiff") || "Plaintiff") : (t("cases.defendant") || "Defendant")} />
+        <Row
+          label={t("cases.From")}
+          value={(() => {
+            const rep = (c as any).representing ?? c.From;
+            if (!rep) return "—";
+            const lower = String(rep).toLowerCase();
+            if (lower === "plaintiff") return t("cases.plaintiff") || "Plaintiff";
+            if (lower === "defendant") return t("cases.defendant") || "Defendant";
+            return String(rep);
+          })()}
+        />
         <Row label={t("cases.offence")}     value={c.offence} />
         <Row label={t("cases.judge")}       value={c.judge_name} />
         <Row label={t("cases.courtNo")}     value={c.court_no} />

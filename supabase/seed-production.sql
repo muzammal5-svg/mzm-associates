@@ -15,7 +15,7 @@ INSERT INTO public.plans (code, name, duration_months, price_pkr, max_users, sor
 ON CONFLICT (code) DO NOTHING;
 
 INSERT INTO public.payment_accounts (method, account_title, account_number, bank_name, instructions, sort_order) VALUES
-  ('bank_transfer', 'MZM Associates', 'REPLACE_ME', 'Bank', 'Transfer and share transaction ID', 1),
+  ('bank_transfer', 'Muhammad Zahid Muneer', 'PK82ASCM0001150200000155', 'Askari Bank', 'Transfer to Askari Bank and share transaction ID / receipt', 1),
   ('jazzcash', 'MZM Associates', 'REPLACE_ME', NULL, 'Send to JazzCash number', 2),
   ('easypaisa', 'MZM Associates', 'REPLACE_ME', NULL, 'Send to Easypaisa number', 3)
 ON CONFLICT DO NOTHING;

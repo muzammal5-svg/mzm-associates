@@ -4,9 +4,12 @@ import {
   createContext, useContext, useEffect,
   useState, useCallback, type ReactNode,
 } from "react";
+import { useTranslation } from "react-i18next";
 import type { User, Session } from "@supabase/supabase-js";
 import { supabase, IS_SUPABASE_CONFIGURED } from "@/lib/supabase/client";
 import { canUseWebPush, enableWebPush, disableWebPush, getWebPushSubscriptionEndpoint } from "@/lib/push";
+import { registerCurrentDevice, checkCurrentDeviceValid, revokeCurrentDevice } from "@/lib/devices";
+import { toast } from "@/components/ui/Toast";
 import type { Profile, Firm } from "@/types/supabase";
 
 interface AuthContextValue {
@@ -40,6 +43,7 @@ const AuthContext = createContext<AuthContextValue>({
 });
 
 export function AuthProvider({ children }: { children: ReactNode }) {
+  const { t }         = useTranslation();
   const [user,        setUser]        = useState<User    | null>(null);
   const [session,     setSession]     = useState<Session | null>(null);
   const [profile,     setProfile]     = useState<Profile | null>(null);
@@ -170,6 +174,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           await fetchProfile(data.session.user.id);
           await refreshCounts();
           await registerDeviceToken(data.session.user.id);
+          await registerCurrentDevice();
         } else {
           setProfile(null);
           setFirm(null);
@@ -193,6 +198,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           void fetchProfile(newSession.user.id)
             .then(refreshCounts)
             .then(() => registerDeviceToken(newSession.user.id))
+            .then(() => registerCurrentDevice())
             .catch(error => console.error("[auth] profile load:", error));
         } else {
           setProfile(null);
@@ -236,6 +242,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [user, refreshCounts]);
 
   const signOut = useCallback(async () => {
+    try {
+      await revokeCurrentDevice();
+    } catch (e) {
+      console.warn("[devices] revoke error:", e);
+    }
     if (user) await removeDeviceToken(user.id);
     await supabase.auth.signOut();
     setProfile(null);
@@ -243,6 +254,43 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUnreadCount(0);
     setReminderCount(0);
   }, [user, removeDeviceToken]);
+
+  // ── Device session limit watchdog (Max 2 concurrent devices per account) ────
+  useEffect(() => {
+    if (!user || !IS_SUPABASE_CONFIGURED) return;
+
+    let isChecking = false;
+    const verifyDevice = async () => {
+      if (isChecking) return;
+      isChecking = true;
+      try {
+        const res = await checkCurrentDeviceValid();
+        if (!res.valid && res.reason === "revoked") {
+          toast.error(
+            t("auth.deviceLimitReached") ||
+              "Session ended: Only 2 active devices are permitted simultaneously. Another device was signed in.",
+            t("auth.deviceLimitTitle") || "Device Limit Reached"
+          );
+          await signOut();
+        }
+      } catch (err) {
+        console.error("[devices] validation error:", err);
+      } finally {
+        isChecking = false;
+      }
+    };
+
+    const initialTimer = setTimeout(verifyDevice, 2000);
+    const interval = setInterval(verifyDevice, 20_000);
+    const onFocus = () => void verifyDevice();
+    window.addEventListener("focus", onFocus);
+
+    return () => {
+      clearTimeout(initialTimer);
+      clearInterval(interval);
+      window.removeEventListener("focus", onFocus);
+    };
+  }, [user, signOut, t]);
 
   return (
     <AuthContext.Provider value={{
