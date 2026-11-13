@@ -15,24 +15,28 @@ import {
   BellRing,
   AlertTriangle,
   Trash2,
+  CreditCard,
 } from "lucide-react";
 
 import { AppShell } from "@/components/layout/AppShell";
 import { RouteGuard } from "@/components/shared/RouteGuard";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
+import { Badge } from "@/components/ui/Badge";
 import { Input } from "@/components/ui/Input";
 import { Modal } from "@/components/ui/Modal";
 import { toast } from "@/components/ui/Toast";
 import { LangSwitcher } from "@/components/shared/LangSwitcher";
 import { useRoleGuard } from "@/hooks/useRoleGuard";
 import { useAuth } from "@/providers/AuthProvider";
+import { useSubscriptionAccess } from "@/hooks/useSubscriptionAccess";
 import { saasRpc } from "@/lib/supabase/saas";
 
 function SettingsPage() {
   const { t } = useTranslation();
   const { isAdminOrAbove } = useRoleGuard();
   const { signOut } = useAuth();
+  const { status } = useSubscriptionAccess();
   const router = useRouter();
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -70,6 +74,28 @@ function SettingsPage() {
               <User className="w-4 h-4 text-navy-400 group-hover:text-gold transition-colors" />
               <span className="flex-1 text-sm font-semibold text-navy">{t("profile.title")}</span>
               <ChevronRight className="w-4 h-4 text-navy-400 group-hover:text-gold transition-colors" />
+            </Link>
+            <Link
+              href="/billing"
+              className="flex items-center gap-3 px-4 py-3.5 hover:bg-navy-50/50 transition-colors group"
+            >
+              <CreditCard className="w-4 h-4 text-navy-400 group-hover:text-gold transition-colors" />
+              <span className="flex-1 text-sm font-semibold text-navy">{t("billing.title")}</span>
+              <div className="flex items-center gap-2">
+                <Badge
+                  variant={
+                    status === "active" ? "success"
+                    : status === "trialing" ? "gold"
+                    : status === "grace" ? "warning"
+                    : "danger"
+                  }
+                  size="sm"
+                  dot
+                >
+                  {status.toUpperCase()}
+                </Badge>
+                <ChevronRight className="w-4 h-4 text-navy-400 group-hover:text-gold transition-colors" />
+              </div>
             </Link>
             <Link
               href="/settings/notifications"
