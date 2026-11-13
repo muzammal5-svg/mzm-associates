@@ -3,10 +3,11 @@
 import { useState, useRef }   from "react";
 import Image                  from "next/image";
 import { useTranslation }     from "react-i18next";
-import { Camera, Eye, EyeOff, Save } from "lucide-react";
+import { Camera, Eye, EyeOff, Save, CreditCard, ChevronRight } from "lucide-react";
 import { useForm }            from "react-hook-form";
 import { zodResolver }        from "@hookform/resolvers/zod";
 import { z }                  from "zod";
+import Link                   from "next/link";
 
 import { AppShell }    from "@/components/layout/AppShell";
 import { RouteGuard }  from "@/components/shared/RouteGuard";
@@ -18,6 +19,8 @@ import { useMutationLock } from "@/components/shared/MutatingButton";
 import { useToast }    from "@/components/ui/Toast";
 import { useAuth }     from "@/providers/AuthProvider";
 import { supabase, update } from "@/lib/supabase/client";
+
+import { useSubscriptionAccess } from "@/hooks/useSubscriptionAccess";
 
 // ── Zod schemas ──────────────────────────────────────────────────────────────
 const profileSchema = z.object({
@@ -41,6 +44,7 @@ type PasswordForm  = z.infer<typeof passwordSchema>;
 function ProfilePage() {
   const { t }                       = useTranslation();
   const { profile, firm, refreshProfile } = useAuth();
+  const { status, state }           = useSubscriptionAccess();
   const toast                       = useToast();
   const { lock, canMutate } = useMutationLock();
   const fileRef                     = useRef<HTMLInputElement>(null);
@@ -182,6 +186,34 @@ function ProfilePage() {
             </div>
           </div>
         </Card>
+
+        {/* ── Billing card ── */}
+        <Link href="/billing">
+          <Card hover className="flex items-center gap-4 border border-gold/20">
+            <div className="w-10 h-10 rounded-xl bg-gold/10 flex items-center justify-center flex-shrink-0">
+              <CreditCard className="w-5 h-5 text-gold" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="font-semibold text-navy text-sm">{t("billing.title") || "Billing & Subscription"}</p>
+              <p className="text-xs text-navy-400 mt-0.5">
+                {state?.ends_at
+                  ? t("billing.renewsOn", { date: new Date(state.ends_at).toLocaleDateString() })
+                  : t("billing.selectPlan")}
+              </p>
+            </div>
+            <div className="flex items-center gap-2 flex-shrink-0">
+              <span className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded-full border ${
+                status === "active"    ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                : status === "trialing" ? "bg-amber-50 text-amber-700 border-amber-200"
+                : status === "grace"    ? "bg-amber-50 text-amber-700 border-amber-200"
+                : "bg-red-50 text-red-700 border-red-200"
+              }`}>
+                {status.toUpperCase()}
+              </span>
+              <ChevronRight className="w-4 h-4 text-navy-400" />
+            </div>
+          </Card>
+        </Link>
 
         {/* ── Edit profile ── */}
         <Card>

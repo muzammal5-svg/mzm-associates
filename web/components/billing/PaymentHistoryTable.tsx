@@ -58,7 +58,62 @@ export function PaymentHistoryTable({
 
   return (
     <div className={cn("overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-sm", className)}>
-      <div className="overflow-x-auto">
+
+      {/* ── Mobile card list (hidden on sm+) ── */}
+      <div className="sm:hidden divide-y divide-slate-100">
+        {payments.map((p) => {
+          const meta = STATUS_META[p.status] ?? STATUS_META.pending;
+          const StatusIcon = meta.icon;
+          return (
+            <div key={p.id} className="p-4 space-y-3">
+              <div className="flex items-start justify-between gap-2">
+                <div className="min-w-0">
+                  <p className="font-mono text-xs font-semibold text-navy truncate">{p.reference_no}</p>
+                  <p className="text-[10px] uppercase tracking-wider text-navy-400 mt-0.5">
+                    {p.method.replace("_", " ")} · {new Date(p.created_at).toLocaleDateString()}
+                  </p>
+                </div>
+                <span className={cn("pill-badge border shrink-0", meta.chip)}>
+                  <StatusIcon className="h-3.5 w-3.5" aria-hidden="true" />
+                  {t(meta.labelKey)}
+                </span>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="font-heading text-base font-bold text-navy">
+                    Rs {Number(p.amount_pkr).toLocaleString()}
+                  </p>
+                  <p className="text-[10px] text-muted">{planNames[p.plan_id] ?? t("billing.plan")}</p>
+                </div>
+
+                {p.slip_path ? (
+                  <button
+                    type="button"
+                    onClick={() => onViewReceipt?.(p)}
+                    className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 text-[11px] font-semibold text-navy transition-all hover:border-gold/50 hover:bg-gold-50 hover:text-gold-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold active:scale-[0.98]"
+                  >
+                    <Eye className="h-3.5 w-3.5" aria-hidden="true" />
+                    {t("billing.viewReceipt")}
+                  </button>
+                ) : (
+                  <span className="inline-flex items-center gap-1 text-[11px] text-navy-400">
+                    <FileText className="h-3.5 w-3.5" aria-hidden="true" />
+                    {t("billing.noReceipt")}
+                  </span>
+                )}
+              </div>
+
+              {p.note && (
+                <p className="text-xs text-muted italic bg-slate-50 rounded px-2 py-1 line-clamp-2">{p.note}</p>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      {/* ── Desktop table (hidden on mobile) ── */}
+      <div className="hidden sm:block overflow-x-auto">
         <table className="w-full min-w-[640px] text-start text-xs">
           <caption className="sr-only">{t("billing.history")}</caption>
           <thead className="bg-slate-50 text-[10px] font-bold uppercase tracking-[0.12em] text-navy-500">

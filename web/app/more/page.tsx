@@ -5,7 +5,8 @@ import Image              from "next/image";
 import { useTranslation } from "react-i18next";
 import {
   CheckSquare, BellRing, Settings, HelpCircle,
-  LogOut, ChevronRight, User, ShieldCheck,
+  LogOut, ChevronRight, User, ShieldCheck, CreditCard,
+  Calendar, FileText, BookOpen, List, FolderOpen,
 } from "lucide-react";
 import { AppShell }    from "@/components/layout/AppShell";
 import { RouteGuard }  from "@/components/shared/RouteGuard";
@@ -16,6 +17,7 @@ import { LangSwitcher } from "@/components/shared/LangSwitcher";
 import { useAuth }     from "@/providers/AuthProvider";
 import { ConfirmDialog } from "@/components/ui/Modal";
 import { useState }    from "react";
+import { useSubscriptionAccess } from "@/hooks/useSubscriptionAccess";
 
 interface MenuItem {
   label:   string;
@@ -29,6 +31,7 @@ interface MenuItem {
 function MorePage() {
   const { t }                             = useTranslation();
   const { profile, unreadCount, signOut } = useAuth();
+  const { status, state }                 = useSubscriptionAccess();
   const [confirmLogout, setConfirmLogout] = useState(false);
 
   const menuItems: MenuItem[] = [
@@ -36,6 +39,36 @@ function MorePage() {
       label: t("more.decidedCases"),
       href:  "/cases/decided",
       icon:  CheckSquare,
+    },
+    {
+      label: t("nav.causeList") || "Cause List",
+      href:  "/cause-list",
+      icon:  Calendar,
+    },
+    {
+      label: t("nav.runningCases") || "Running Cases",
+      href:  "/cases/running",
+      icon:  List,
+    },
+    {
+      label: t("nav.documents") || "Documents",
+      href:  "/documents",
+      icon:  FolderOpen,
+    },
+    {
+      label: t("nav.importantForms") || "Important Forms",
+      href:  "/important-forms",
+      icon:  FileText,
+    },
+    {
+      label: t("nav.caseLaws") || "Case Laws",
+      href:  "/case-laws",
+      icon:  BookOpen,
+    },
+    {
+      label: t("billing.title") || "Billing & Subscription",
+      href:  "/billing",
+      icon:  CreditCard,
     },
     {
       label: t("more.notifications"),
@@ -93,6 +126,38 @@ function MorePage() {
             <div className="flex items-center gap-1 text-navy-400 flex-shrink-0">
               <User className="w-4 h-4" />
               <ChevronRight className="w-4 h-4" />
+            </div>
+          </Card>
+        </Link>
+
+        {/* ── Subscription card ── */}
+        <Link href="/billing">
+          <Card hover className="flex items-center gap-4 border border-gold/20 bg-gradient-to-r from-navy-900/5 to-transparent">
+            <div className="w-10 h-10 rounded-xl bg-gold/10 flex items-center justify-center flex-shrink-0">
+              <CreditCard className="w-5 h-5 text-gold" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="font-semibold text-navy text-sm">{t("billing.title") || "Billing & Subscription"}</p>
+              <p className="text-xs text-navy-400 mt-0.5">
+                {state?.ends_at
+                  ? t("billing.renewsOn", { date: new Date(state.ends_at).toLocaleDateString() })
+                  : t("billing.selectPlan")}
+              </p>
+            </div>
+            <div className="flex items-center gap-2 flex-shrink-0">
+              <Badge
+                variant={
+                  status === "active"   ? "success"
+                  : status === "trialing" ? "gold"
+                  : status === "grace"    ? "warning"
+                  : "danger"
+                }
+                size="sm"
+                dot
+              >
+                {status.toUpperCase()}
+              </Badge>
+              <ChevronRight className="w-4 h-4 text-navy-400" />
             </div>
           </Card>
         </Link>

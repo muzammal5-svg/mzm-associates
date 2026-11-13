@@ -199,9 +199,9 @@ function BillingView() {
   return (
     <div className="mx-auto max-w-5xl space-y-6 pb-10">
       {/* ── Subscription status ───────────────────────────────────────── */}
-      <section className="relative overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm backdrop-blur-md sm:p-6">
+      <section className="relative overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm backdrop-blur-md sm:p-6">
         <div className="pointer-events-none absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-gold-400 via-gold-200 to-transparent" aria-hidden="true" />
-        <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-2.5">
               <h1 className="font-heading text-xl font-bold text-navy sm:text-2xl">
@@ -227,9 +227,9 @@ function BillingView() {
             </p>
           </div>
 
-          <div className="flex items-center gap-3 sm:gap-4">
+          <div className="flex items-center gap-3 overflow-x-auto">
             {state?.days_left != null && (
-              <div className="rounded-xl border border-slate-200/80 bg-slate-50/80 px-4 py-2.5 text-center">
+              <div className="rounded-xl border border-slate-200/80 bg-slate-50/80 px-3 py-2 text-center shrink-0">
                 <span className="block text-[10px] font-bold uppercase tracking-wider text-muted">
                   {t("billing.daysLeftLabel")}
                 </span>
@@ -239,7 +239,7 @@ function BillingView() {
               </div>
             )}
             {state?.seats_used != null && (
-              <div className="rounded-xl border border-slate-200/80 bg-slate-50/80 px-4 py-2.5 text-center">
+              <div className="rounded-xl border border-slate-200/80 bg-slate-50/80 px-3 py-2 text-center shrink-0">
                 <span className="block text-[10px] font-bold uppercase tracking-wider text-muted">
                   {t("billing.seatsLabel")}
                 </span>
@@ -263,14 +263,14 @@ function BillingView() {
         </div>
 
         {loadingData ? (
-          <div className="grid gap-5 sm:grid-cols-3">
+          <div className="grid gap-4 grid-cols-1 sm:grid-cols-3">
             {[1, 2, 3].map((i) => (
-              <Skeleton key={i} className="h-72 rounded-2xl" />
+              <Skeleton key={i} className="h-56 rounded-2xl" />
             ))}
           </div>
         ) : (
           <div
-            className="grid gap-5 sm:grid-cols-3"
+            className="grid gap-4 grid-cols-1 sm:grid-cols-3"
             role="radiogroup"
             aria-label={t("billing.selectPlan")}
           >

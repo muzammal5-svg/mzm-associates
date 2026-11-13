@@ -428,17 +428,17 @@ function AdminDashboard() {
   }, [events, eventsPage]);
 
   return (
-    <div className="min-h-screen bg-mesh-surface pb-16">
+    <div className="min-h-screen bg-mesh-surface pb-20">
       {/* Top Header */}
       <header className="sticky top-0 z-20 border-b border-white/10 bg-slate-900/90 text-white shadow-xl shadow-slate-950/30 backdrop-blur-lg">
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
-          <div className="flex items-center gap-3">
-            <span className="grid h-10 w-10 place-items-center rounded-xl bg-gold-cta shadow-gold ring-1 ring-gold-300/40">
-              <ShieldCheck className="h-5 w-5 text-navy-900" aria-hidden="true" />
+        <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-3 sm:h-16 sm:px-6">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <span className="grid h-8 w-8 place-items-center rounded-xl bg-gold-cta shadow-gold ring-1 ring-gold-300/40 sm:h-10 sm:w-10">
+              <ShieldCheck className="h-4 w-4 text-navy-900 sm:h-5 sm:w-5" aria-hidden="true" />
             </span>
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-heading text-lg font-bold text-white">MZM Admin</span>
+                <span className="font-heading text-base font-bold text-white sm:text-lg">MZM Admin</span>
                 <Badge variant="gold" size="sm" className="font-semibold uppercase text-[10px]">
                   Super Admin
                 </Badge>
@@ -447,13 +447,13 @@ function AdminDashboard() {
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
             <Link
               href="/"
-              className="flex items-center gap-1.5 rounded-lg border border-white/15 bg-white/5 px-3 py-1.5 text-xs text-white/80 transition-all duration-200 hover:border-gold-400/60 hover:bg-gold-400/10 hover:text-gold-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-400"
+              className="flex items-center gap-1.5 rounded-lg border border-white/15 bg-white/5 px-2 py-1.5 text-xs text-white/80 transition-all duration-200 hover:border-gold-400/60 hover:bg-gold-400/10 hover:text-gold-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-400 sm:px-3"
             >
               <ArrowLeft className="h-3.5 w-3.5" aria-hidden="true" />
-              <span>Back to App</span>
+              <span className="hidden sm:inline">Back to App</span>
             </Link>
             <Button
               variant="ghost"
@@ -471,9 +471,9 @@ function AdminDashboard() {
       </header>
 
       {/* Main Container */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 pt-6 space-y-6">
+      <main className="max-w-7xl mx-auto px-3 sm:px-6 pt-4 sm:pt-6 space-y-4 sm:space-y-6">
         {/* Metric Highlights */}
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+        <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
           <Card className="glass-card p-4">
             <div className="flex items-center justify-between">
               <div>
@@ -629,7 +629,7 @@ function AdminDashboard() {
             ) : (
               <div className="space-y-3">
                 {paginatedPayments.map((p) => (
-                  <Card key={p.id} className="p-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  <Card key={p.id} className="p-4 flex flex-col gap-4">
                     <div className="flex items-start gap-3">
                       <div
                         className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
@@ -649,7 +649,7 @@ function AdminDashboard() {
                         )}
                       </div>
 
-                      <div className="min-w-0">
+                      <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2 flex-wrap">
                           <h4 className="font-semibold text-navy text-sm">{p.firm_name}</h4>
                           <Badge
@@ -686,7 +686,7 @@ function AdminDashboard() {
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-2 self-end md:self-center shrink-0">
+                    <div className="flex items-center gap-2 flex-wrap justify-end border-t border-slate-100 pt-3">
                       {p.slip_path && (
                         <Button
                           variant="secondary"
