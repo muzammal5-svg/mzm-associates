@@ -71,7 +71,10 @@ export function DocumentUploader({
 
     for (const file of files) {
       if (file.size > MAX_FILE_SIZE) {
-        toast.warning(t("common.fileSkipped"), `${file.name} ${t("common.fileTooLarge", { size: formatFileSize(MAX_FILE_SIZE) })}`);
+        toast.warning(
+          t("common.fileSkipped") || "File Skipped",
+          `${file.name}: File size exceeds the 5MB limit. Please compress your PDF or image before uploading.`
+        );
         continue;
       }
       if (!(ALLOWED_MIME_TYPES as readonly string[]).includes(file.type)) {
@@ -244,6 +247,11 @@ export function DocumentUploader({
           </button>
         </div>
       </div>
+
+      {/* Helper text */}
+      <p className="text-[11px] text-navy-400 text-center">
+        Max file size: 5MB. Tip: Compress large PDFs or scanned documents before uploading for faster processing.
+      </p>
 
       {/* Hidden inputs */}
       <input

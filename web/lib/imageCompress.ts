@@ -73,4 +73,4 @@ export const ALLOWED_MIME_TYPES = [
 ] as const;
 
 export const ALLOWED_MIME_ACCEPT = ALLOWED_MIME_TYPES.join(",");
-export const MAX_FILE_SIZE       = 50 * 1024 * 1024; // 50 MB
+export const MAX_FILE_SIZE       = 5 * 1024 * 1024; // 5 MB (5,242,880 bytes)

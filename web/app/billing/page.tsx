@@ -124,6 +124,12 @@ function BillingView() {
 
     try {
       if (file) {
+        if (file.size > 5 * 1024 * 1024) {
+          toast.error("File size exceeds the 5MB limit. Please compress your PDF or image before uploading.");
+          setSubmitting(false);
+          return;
+        }
+
         const { data: userData } = await supabase.auth.getUser();
         const { data: profile } = await supabase
           .from("profiles")

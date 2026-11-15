@@ -8,7 +8,7 @@ import {
 import { cn } from "@/lib/utils";
 import { toast } from "@/components/ui/Toast";
 
-const MAX_SIZE = 10 * 1024 * 1024; // 10 MB
+const MAX_SIZE = 5 * 1024 * 1024; // 5 MB
 const ACCEPTED = ["image/jpeg", "image/png", "image/webp", "application/pdf"];
 
 interface ReceiptDropzoneProps {
@@ -48,7 +48,9 @@ export function ReceiptDropzone({
 
   const validate = (candidate: File): string | null => {
     if (!ACCEPTED.includes(candidate.type)) return t("billing.invalidFileType");
-    if (candidate.size > MAX_SIZE) return t("billing.fileTooLarge");
+    if (candidate.size > MAX_SIZE) {
+      return "File size exceeds the 5MB limit. Please compress your PDF or image before uploading.";
+    }
     return null;
   };
 
@@ -166,6 +168,10 @@ export function ReceiptDropzone({
           </button>
         )}
       </div>
+
+      <p className="text-[11px] text-muted text-center">
+        Max file size: 5MB. Tip: Compress large PDFs or scanned documents before uploading for faster processing.
+      </p>
 
       {(error || localError) && (
         <p role="alert" className="flex items-center gap-1.5 text-xs font-medium text-danger">

@@ -62,7 +62,10 @@ export function MarkDecidedModal({
     const file = e.target.files?.[0];
     if (!file) return;
     if (file.size > MAX_FILE_SIZE) {
-      toast.warning(t("common.fileSkipped"), `${file.name} ${t("common.fileTooLarge", { size: formatFileSize(MAX_FILE_SIZE) })}`);
+      toast.warning(
+        t("common.fileSkipped") || "File Skipped",
+        `${file.name}: File size exceeds the 5MB limit. Please compress your PDF or image before uploading.`
+      );
       e.target.value = "";
       return;
     }
@@ -201,6 +204,9 @@ export function MarkDecidedModal({
           disabled={!canMutate}
           onChange={handleFileChange}
         />
+        <p className="text-[11px] text-navy-400 mt-1.5 text-center">
+          Max file size: 5MB. Tip: Compress large PDFs or scanned documents before uploading for faster processing.
+        </p>
       </div>
 
       <p className="text-[11px] text-navy-400 bg-yellow-50 border border-yellow-100 rounded-lg px-3 py-2">

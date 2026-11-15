@@ -114,7 +114,10 @@ function ProfilePage() {
       return;
     }
     if (file.size > MAX_SIZE) {
-      toast.error(t("profile.photoUploadError"), t("profile.fileTooLarge"));
+      toast.error(
+        t("profile.photoUploadError"),
+        "File size exceeds the 5MB limit. Please compress your image before uploading."
+      );
       return;
     }
 
@@ -175,6 +178,9 @@ function ProfilePage() {
               disabled={!canMutate}
             />
           </div>
+          <p className="text-[11px] text-navy-400 text-center">
+            Max file size: 5MB. Tip: Compress large photos before uploading.
+          </p>
           <div className="text-center">
             <p className="font-heading font-bold text-navy text-xl">{profile?.full_name}</p>
             <p className="text-sm text-navy-500 mt-0.5">{profile?.email}</p>

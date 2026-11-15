@@ -79,6 +79,9 @@ export async function uploadDocument(
   file: File,
   onProgress?: (pct: number) => void
 ): Promise<{ path: string }> {
+  if (file.size > 5 * 1024 * 1024) {
+    throw new Error("File size exceeds the 5MB limit. Please compress your PDF or image before uploading.");
+  }
   const ext  = file.name.split(".").pop();
   const path = `${firmId}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
   const { data, error: sessionError } = await supabase.auth.getSession();

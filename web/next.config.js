@@ -1,12 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: "export",        // Static export — required for Capacitor
-  trailingSlash: true,     // /cases/ instead of /cases — safer for static hosting
+  // output: "export" is disabled so dynamic API routes (/api/health) run on Vercel
+  // to prevent Supabase auto-pause. For Capacitor mobile builds, run: npm run build:mobile
+  ...(process.env.CAPACITOR_BUILD === "true" ? { output: "export" } : {}),
+  trailingSlash: true,
   images: {
-    unoptimized: true,     // Required for static export
+    unoptimized: true,
   },
-  // No server actions, API routes, or SSR.
-  // All data via supabase-js on the client.
 };
 
 module.exports = nextConfig;
