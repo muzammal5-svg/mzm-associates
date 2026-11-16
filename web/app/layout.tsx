@@ -9,6 +9,7 @@ import { ToastProvider }  from "@/components/ui/Toast";
 import { ErrorBoundary }  from "@/components/shared/ErrorBoundary";
 import { OfflineBanner }  from "@/components/shared/OfflineBanner";
 import { BRAND }          from "@/lib/brand";
+import { Analytics }      from "@vercel/analytics/next";
 
 export const metadata: Metadata = {
   title:       { template: `%s | ${BRAND.name}`, default: BRAND.name },
@@ -60,6 +61,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </QueryProvider>
           </I18nProvider>
         </ErrorBoundary>
+        <Analytics />
       </body>
     </html>
   );
