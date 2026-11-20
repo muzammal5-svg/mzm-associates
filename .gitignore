@@ -26,6 +26,11 @@ web/dist/
 web/android/
 web/ios/
 
+# Android TWA & Keystores (NEVER commit signing keys or keystores)
+android-twa/
+*.keystore
+*.jks
+
 # Misc
 .DS_Store
 Thumbs.db

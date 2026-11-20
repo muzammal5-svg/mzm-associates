@@ -7,7 +7,7 @@ export async function GET() {
       target: {
         namespace: "android_app",
         package_name: "com.mzm.dailydiary",
-        sha256_cert_fingerprints: ["REPLACE_WITH_SHA256_FROM_PWABUILDER"],
+        sha256_cert_fingerprints: ["98:77:88:24:D9:5A:53:57:BF:1F:92:81:F1:3C:16:DB:76:CB:BF:56:F1:B1:16:7C:B3:83:50:30:DB:A1:F7:1A"],
       },
     },
   ];
