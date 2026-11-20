@@ -17,7 +17,13 @@ export default function robots(): MetadataRoute.Robots {
           "/register",
           "/terms",
           "/privacy",
+          "/privacy-policy",
+          "/delete-account",
           "/refund-policy",
+          "/manifest.json",
+          "/sw.js",
+          "/offline.html",
+          "/.well-known/*",
         ],
         disallow: [
           "/admin",

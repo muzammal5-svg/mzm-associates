@@ -121,6 +121,24 @@ export function PublicFooter() {
                   <ArrowUpRight className="h-3 w-3 opacity-0 transition-opacity duration-200 group-hover:opacity-100" aria-hidden="true" />
                 </button>
               </li>
+              <li>
+                <Link
+                  href="/privacy-policy"
+                  className="group inline-flex items-center gap-1.5 text-white/65 transition-colors duration-200 hover:text-gold-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-400"
+                >
+                  <ShieldCheck className="h-3.5 w-3.5 opacity-60 text-gold-300" aria-hidden="true" />
+                  <span>Privacy Policy (Play Store)</span>
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/delete-account"
+                  className="group inline-flex items-center gap-1.5 text-white/65 transition-colors duration-200 hover:text-rose-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-400"
+                >
+                  <FileText className="h-3.5 w-3.5 opacity-60 text-rose-400" aria-hidden="true" />
+                  <span>Delete Account &amp; Data</span>
+                </Link>
+              </li>
             </ul>
           </nav>
         </div>

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>No Internet Connection | MZM Daily Diary</title>
+  <meta name="theme-color" content="#0B1B3A">
+  <link rel="icon" href="/favicon.ico">
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background-color: #0B1B3A;
+      color: #F7F7F4;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 20px;
+      text-align: center;
+      position: relative;
+      overflow-x: hidden;
+    }
+    .ambient-glow {
+      position: absolute;
+      width: 320px;
+      height: 320px;
+      background: radial-gradient(circle, rgba(197, 165, 93, 0.15) 0%, rgba(11, 27, 58, 0) 70%);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .card {
+      position: relative;
+      z-index: 1;
+      max-width: 440px;
+      width: 100%;
+      background: rgba(17, 34, 69, 0.85);
+      border: 1px solid rgba(197, 165, 93, 0.25);
+      border-radius: 20px;
+      padding: 36px 28px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    .icon-wrapper {
+      width: 72px;
+      height: 72px;
+      margin: 0 auto 20px auto;
+      border-radius: 18px;
+      background: rgba(197, 165, 93, 0.12);
+      border: 1px solid rgba(197, 165, 93, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .icon-wrapper svg {
+      width: 36px;
+      height: 36px;
+      stroke: #C5A55D;
+    }
+    .brand-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: #C5A55D;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    h1 {
+      font-size: 24px;
+      font-weight: 700;
+      color: #FFFFFF;
+      margin-bottom: 12px;
+      line-height: 1.3;
+    }
+    p {
+      font-size: 14px;
+      color: #D1D5DB;
+      line-height: 1.6;
+      margin-bottom: 28px;
+    }
+    .btn-retry {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      background: linear-gradient(135deg, #C5A55D 0%, #8A6414 100%);
+      color: #FFFFFF;
+      font-weight: 600;
+      font-size: 15px;
+      padding: 14px 24px;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s ease-in-out;
+      box-shadow: 0 4px 15px rgba(138, 100, 20, 0.35);
+      outline: none;
+    }
+    .btn-retry:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(138, 100, 20, 0.5);
+    }
+    .btn-retry:active {
+      transform: translateY(0);
+    }
+    .btn-retry svg {
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
+    }
+    .support-footer {
+      margin-top: 24px;
+      font-size: 12px;
+      color: #9CA3AF;
+      line-height: 1.5;
+    }
+    .support-footer a {
+      color: #C5A55D;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .support-footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="ambient-glow"></div>
+  <main class="card">
+    <div class="icon-wrapper">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="1" y1="1" x2="23" y2="23"></line>
+        <path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"></path>
+        <path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"></path>
+        <path d="M10.71 5.05A16 16 0 0 1 22.58 9"></path>
+        <path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88"></path>
+        <path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path>
+        <line x1="12" y1="20" x2="12.01" y2="20"></line>
+      </svg>
+    </div>
+    <div class="brand-title">MZM &amp; Associates</div>
+    <h1>You're Currently Offline</h1>
+    <p>MZM Daily Diary requires an active internet connection to synchronize your court cause list, case documents, and hearing dates securely.</p>
+    
+    <button class="btn-retry" id="retryBtn" onclick="retryConnection()">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+      </svg>
+      <span>Retry Connection</span>
+    </button>
+
+    <div class="support-footer">
+      Urgent court inquiry? Contact Chamber Support:<br>
+      <a href="tel:+923455421753">+92 345 5421753</a> &bull; <a href="mailto:admin@mzm.pk">admin@mzm.pk</a>
+    </div>
+  </main>
+
+  <script>
+    function retryConnection() {
+      const btn = document.getElementById('retryBtn');
+      if (btn) {
+        btn.style.opacity = '0.7';
+        btn.querySelector('span').textContent = 'Connecting...';
+      }
+      setTimeout(() => {
+        window.location.reload();
+      }, 300);
+    }
+
+    // Auto-reload as soon as internet connection is restored
+    window.addEventListener('online', () => {
+      window.location.reload();
+    });
+  </script>
+</body>
+</html>

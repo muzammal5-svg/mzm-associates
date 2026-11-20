@@ -8,6 +8,7 @@ import { LangProvider }   from "@/providers/LangProvider";
 import { ToastProvider }  from "@/components/ui/Toast";
 import { ErrorBoundary }  from "@/components/shared/ErrorBoundary";
 import { OfflineBanner }  from "@/components/shared/OfflineBanner";
+import { ServiceWorkerRegistrar } from "@/components/shared/ServiceWorkerRegistrar";
 import { BRAND }          from "@/lib/brand";
 import { Analytics }      from "@vercel/analytics/next";
 
@@ -205,6 +206,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     <ToastProvider>
                       {children}
                       <OfflineBanner />
+                      <ServiceWorkerRegistrar />
                     </ToastProvider>
                   </LangProvider>
                 </SubscriptionProvider>

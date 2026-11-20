@@ -1,15 +1,20 @@
 {
-  "name": "Daily Diary MZM",
-  "short_name": "Daily Diary MZM",
-  "description": "Daily Diary MZM — Advocates & Legal Consultants Case Management System",
+  "id": "/",
+  "name": "MZM Daily Diary",
+  "short_name": "DailyDiary MZM",
+  "description": "Digital daily case diary, cause list, and client document management system for MZM & Associates.",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#0B1B3A",
   "theme_color": "#0B1B3A",
   "lang": "en",
   "dir": "ltr",
-  "scope": "/",
+  "categories": [
+    "productivity",
+    "business"
+  ],
   "icons": [
     {
       "src": "/icons/icon-72.png",
@@ -51,7 +56,13 @@
       "src": "/icons/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-192-maskable.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
     },
     {
       "src": "/icons/icon-384.png",
@@ -63,7 +74,7 @@
       "src": "/icons/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     },
     {
       "src": "/icons/icon-512-maskable.png",
@@ -72,16 +83,42 @@
       "purpose": "maskable"
     }
   ],
-  "categories": [
-    "productivity",
-    "business"
+  "screenshots": [
+    {
+      "src": "/marketing/cause-list.webp",
+      "sizes": "1280x800",
+      "type": "image/webp",
+      "form_factor": "wide",
+      "label": "Cause List & Court Hearings"
+    },
+    {
+      "src": "/marketing/case-view.webp",
+      "sizes": "1280x800",
+      "type": "image/webp",
+      "form_factor": "wide",
+      "label": "Legal Case View & History"
+    },
+    {
+      "src": "/marketing/clients.webp",
+      "sizes": "1280x800",
+      "type": "image/webp",
+      "form_factor": "wide",
+      "label": "Client Management"
+    },
+    {
+      "src": "/marketing/reminders.webp",
+      "sizes": "1280x800",
+      "type": "image/webp",
+      "form_factor": "wide",
+      "label": "Automated Hearing Reminders"
+    }
   ],
   "shortcuts": [
     {
       "name": "Today's Cause List",
       "short_name": "Cause List",
       "description": "View today's hearings",
-      "url": "/cause-list",
+      "url": "/cause-list/",
       "icons": [
         {
           "src": "/icons/icon-96.png",
@@ -93,7 +130,7 @@
       "name": "New Case",
       "short_name": "New Case",
       "description": "Add a new case",
-      "url": "/cases/new",
+      "url": "/cases/new/",
       "icons": [
         {
           "src": "/icons/icon-96.png",
