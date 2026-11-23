@@ -4,8 +4,14 @@ export const SITE = {
   whatsapp: "+92 345 5421753",
   phone: "+92 345 5421753",
   email: "muhammad.zahid.muneer@outlook.com",
+  address: "Chamber No#27 Haroon Ur Rasheed Block F-8 Markaz Near PSO Pump Islamabad",
+  youtube: "https://www.youtube.com/@DailyDiaryMZM",
   trialDays: 7,
-  social: { twitter: "", linkedin: "" },
+  social: {
+    twitter: "",
+    linkedin: "",
+    youtube: "https://www.youtube.com/@DailyDiaryMZM",
+  },
   /** Set to true only after real reviews are added (see docs/landing-content.md). */
   SHOW_REVIEWS: false,
 };

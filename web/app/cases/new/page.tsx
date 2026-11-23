@@ -49,6 +49,23 @@ const schema = z.object({
   next_proceeding: z.string().max(500).optional().or(z.literal("")),
 });
 
+const DEFAULT_COURT_SUGGESTIONS = [
+  "Judicial Magistrate East",
+  "Judicial Magistrate West",
+  "District & Sessions Court Islamabad",
+  "Senior Civil Judge Islamabad",
+  "Civil Judge / Judicial Magistrate",
+  "Islamabad High Court",
+  "Lahore High Court",
+  "Supreme Court of Pakistan",
+  "Family Court",
+  "Consumer Court",
+  "Banking Court",
+  "Anti-Terrorism Court (ATC)",
+  "Special Court (Central)",
+  "Accountability Court (NAB)",
+];
+
 type FormData = z.infer<typeof schema>;
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
@@ -160,7 +177,19 @@ function NewCasePage() {
               render={({ field }) => (
                 <ClientSearchSelect
                   value={selectedClient ?? prefilledClient ?? null}
-                  onChange={c => { setSelectedClient(c); field.onChange(c?.id ?? ""); }}
+                  onChange={c => {
+                    setSelectedClient(c);
+                    field.onChange(c?.id ?? "");
+                    if (c?.full_name) {
+                      const fromRole = watch("From") || "Plaintiff";
+                      const isDefendantRole = ["Defendant", "Respondent", "Accused"].includes(fromRole);
+                      if (isDefendantRole) {
+                        setValue("defendant_name", c.full_name, { shouldValidate: true });
+                      } else {
+                        setValue("plaintiff_name", c.full_name, { shouldValidate: true });
+                      }
+                    }
+                  }}
                   error={errors.client_id?.message}
                 />
               )}
@@ -260,12 +289,23 @@ function NewCasePage() {
                 <option value="Applicant" />
               </datalist>
               <div className="flex flex-wrap items-center gap-1.5 pt-1">
-                <span className="text-[11px] text-muted">{t("common.suggestions") || "Suggestions:"}</span>
+                <span className="text-[11px] text-muted">{t("common.suggestions", "Suggestions:")}</span>
                 {["Plaintiff", "Defendant", "Petitioner", "Respondent", "Appellant", "Accused"].map((suggestion) => (
                   <button
                     key={suggestion}
                     type="button"
-                    onClick={() => setValue("From", suggestion, { shouldValidate: true })}
+                    onClick={() => {
+                      setValue("From", suggestion, { shouldValidate: true });
+                      const client = selectedClient ?? prefilledClient;
+                      if (client?.full_name) {
+                        const isDefendantRole = ["Defendant", "Respondent", "Accused"].includes(suggestion);
+                        if (isDefendantRole) {
+                          setValue("defendant_name", client.full_name, { shouldValidate: true });
+                        } else {
+                          setValue("plaintiff_name", client.full_name, { shouldValidate: true });
+                        }
+                      }
+                    }}
                     className={`text-[11px] px-2.5 py-1 rounded-lg border font-medium transition-all ${
                       watch("From") === suggestion
                         ? "bg-navy text-white border-navy shadow-xs"
@@ -301,8 +341,11 @@ function NewCasePage() {
                 {...register("court_no")}
               />
               <datalist id="court-options">
-                {courtOptions.map((c) => (
-                  <option key={c.value} value={c.value} />
+                {Array.from(new Set([
+                  ...courtOptions.map((c) => c.value),
+                  ...DEFAULT_COURT_SUGGESTIONS,
+                ])).map((name) => (
+                  <option key={name} value={name} />
                 ))}
               </datalist>
               <Input

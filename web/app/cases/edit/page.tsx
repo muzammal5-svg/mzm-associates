@@ -33,6 +33,23 @@ const schema = z.object({
   judge_name:      z.string().optional().or(z.literal("")),
   description:     z.string().optional().or(z.literal("")),
 });
+const DEFAULT_COURT_SUGGESTIONS = [
+  "Judicial Magistrate East",
+  "Judicial Magistrate West",
+  "District & Sessions Court Islamabad",
+  "Senior Civil Judge Islamabad",
+  "Civil Judge / Judicial Magistrate",
+  "Islamabad High Court",
+  "Lahore High Court",
+  "Supreme Court of Pakistan",
+  "Family Court",
+  "Consumer Court",
+  "Banking Court",
+  "Anti-Terrorism Court (ATC)",
+  "Special Court (Central)",
+  "Accountability Court (NAB)",
+];
+
 type FormData = z.infer<typeof schema>;
 
 function EditCasePage() {
@@ -140,7 +157,7 @@ function EditCasePage() {
                 <option value="Applicant" />
               </datalist>
               <div className="flex flex-wrap items-center gap-1.5 pt-1">
-                <span className="text-[11px] text-muted">{t("common.suggestions") || "Suggestions:"}</span>
+                <span className="text-[11px] text-muted">{t("common.suggestions", "Suggestions:")}</span>
                 {["Plaintiff", "Defendant", "Petitioner", "Respondent", "Appellant", "Accused"].map((suggestion) => (
                   <button
                     key={suggestion}
@@ -168,8 +185,11 @@ function EditCasePage() {
             <div className="grid md:grid-cols-2 gap-4">
               <Input label={t("cases.court")} placeholder={t("common.allCourts")} list="court-options-edit" {...register("court_no")} />
               <datalist id="court-options-edit">
-                {courtOptions.map((c) => (
-                  <option key={c.value} value={c.value} />
+                {Array.from(new Set([
+                  ...courtOptions.map((c) => c.value),
+                  ...DEFAULT_COURT_SUGGESTIONS,
+                ])).map((name) => (
+                  <option key={name} value={name} />
                 ))}
               </datalist>
               <Input label={t("cases.judge")} {...register("judge_name")} />

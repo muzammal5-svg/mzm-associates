@@ -10,7 +10,7 @@ import { Button } from "./Button";
 function Overlay({ onClick }: { onClick?: () => void }) {
   return (
     <div
-      className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 animate-fade-in"
+      className="fixed inset-0 bg-black/50 backdrop-blur-xs animate-fade-in"
       aria-hidden="true"
       onClick={onClick}
     />
@@ -69,21 +69,18 @@ export function Modal({
   if (!open) return null;
 
   return (
-    <>
+    <div className={cn("fixed inset-0 z-50 flex items-center justify-center p-4", className)}>
       <Overlay onClick={onClose} />
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
-        <div
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby={title ? "modal-title" : undefined}
-          className={cn(
-            "relative w-full bg-white rounded-2xl shadow-modal border border-border text-navy",
-            "pointer-events-auto animate-slide-down",
-            "flex flex-col max-h-[90dvh]",
-            MODAL_SIZES[size],
-            className
-          )}
-        >
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={title ? "modal-title" : undefined}
+        className={cn(
+          "relative w-full bg-white rounded-2xl shadow-modal border border-border text-navy",
+          "animate-slide-down flex flex-col max-h-[90dvh] z-10",
+          MODAL_SIZES[size]
+        )}
+      >
           {/* Header */}
           {title && (
             <div className="flex items-center justify-between px-5 pt-5 pb-4 border-b border-border flex-shrink-0">
@@ -113,7 +110,6 @@ export function Modal({
           )}
         </div>
       </div>
-    </>
   );
 }
 
@@ -154,7 +150,7 @@ export function BottomSheet({
     "max-h-[92dvh]";
 
   return (
-    <>
+    <div className={cn("fixed inset-0 z-50", className)}>
       <Overlay onClick={onClose} />
       <div
         role="dialog"
@@ -162,11 +158,10 @@ export function BottomSheet({
         aria-labelledby={title ? "sheet-title" : undefined}
         style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
         className={cn(
-          "fixed bottom-0 start-0 end-0 z-50",
+          "fixed bottom-0 start-0 end-0 z-10",
           "bg-white rounded-t-3xl shadow-modal border-t border-border text-navy",
           "flex flex-col animate-slide-up",
-          heightClass,
-          className
+          heightClass
         )}
       >
         {/* Drag handle */}
@@ -202,7 +197,7 @@ export function BottomSheet({
           </div>
         )}
       </div>
-    </>
+    </div>
   );
 }
 

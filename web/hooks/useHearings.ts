@@ -111,14 +111,17 @@ export function useQuickUpdateHearing() {
       hearingId,
       serialNo,
       currentProceeding,
+      courtNo,
     }: {
       hearingId:          string;
       serialNo?:          string;
       currentProceeding?: string;
+      courtNo?:           string;
     }) => {
       const payload: TablesUpdate<"hearings"> = {};
       if (serialNo          !== undefined) payload.serial_no          = serialNo;
       if (currentProceeding !== undefined) payload.current_proceeding = currentProceeding;
+      if (courtNo           !== undefined) payload.court_no           = courtNo;
       const { error } = await supabaseRaw
         .from("hearings")
         .update(payload)

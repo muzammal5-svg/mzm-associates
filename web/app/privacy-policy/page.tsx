@@ -175,7 +175,7 @@ export default function PrivacyPolicyPage() {
                 </p>
                 <div className="rounded-xl border border-slate-200 bg-slate-50 p-5 text-xs text-slate-700 space-y-2">
                   <p className="font-bold text-navy text-sm">MZM &amp; Associates (Advocates &amp; Legal Consultants)</p>
-                  <p><strong>Office:</strong> Chamber No 27, Haroon Ur Rasheed Block, F-8, Islamabad, Pakistan</p>
+                  <p><strong>Office:</strong> Chamber No#27 Haroon Ur Rasheed Block F-8 Markaz Near PSO Pump Islamabad</p>
                   <p className="flex items-center gap-2">
                     <Phone className="h-3.5 w-3.5 text-gold" />
                     <span>Direct / WhatsApp: <a href="tel:+923455421753" className="text-navy font-semibold hover:underline">+92 345 5421753</a></span>

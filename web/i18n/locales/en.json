@@ -167,7 +167,9 @@
     "download": "Download",
     "delete": "Delete",
     "pdfPreview": "PDF preview",
-    "firmRequired": "No firm is associated with your account. Please contact support to link a firm before uploading documents."
+    "firmRequired": "No firm is associated with your account. Please contact support to link a firm before uploading documents.",
+    "noCourtForms": "No court forms available.",
+    "searchForms": "Search court forms..."
   },
   "reminders": {
     "title": "Reminders",
@@ -193,7 +195,7 @@
     "case": "Case",
     "client": "Client",
     "From": "From",
-    "fromPlaceholder": "e.g. Plaintiff, Defendant, Petitioner, Respondent...",
+    "fromPlaceholder": "e.g. Plaintiff, Defendant, Advocate, or custom party",
     "court": "Court",
     "restored": "Reminder restored",
     "statusUpdated": "Reminder {{status}}",
@@ -202,8 +204,7 @@
     "retry": "Retry",
     "add": "Add Reminder",
     "newReminder": "New Reminder",
-    "selectCase": "Select Case",
-    "fromPlaceholder": "e.g. Plaintiff, Defendant, Advocate, or custom party"
+    "selectCase": "Select Case"
   },
   "notifications": {
     "title": "Notifications",
@@ -262,7 +263,9 @@
     "version": "Version {{version}}",
     "helpText": "Contact support at muhammad.zahid.muneer@outlook.com",
     "helpTitle": "Help & Support",
-    "emailSupport": "Email Support"
+    "emailSupport": "Email Support",
+    "videoTutorials": "Video Guides & Tutorials",
+    "videoTutorialsDesc": "Watch step-by-step video guides on how to use Daily Diary MZM on YouTube"
   },
   "profile": {
     "title": "My Profile",
@@ -508,7 +511,11 @@
     "found": "found",
     "collapse": "Collapse",
     "realTime": "Live sync",
-    "page": "Page {{current}} of {{total}}"
+    "page": "Page {{current}} of {{total}}",
+    "suggestions": "Suggestions:",
+    "accessDenied": "Access Denied",
+    "videoTutorials": "Video Tutorials (YouTube)",
+    "watchOnYoutube": "Watch on YouTube"
   },
   "marketing": {
     "navFeatures": "Features",
@@ -786,8 +793,8 @@
     "emailDesc": "Send us an email and we'll respond within 24 hours",
     "sendEmail": "Send Email",
     "office": "Office",
-    "officeDesc": "Visit our office in Lahore",
-    "officeAddress": "123 Main Street, Lahore, Pakistan",
+    "officeDesc": "Visit our chamber in Islamabad",
+    "officeAddress": "Chamber No#27 Haroon Ur Rasheed Block F-8 Markaz Near PSO Pump Islamabad",
     "sendMessage": "Send us a message",
     "formDesc": "Fill out the form below and we'll get back to you shortly",
     "success": "Thank you! We'll get back to you soon.",

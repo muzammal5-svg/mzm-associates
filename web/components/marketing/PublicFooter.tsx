@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useTranslation } from "react-i18next";
 import {
   Scale, Mail, MessageCircle, FileText, ShieldCheck, Wallet, Sparkles, ArrowUpRight,
-  Phone,
+  Phone, Youtube,
 } from "lucide-react";
 import { Logo } from "@/components/shared/Logo";
 import { LegalDrawer } from "@/components/marketing/LegalDrawer";
@@ -54,6 +54,15 @@ export function PublicFooter() {
                 <Mail className="h-3.5 w-3.5" aria-hidden="true" />
                 {SITE.email}
               </a>
+              <a
+                href={SITE.youtube}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 rounded-lg border border-white/15 bg-white/5 px-3.5 py-2 text-xs font-semibold text-white/80 transition-all duration-200 hover:border-red-500/60 hover:bg-red-500/15 hover:text-red-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
+              >
+                <Youtube className="h-3.5 w-3.5 text-red-500" aria-hidden="true" />
+                YouTube Guide
+              </a>
             </div>
           </div>
 
@@ -77,6 +86,7 @@ export function PublicFooter() {
             </h4>
             <ul className="space-y-2.5 text-sm">
               <li><Link className="text-white/65 transition-colors duration-200 hover:text-gold-100" href="/contact">{t("marketing.navContact")}</Link></li>
+              <li><a className="text-white/65 transition-colors duration-200 hover:text-gold-100 flex items-center gap-1.5" href={SITE.youtube} target="_blank" rel="noopener noreferrer">How to Use (YouTube) <ArrowUpRight className="h-3 w-3 opacity-60" /></a></li>
               <li><Link className="text-white/65 transition-colors duration-200 hover:text-gold-100" href="/register">{t("marketing.signUp")}</Link></li>
               <li><Link className="text-white/65 transition-colors duration-200 hover:text-gold-100" href="/auth/sign-in">{t("marketing.signIn")}</Link></li>
             </ul>

@@ -99,7 +99,7 @@ function CauseListPage() {
     <AppShell
       pageTitle={t("nav.causeList")}
       headerActions={
-        <div className="flex items-center gap-2 no-print">
+        <div className="flex items-center gap-1.5 sm:gap-2 no-print">
           <Button size="sm" variant="secondary"
             onClick={handlePrint}
             leftIcon={<Printer className="w-4 h-4" />}
@@ -111,15 +111,19 @@ function CauseListPage() {
             loading={sharing}
             onClick={handleShare}
             leftIcon={<Share2 className="w-4 h-4" />}
+            className="px-2.5 sm:px-3 text-xs"
+            title={t("common.share")}
           >
-            {t("common.share")}
+            <span className="hidden sm:inline">{t("common.share")}</span>
           </Button>
           <Button size="sm"
             loading={exporting}
             onClick={handleExportPdf}
             leftIcon={<Download className="w-4 h-4" />}
+            className="px-2.5 sm:px-3 text-xs"
+            title={t("common.pdf")}
           >
-            {t("common.pdf")}
+            <span className="hidden sm:inline">{t("common.pdf")}</span>
           </Button>
         </div>
       }

@@ -76,16 +76,16 @@ export async function exportCauseListPdf(opts: PdfExportOptions): Promise<void> 
     "Court", "Current Proceeding", "Next Proceeding", "Next Date", "Prev. Date",
   ]];
 
-  const body = rows.map(r => [
-    r.serial_no         ?? "—",
+  const body = rows.map((r, i) => [
+    r.serial_no || String(i + 1),
     r.case_ref_no || "—",
     `${r.plaintiff_name} vs ${r.defendant_name}`,
-    r.case_type_name,
-    r.hearing_court_no  ?? "—",
-    r.current_proceeding ?? "—",
-    r.next_proceeding   ?? "—",
-    r.next_date         ? fmtDate(r.next_date)     : "—",
-    r.previous_date     ? fmtDate(r.previous_date) : "—",
+    r.case_type_name || "—",
+    r.hearing_court_no || r.case_court_no || "—",
+    r.current_proceeding || "—",
+    r.next_proceeding || "—",
+    r.next_date ? fmtDate(r.next_date) : "—",
+    r.previous_date ? fmtDate(r.previous_date) : "—",
   ]);
 
   autoTable(doc, {
@@ -109,14 +109,14 @@ export async function exportCauseListPdf(opts: PdfExportOptions): Promise<void> 
     alternateRowStyles: { fillColor: [247, 247, 244] },
     columnStyles: {
       0: { cellWidth: 10 },
-      1: { cellWidth: 24 },
-      2: { cellWidth: 52 },
-      3: { cellWidth: 18 },
-      4: { cellWidth: 16 },
-      5: { cellWidth: 40 },
-      6: { cellWidth: 40 },
+      1: { cellWidth: 25 },
+      2: { cellWidth: 55 },
+      3: { cellWidth: 20 },
+      4: { cellWidth: 38 },
+      5: { cellWidth: 42 },
+      6: { cellWidth: 42 },
       7: { cellWidth: 20 },
-      8: { cellWidth: 20 },
+      8: { cellWidth: 17 },
     },
     didDrawPage: (data) => {
       // Footer on every page
@@ -149,8 +149,8 @@ export async function shareCauseList(
     `Cause List — ${fmtDate(date)}`,
     `${rows.length} hearing(s) scheduled`,
     "",
-    ...rows.map(r =>
-      `${r.serial_no ?? "—"}. ${r.case_ref_no || "—"} | ${r.plaintiff_name} vs ${r.defendant_name} | Court: ${r.hearing_court_no ?? "—"}`
+    ...rows.map((r, i) =>
+      `${r.serial_no || i + 1}. ${r.case_ref_no || "—"} | ${r.plaintiff_name} vs ${r.defendant_name} | Court: ${r.hearing_court_no || r.case_court_no || "—"}`
     ),
   ].join("\n");
 

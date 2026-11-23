@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 import {
   CheckSquare, BellRing, Settings, HelpCircle,
   LogOut, ChevronRight, User, ShieldCheck, CreditCard,
-  Calendar, FileText, BookOpen, List, FolderOpen,
+  Calendar, FileText, BookOpen, List, FolderOpen, Youtube,
 } from "lucide-react";
 import { AppShell }    from "@/components/layout/AppShell";
 import { RouteGuard }  from "@/components/shared/RouteGuard";
@@ -20,12 +20,13 @@ import { useState }    from "react";
 import { useSubscriptionAccess } from "@/hooks/useSubscriptionAccess";
 
 interface MenuItem {
-  label:   string;
-  href?:   string;
-  icon:    React.ComponentType<{ className?: string }>;
-  badge?:  number;
-  danger?: boolean;
-  action?: () => void;
+  label:     string;
+  href?:     string;
+  icon:      React.ComponentType<{ className?: string }>;
+  badge?:    number;
+  danger?:   boolean;
+  external?: boolean;
+  action?:   () => void;
 }
 
 function MorePage() {
@@ -80,6 +81,12 @@ function MorePage() {
       label: t("more.settings"),
       href:  "/settings",
       icon:  Settings,
+    },
+    {
+      label: t("more.videoTutorials") || "Video Guides & Tutorials (YouTube)",
+      href:  "https://www.youtube.com/@DailyDiaryMZM",
+      icon:  Youtube,
+      external: true,
     },
     {
       label: t("more.help"),
@@ -180,7 +187,11 @@ function MorePage() {
                 )}
               </div>
             );
-            return item.href ? (
+            return item.external && item.href ? (
+              <a key={item.label} href={item.href} target="_blank" rel="noopener noreferrer" className="block hover:bg-navy-50/50 transition-colors active:bg-navy-50">
+                {Inner}
+              </a>
+            ) : item.href ? (
               <Link key={item.label} href={item.href} className="block hover:bg-navy-50/50 transition-colors active:bg-navy-50">
                 {Inner}
               </Link>

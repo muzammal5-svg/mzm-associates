@@ -200,106 +200,109 @@ export function MobileHeader({ title, showBack, actions, className }: MobileHead
       <header
         className={cn(
           "md:hidden sticky top-0 z-20 bg-white border-b border-border shadow-xs",
-          "flex items-center gap-2 px-4",
+          "flex items-center gap-2 px-3",
           className
         )}
         style={{ minHeight: 56, paddingTop: "env(safe-area-inset-top, 0px)" }}
       >
-        {/* Left: burger menu */}
-        <button
-          onClick={() => setMenuOpen(true)}
-          aria-label={t("common.mainNavigation")}
-          className="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-navy-50 transition-colors text-navy"
-        >
-          <Menu className="w-5 h-5" />
-        </button>
+        {/* Left: back button or burger menu */}
+        {showBack ? (
+          <button
+            onClick={() => router.back()}
+            aria-label={t("common.back")}
+            className="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-navy-50 transition-colors flex-shrink-0 text-navy -ms-0.5"
+          >
+            <ArrowLeft className="w-5 h-5 rtl:rotate-180" />
+          </button>
+        ) : (
+          <button
+            onClick={() => setMenuOpen(true)}
+            aria-label={t("common.mainNavigation")}
+            className="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-navy-50 transition-colors flex-shrink-0 text-navy"
+          >
+            <Menu className="w-5 h-5" />
+          </button>
+        )}
 
-        {/* Centre: logo / back */}
-        <div className="flex items-center min-w-[40px] flex-1">
-          {showBack ? (
-            <button
-              onClick={() => router.back()}
-              aria-label={t("common.back")}
-              className="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-navy-50 transition-colors -ms-1"
-            >
-              <ArrowLeft className="w-5 h-5 text-navy rtl:rotate-180" />
-            </button>
-          ) : (
-            /* Firm logo if available, else MZM mark */
+        {/* Centre: logo + title */}
+        <div className="flex items-center gap-2 min-w-0 flex-1">
+          {!showBack && (
             firm?.logo_url ? (
               <Image
                 src={firm.logo_url}
                 alt={firm.name}
-                width={32} height={32}
-                className="rounded-md object-contain"
+                width={28} height={28}
+                className="rounded-md object-contain flex-shrink-0"
                 unoptimized
               />
             ) : (
-              <Logo size="xs" variant="mark" />
+              <Logo size="xs" variant="mark" className="flex-shrink-0" />
             )
           )}
-        </div>
-
-        {/* Centre: title or firm name */}
-        <div className="flex-1 min-w-0 text-center">
-          {title ? (
-            <span className="text-sm font-semibold text-navy truncate block">{title}</span>
-          ) : (
-            <div className="flex flex-col items-center leading-tight">
-              <span className="text-sm font-heading font-bold text-navy truncate">
-                {firm?.name ?? "MZM & Associates"}
-              </span>
-              {profile && (
-                <span className="text-[10px] text-navy-500 truncate">
-                  {profile.full_name}
-                </span>
-              )}
-            </div>
-          )}
-        </div>
-
-        {/* Right: custom actions OR notification bell */}
-        <div className="flex items-center gap-1 min-w-[40px] justify-end">
-          {actions ?? (
-            <Link
-              href="/notifications"
-              aria-label={`${t("nav.notifications")}${unreadCount > 0 ? ` (${unreadCount})` : ""}`}
-              className="relative w-9 h-9 flex items-center justify-center rounded-xl hover:bg-navy-50 transition-colors"
-            >
-              <Bell className="w-5 h-5 text-navy" />
-              {unreadCount > 0 && (
-                <span
-                  aria-hidden="true"
-                  className="absolute top-1 end-1 min-w-[16px] h-4 px-0.5 rounded-full bg-danger text-white text-[10px] font-bold flex items-center justify-center leading-none"
-                >
-                  {unreadCount > 99 ? "99+" : unreadCount}
-                </span>
-              )}
-            </Link>
-          )}
-
-          {/* Profile avatar */}
-          <Link
-            href="/profile"
-            aria-label={t("profile.title")}
-            className="w-9 h-9 rounded-full overflow-hidden border-2 border-navy-100 hover:border-gold transition-colors flex-shrink-0"
-          >
-            {profile?.photo_url ? (
-              <Image
-                src={profile.photo_url}
-                alt={profile.full_name}
-                width={36} height={36}
-                className="object-cover w-full h-full"
-                unoptimized
-              />
+          <div className="min-w-0 flex-1">
+            {title ? (
+              <h1 className="text-sm font-semibold text-navy truncate leading-tight">{title}</h1>
             ) : (
-              <div className="w-full h-full bg-gold/20 flex items-center justify-center">
-                <span className="text-gold text-sm font-bold leading-none">
-                  {profile?.full_name?.charAt(0)?.toUpperCase() ?? "?"}
-                </span>
+              <div className="leading-tight">
+                <p className="text-sm font-heading font-bold text-navy truncate">
+                  {firm?.name ?? "MZM & Associates"}
+                </p>
+                {profile && (
+                  <p className="text-[10px] text-navy-500 truncate">
+                    {profile.full_name}
+                  </p>
+                )}
               </div>
             )}
-          </Link>
+          </div>
+        </div>
+
+        {/* Right: custom actions OR notification bell + profile avatar */}
+        <div className="flex items-center gap-1.5 flex-shrink-0 justify-end">
+          {actions ? (
+            actions
+          ) : (
+            <>
+              <Link
+                href="/notifications"
+                aria-label={`${t("nav.notifications")}${unreadCount > 0 ? ` (${unreadCount})` : ""}`}
+                className="relative w-9 h-9 flex items-center justify-center rounded-xl hover:bg-navy-50 transition-colors"
+              >
+                <Bell className="w-5 h-5 text-navy" />
+                {unreadCount > 0 && (
+                  <span
+                    aria-hidden="true"
+                    className="absolute top-1 end-1 min-w-[16px] h-4 px-0.5 rounded-full bg-danger text-white text-[10px] font-bold flex items-center justify-center leading-none"
+                  >
+                    {unreadCount > 99 ? "99+" : unreadCount}
+                  </span>
+                )}
+              </Link>
+
+              {/* Profile avatar */}
+              <Link
+                href="/profile"
+                aria-label={t("profile.title")}
+                className="w-8 h-8 rounded-full overflow-hidden border border-navy-100 hover:border-gold transition-colors flex-shrink-0"
+              >
+                {profile?.photo_url ? (
+                  <Image
+                    src={profile.photo_url}
+                    alt={profile.full_name}
+                    width={32} height={32}
+                    className="object-cover w-full h-full"
+                    unoptimized
+                  />
+                ) : (
+                  <div className="w-full h-full bg-gold/20 flex items-center justify-center">
+                    <span className="text-gold text-xs font-bold leading-none">
+                      {profile?.full_name?.charAt(0)?.toUpperCase() ?? "?"}
+                    </span>
+                  </div>
+                )}
+              </Link>
+            </>
+          )}
         </div>
       </header>
     </>

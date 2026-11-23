@@ -126,10 +126,10 @@ export default function ContactPage() {
                 </div>
                 <h3 className="text-xl font-bold text-white mb-2">{t("contact.office") || "Office"}</h3>
                 <p className="text-white/60 text-sm mb-4">
-                  {t("contact.officeDesc") || "Visit our office in Lahore"}
+                  {t("contact.officeDesc") || "Visit our chamber in Islamabad"}
                 </p>
                 <p className="text-white font-semibold text-sm">
-                  {t("contact.officeAddress") || "123 Main Street, Lahore"}
+                  {t("contact.officeAddress") || "Chamber No#27 Haroon Ur Rasheed Block F-8 Markaz Near PSO Pump Islamabad"}
                 </p>
               </div>
             </Reveal>

@@ -30,6 +30,23 @@ const schema = z.object({
   court_change:       z.string().optional(),
 });
 
+const DEFAULT_COURT_SUGGESTIONS = [
+  "Judicial Magistrate East",
+  "Judicial Magistrate West",
+  "District & Sessions Court Islamabad",
+  "Senior Civil Judge Islamabad",
+  "Civil Judge / Judicial Magistrate",
+  "Islamabad High Court",
+  "Lahore High Court",
+  "Supreme Court of Pakistan",
+  "Family Court",
+  "Consumer Court",
+  "Banking Court",
+  "Anti-Terrorism Court (ATC)",
+  "Special Court (Central)",
+  "Accountability Court (NAB)",
+];
+
 type FormData = z.infer<typeof schema>;
 
 interface UpdateHearingSheetProps {
@@ -152,8 +169,14 @@ export function UpdateHearingSheet({ row, onClose }: UpdateHearingSheetProps) {
         <Input
           label={t("hearings.courtNo")}
           placeholder={t("common.courtNoPlaceholder")}
+          list="hearing-court-options"
           {...register("court_change")}
         />
+        <datalist id="hearing-court-options">
+          {DEFAULT_COURT_SUGGESTIONS.map((name) => (
+            <option key={name} value={name} />
+          ))}
+        </datalist>
       </div>
 
       <p className="text-[11px] text-amber-800 bg-amber-500/10 border border-amber-500/20 rounded-xl px-3.5 py-2.5 leading-relaxed">

@@ -15,8 +15,26 @@ import { useToast }           from "@/components/ui/Toast";
 import { useQuickUpdateHearing } from "@/hooks/useHearings";
 import type { CauseListRow }  from "@/types/supabase";
 
+const DEFAULT_COURT_SUGGESTIONS = [
+  "Judicial Magistrate East",
+  "Judicial Magistrate West",
+  "District & Sessions Court Islamabad",
+  "Senior Civil Judge Islamabad",
+  "Civil Judge / Judicial Magistrate",
+  "Islamabad High Court",
+  "Lahore High Court",
+  "Supreme Court of Pakistan",
+  "Family Court",
+  "Consumer Court",
+  "Banking Court",
+  "Anti-Terrorism Court (ATC)",
+  "Special Court (Central)",
+  "Accountability Court (NAB)",
+];
+
 const schema = z.object({
   serial_no:          z.string().optional(),
+  court_no:           z.string().optional(),
   current_proceeding: z.string().optional(),
 });
 type FormData = z.infer<typeof schema>;
@@ -38,6 +56,7 @@ export function QuickEditSheet({ row, onClose }: QuickEditSheetProps) {
     if (!row) return;
     reset({
       serial_no:          row.serial_no          ?? "",
+      court_no:           row.hearing_court_no   ?? row.case_court_no ?? "",
       current_proceeding: row.current_proceeding ?? "",
     });
   }, [row, reset]);
@@ -48,6 +67,7 @@ export function QuickEditSheet({ row, onClose }: QuickEditSheetProps) {
       await quickEdit.mutateAsync({
         hearingId:         row.hearing_id,
         serialNo:          data.serial_no,
+        courtNo:           data.court_no,
         currentProceeding: data.current_proceeding ?? undefined,
       });
       toast.success(t("common.saved"));
@@ -64,7 +84,17 @@ export function QuickEditSheet({ row, onClose }: QuickEditSheetProps) {
           <p className="text-sm font-semibold text-navy truncate mt-0.5">{row.plaintiff_name} {t("cases.vs")} {row.defendant_name}</p>
         </div>
       )}
-      <Input label={t("hearings.serialNo")} placeholder={t("common.serialPlaceholder")} {...register("serial_no")} />
+      <div className="grid grid-cols-2 gap-3">
+        <Input label={t("hearings.serialNo")} placeholder={t("common.serialPlaceholder")} {...register("serial_no")} />
+        <div>
+          <Input label={t("cases.court")} placeholder={t("common.courtNoPlaceholder")} list="quick-court-options" {...register("court_no")} />
+          <datalist id="quick-court-options">
+            {DEFAULT_COURT_SUGGESTIONS.map(c => (
+              <option key={c} value={c} />
+            ))}
+          </datalist>
+        </div>
+      </div>
       <Textarea label={t("hearings.currentProceeding")} rows={3}
         placeholder={t("common.currentProceedingPlaceholder")} {...register("current_proceeding")} />
       <div className="flex gap-3">
