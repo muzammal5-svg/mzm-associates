@@ -101,6 +101,7 @@
     "court": "عدالت",
     "courtNo": "عدالت نمبر",
     "judge": "جج / بنچ",
+    "freshDiary": "تازہ ڈائری",
     "plaintiff": "مدعی",
     "defendant": "مدعاعلیہ",
     "From": "نمائندگی",
@@ -114,6 +115,7 @@
     "outcome": "نتیجہ",
     "vs": "بنام",
     "description": "تفصیل",
+    "currentProceedingCase": "موجودہ کارروائی",
     "newCase": "نیا مقدمہ"
   },
   "clients": {

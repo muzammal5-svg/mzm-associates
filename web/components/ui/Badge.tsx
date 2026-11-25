@@ -8,14 +8,14 @@ export type BadgeVariant =
   | "neutral" | "purple";
 
 const VARIANT_STYLES: Record<BadgeVariant, string> = {
-  gold:    "bg-amber-50 text-amber-800 border border-amber-300/60 shadow-xs",
-  navy:    "bg-slate-100 text-slate-800 border border-slate-300/60 shadow-xs",
-  success: "bg-emerald-50 text-emerald-800 border border-emerald-300/60 shadow-xs",
-  danger:  "bg-rose-50 text-rose-800 border border-rose-300/60 shadow-xs",
-  warning: "bg-amber-50 text-amber-900 border border-amber-300/60 shadow-xs",
-  info:    "bg-sky-50 text-sky-800 border border-sky-300/60 shadow-xs",
-  neutral: "bg-slate-50 text-slate-700 border border-slate-200 shadow-xs",
-  purple:  "bg-indigo-50 text-indigo-800 border border-indigo-300/60 shadow-xs",
+  gold:    "bg-gold/15 text-gold-200 border border-gold/30",
+  navy:    "bg-white/10 text-white/80 border border-white/20",
+  success: "bg-success/15 text-success-200 border border-success/30",
+  danger:  "bg-danger/15 text-danger border border-danger/30",
+  warning: "bg-warning/15 text-warning border border-warning/30",
+  info:    "bg-info/15 text-info border border-info/30",
+  neutral: "bg-white/10 text-white/70 border border-white/15",
+  purple:  "bg-purple/15 text-purple-200 border border-purple/30",
 };
 
 interface BadgeProps {

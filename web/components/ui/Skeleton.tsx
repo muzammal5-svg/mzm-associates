@@ -12,7 +12,7 @@ export function Skeleton({ className }: { className?: string }) {
     <div
       aria-hidden="true"
       className={cn(
-        "rounded-md bg-gradient-to-r from-navy-50 via-navy-100 to-navy-50",
+        "rounded-md bg-gradient-to-r from-white/10 via-white/20 to-white/10",
         "bg-[length:200%_100%] animate-shimmer",
         className
       )}
@@ -41,7 +41,7 @@ export function SkeletonText({ lines = 3, className }: SkeletonProps) {
 /** Card-shaped skeleton */
 export function SkeletonCard({ className }: { className?: string }) {
   return (
-    <div className={cn("bg-white rounded-lg border border-border p-4 space-y-3", className)}>
+    <div className={cn("bg-[#1a1f2e] rounded-lg border border-white/10 p-4 space-y-3", className)}>
       <div className="flex items-center gap-3">
         <Skeleton className="w-10 h-10 rounded-full flex-shrink-0" />
         <div className="flex-1 space-y-2">
@@ -57,13 +57,13 @@ export function SkeletonCard({ className }: { className?: string }) {
 /** Table rows skeleton */
 export function SkeletonTable({ rows = 5 }: { rows?: number }) {
   return (
-    <div className="w-full rounded-xl border border-navy-50 overflow-hidden">
-      <div className="bg-navy-50/60 px-4 py-3 flex gap-4">
+    <div className="w-full rounded-xl border border-white/10 overflow-hidden">
+      <div className="bg-white/5 px-4 py-3 flex gap-4">
         {[40, 20, 15, 15, 10].map((w, i) => (
           <Skeleton key={i} className={`h-3 w-[${w}%]`} />
         ))}
       </div>
-      <div className="bg-white divide-y divide-navy-50">
+      <div className="bg-[#1a1f2e] divide-y divide-white/10">
         {Array.from({ length: rows }).map((_, i) => (
           <div key={i} className="px-4 py-3 flex gap-4 items-center">
             <Skeleton className="h-4 w-[40%]" />

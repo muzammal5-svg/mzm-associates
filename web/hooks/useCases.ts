@@ -162,10 +162,18 @@ export interface NewCasePayload {
   plaintiff_name: string;
   defendant_name: string;
   From:           string;
+  /**
+   * judge_name stores the "Fresh Diary" date value on the New Case form.
+   * On Edit Case it stores the Judge / Bench text. Both map to cases.judge_name column.
+   */
   judge_name?:    string;
   court_no?:      string;
   case_type_id:   string;
   offence?:       string;
+  /**
+   * description stores the "Current Proceeding" text on the New Case form.
+   * Maps cleanly to cases.description column.
+   */
   description?:   string;
   assigned_to?:   string;
   created_by:     string;

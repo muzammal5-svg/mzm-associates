@@ -21,6 +21,10 @@ import { useToast }           from "@/components/ui/Toast";
 import { useCaseTypes }       from "@/hooks/useCaseTypes";
 import { useCourts }          from "@/hooks/useCourts";
 import { useCase, useUpdateCase } from "@/hooks/useCases";
+import {
+  getPartyConfigForCaseType,
+  getFromRoleSuggestions,
+} from "@/lib/caseTypeConfig";
 
 const schema = z.object({
   case_ref_no:     z.string().max(80).optional().or(z.literal("")),
@@ -88,8 +92,13 @@ function EditCasePage() {
   }, [c, reset]);
 
   const caseTypeId    = watch("case_type_id");
+  const currentFrom   = watch("From");
   const selectedType  = caseTypes.find(ct => ct.id === caseTypeId);
   const needsOffence  = selectedType?.requires_offence ?? false;
+
+  // ── Dynamic party labels derived from selected case type ──────────────────
+  const partyConfig    = getPartyConfigForCaseType(selectedType?.name);
+  const fromSuggestions = getFromRoleSuggestions(selectedType?.name);
 
   async function onSubmit(data: FormData) {
     try {
@@ -136,7 +145,7 @@ function EditCasePage() {
                 {...register("offence")} />
             )}
 
-            {/* Custom From field */}
+            {/* Dynamic "From" field — suggestions sync with selected case type */}
             <div className="space-y-1.5">
               <Input
                 label={t("cases.From")}
@@ -147,24 +156,17 @@ function EditCasePage() {
                 {...register("From")}
               />
               <datalist id="from-quick-suggestions-edit">
-                <option value="Plaintiff" />
-                <option value="Defendant" />
-                <option value="Petitioner" />
-                <option value="Respondent" />
-                <option value="Appellant" />
-                <option value="Accused" />
-                <option value="Complainant" />
-                <option value="Applicant" />
+                {fromSuggestions.map(s => <option key={s} value={s} />)}
               </datalist>
               <div className="flex flex-wrap items-center gap-1.5 pt-1">
                 <span className="text-[11px] text-muted">{t("common.suggestions", "Suggestions:")}</span>
-                {["Plaintiff", "Defendant", "Petitioner", "Respondent", "Appellant", "Accused"].map((suggestion) => (
+                {fromSuggestions.map((suggestion) => (
                   <button
                     key={suggestion}
                     type="button"
                     onClick={() => setValue("From", suggestion, { shouldValidate: true })}
                     className={`text-[11px] px-2.5 py-1 rounded-lg border font-medium transition-all ${
-                      watch("From") === suggestion
+                      currentFrom === suggestion
                         ? "bg-navy text-white border-navy shadow-xs"
                         : "bg-slate-50 text-navy-700 border-slate-200 hover:bg-slate-100"
                     }`}
@@ -175,10 +177,11 @@ function EditCasePage() {
               </div>
             </div>
 
+            {/* Dynamic party fields — labels update with case type */}
             <div className="grid md:grid-cols-2 gap-4">
-              <Input label={t("cases.plaintiff")} required error={errors.plaintiff_name?.message}
+              <Input label={partyConfig.primaryEn} required error={errors.plaintiff_name?.message}
                 {...register("plaintiff_name")} />
-              <Input label={t("cases.defendant")} required error={errors.defendant_name?.message}
+              <Input label={partyConfig.secondaryEn} required error={errors.defendant_name?.message}
                 {...register("defendant_name")} />
             </div>
 

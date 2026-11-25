@@ -102,6 +102,7 @@
     "court": "Court",
     "courtNo": "Court No.",
     "judge": "Judge / Bench",
+    "freshDiary": "Fresh Diary",
     "plaintiff": "Plaintiff",
     "defendant": "Defendant",
     "From": "From",
@@ -115,6 +116,7 @@
     "outcome": "Outcome",
     "vs": "vs",
     "description": "Description",
+    "currentProceedingCase": "Current Proceeding",
     "newCase": "New Case"
   },
   "clients": {

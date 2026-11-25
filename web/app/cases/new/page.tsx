@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useState, useCallback } from "react";
+import { Suspense, useState, useCallback, useEffect } from "react";
 import { useSearchParams, useRouter }   from "next/navigation";
 import { useTranslation }               from "react-i18next";
 import { useForm, Controller }          from "react-hook-form";
@@ -26,27 +26,34 @@ import { useCourts }           from "@/hooks/useCourts";
 import { useClient }           from "@/hooks/useClients";
 import { useCreateCase, checkDuplicateRefNo } from "@/hooks/useCases";
 import { todayKarachi }        from "@/lib/utils";
+import {
+  getPartyConfigForCaseType,
+  getFromRoleSuggestions,
+  isSecondaryPartyRole,
+  getMappedFromRole,
+} from "@/lib/caseTypeConfig";
 import type { Client }         from "@/types/supabase";
 
 // ─── Schema ───────────────────────────────────────────────────────────────────
 const schema = z.object({
-  client_id:       z.string().min(1, "Please select a client"),
-  case_ref_no:     z.string().max(80).optional().or(z.literal("")),
-  plaintiff_name:  z.string().min(1, "Plaintiff name is required").max(200),
-  defendant_name:  z.string().min(1, "Defendant name is required").max(200),
-  From:            z.string().min(1, "From / representing is required").max(100),
-  case_type_id:    z.string().min(1, "Case type is required"),
-  offence:         z.string().max(300).optional().or(z.literal("")),
-  court_no:        z.string().max(100).optional().or(z.literal("")),
-  judge_name:      z.string().max(200).optional().or(z.literal("")),
-  description:     z.string().max(2000).optional().or(z.literal("")),
+  client_id:          z.string().min(1, "Please select a client"),
+  case_ref_no:        z.string().max(80).optional().or(z.literal("")),
+  plaintiff_name:     z.string().min(1, "Primary party name is required").max(200),
+  defendant_name:     z.string().min(1, "Opposing party name is required").max(200),
+  From:               z.string().min(1, "From / representing is required").max(100),
+  case_type_id:       z.string().min(1, "Case type is required"),
+  offence:            z.string().max(300).optional().or(z.literal("")),
+  court_no:           z.string().max(100).optional().or(z.literal("")),
+  // fresh_diary replaces judge_name on the New Case form (stored as cases.judge_name)
+  fresh_diary:        z.string().optional().or(z.literal("")),
+  current_proceeding: z.string().max(2000).optional().or(z.literal("")),
   // First hearing
-  serial_no:       z.string().max(20).optional().or(z.literal("")),
-  next_date:       z
+  serial_no:          z.string().max(20).optional().or(z.literal("")),
+  next_date:          z
     .string()
     .optional()
     .refine(v => !v || v >= todayKarachi(), { message: "Next date cannot be in the past" }),
-  next_proceeding: z.string().max(500).optional().or(z.literal("")),
+  next_proceeding:    z.string().max(500).optional().or(z.literal("")),
 });
 
 const DEFAULT_COURT_SUGGESTIONS = [
@@ -97,12 +104,47 @@ function NewCasePage() {
     defaultValues: {
       From:            "Plaintiff",
       client_id:       prefilledClientId ?? "",
+      fresh_diary:     todayKarachi(),
     },
   });
 
-  const caseTypeId    = watch("case_type_id");
-  const selectedType  = caseTypes.find(ct => ct.id === caseTypeId);
-  const needsOffence  = selectedType?.requires_offence ?? false;
+  const caseTypeId   = watch("case_type_id");
+  const currentFrom  = watch("From");
+  const selectedType = caseTypes.find(ct => ct.id === caseTypeId);
+  const needsOffence = selectedType?.requires_offence ?? false;
+
+  // ── Dynamic party labels derived from selected case type ──────────────────
+  const partyConfig = getPartyConfigForCaseType(selectedType?.name);
+  const fromSuggestions = getFromRoleSuggestions(selectedType?.name);
+
+  // Track previous case type name so we can intelligently remap From role
+  const prevCaseTypeNameRef = { current: "" };
+  useEffect(() => {
+    // When case type changes, remap the From role intelligently and update party names
+    const prevTypeName = prevCaseTypeNameRef.current;
+    const nextTypeName = selectedType?.name ?? "";
+    if (prevTypeName !== nextTypeName) {
+      prevCaseTypeNameRef.current = nextTypeName;
+      const remapped = getMappedFromRole(currentFrom, prevTypeName, nextTypeName);
+      if (remapped !== currentFrom) {
+        setValue("From", remapped, { shouldValidate: true });
+        // Also update party name if client is selected
+        const client = selectedClient ?? prefilledClient;
+        if (client?.full_name) {
+          const nextParties = getPartyConfigForCaseType(nextTypeName);
+          if (isSecondaryPartyRole(remapped)) {
+            setValue("defendant_name", client.full_name, { shouldValidate: true });
+            setValue("plaintiff_name", "", { shouldValidate: false });
+          } else {
+            setValue("plaintiff_name", client.full_name, { shouldValidate: true });
+            setValue("defendant_name", "", { shouldValidate: false });
+          }
+          void nextParties; // suppress lint
+        }
+      }
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [caseTypeId]);
 
   const checkRefNo = useCallback(async (refNo: string) => {
     if (!refNo.trim()) {
@@ -124,8 +166,8 @@ function NewCasePage() {
     try {
       const refNo = (data.case_ref_no ?? "").trim();
       const customColsText = customCols.map(c => c.trim()).filter(Boolean);
-      const combinedDescription = [
-        data.description?.trim(),
+      const combinedProceeding = [
+        data.current_proceeding?.trim(),
         customColsText.length > 0 ? customColsText.join("\n") : "",
       ].filter(Boolean).join("\n\n");
 
@@ -135,12 +177,14 @@ function NewCasePage() {
         case_ref_no:    refNo,
         plaintiff_name: data.plaintiff_name.trim(),
         defendant_name: data.defendant_name.trim(),
-        From:   data.From,
-        judge_name:     data.judge_name   || undefined,
-        court_no:       data.court_no     || undefined,
+        From:           data.From,
+        // fresh_diary maps to judge_name column (diary date stored as text)
+        judge_name:     data.fresh_diary   || undefined,
+        court_no:       data.court_no      || undefined,
         case_type_id:   data.case_type_id,
         offence:        needsOffence ? (data.offence || undefined) : undefined,
-        description:    combinedDescription || undefined,
+        // current_proceeding for the New Case maps to description column
+        description:    combinedProceeding || undefined,
         assigned_to:    profile.id,
         created_by:     profile.id,
         first_hearing: {
@@ -182,8 +226,7 @@ function NewCasePage() {
                     field.onChange(c?.id ?? "");
                     if (c?.full_name) {
                       const fromRole = watch("From") || "Plaintiff";
-                      const isDefendantRole = ["Defendant", "Respondent", "Accused"].includes(fromRole);
-                      if (isDefendantRole) {
+                      if (isSecondaryPartyRole(fromRole)) {
                         setValue("defendant_name", c.full_name, { shouldValidate: true });
                       } else {
                         setValue("plaintiff_name", c.full_name, { shouldValidate: true });
@@ -231,7 +274,7 @@ function NewCasePage() {
               <div key={i} className="p-3 rounded-xl bg-navy-50 border border-navy-100">
                 <div className="flex items-center justify-between mb-1.5">
                   <label className="text-xs font-semibold text-navy-700 uppercase tracking-wider">
-                    Write Down the Colum {customCols.length > 1 ? `#${i + 1}` : ""}
+                    Write Down the Column {customCols.length > 1 ? `#${i + 1}` : ""}
                   </label>
                   <button
                     type="button"
@@ -268,7 +311,7 @@ function NewCasePage() {
               />
             )}
 
-            {/* Custom From field */}
+            {/* Dynamic "From" field — suggestions sync with selected case type */}
             <div className="space-y-1.5">
               <Input
                 label={t("cases.From")}
@@ -279,18 +322,11 @@ function NewCasePage() {
                 {...register("From")}
               />
               <datalist id="from-quick-suggestions">
-                <option value="Plaintiff" />
-                <option value="Defendant" />
-                <option value="Petitioner" />
-                <option value="Respondent" />
-                <option value="Appellant" />
-                <option value="Accused" />
-                <option value="Complainant" />
-                <option value="Applicant" />
+                {fromSuggestions.map(s => <option key={s} value={s} />)}
               </datalist>
               <div className="flex flex-wrap items-center gap-1.5 pt-1">
                 <span className="text-[11px] text-muted">{t("common.suggestions", "Suggestions:")}</span>
-                {["Plaintiff", "Defendant", "Petitioner", "Respondent", "Appellant", "Accused"].map((suggestion) => (
+                {fromSuggestions.map((suggestion) => (
                   <button
                     key={suggestion}
                     type="button"
@@ -298,8 +334,7 @@ function NewCasePage() {
                       setValue("From", suggestion, { shouldValidate: true });
                       const client = selectedClient ?? prefilledClient;
                       if (client?.full_name) {
-                        const isDefendantRole = ["Defendant", "Respondent", "Accused"].includes(suggestion);
-                        if (isDefendantRole) {
+                        if (isSecondaryPartyRole(suggestion)) {
                           setValue("defendant_name", client.full_name, { shouldValidate: true });
                         } else {
                           setValue("plaintiff_name", client.full_name, { shouldValidate: true });
@@ -307,7 +342,7 @@ function NewCasePage() {
                       }
                     }}
                     className={`text-[11px] px-2.5 py-1 rounded-lg border font-medium transition-all ${
-                      watch("From") === suggestion
+                      currentFrom === suggestion
                         ? "bg-navy text-white border-navy shadow-xs"
                         : "bg-slate-50 text-navy-700 border-slate-200 hover:bg-slate-100"
                     }`}
@@ -318,22 +353,24 @@ function NewCasePage() {
               </div>
             </div>
 
+            {/* Dynamic party fields — labels update with case type */}
             <div className="grid md:grid-cols-2 gap-4">
               <Input
-                label={t("cases.plaintiff")} required
-                placeholder="Muhammad Aslam Khan"
+                label={partyConfig.primaryEn} required
+                placeholder={partyConfig.primaryPlaceholder ?? "Primary party name"}
                 error={errors.plaintiff_name?.message}
                 {...register("plaintiff_name")}
               />
               <Input
-                label={t("cases.defendant")} required
-                placeholder="Province of Punjab"
+                label={partyConfig.secondaryEn} required
+                placeholder={partyConfig.secondaryPlaceholder ?? "Opposing party name"}
                 error={errors.defendant_name?.message}
                 {...register("defendant_name")}
               />
             </div>
 
-            <div className="grid md:grid-cols-2 gap-4">
+            {/* Court (intact) */}
+            <div className="space-y-1.5">
               <Input
                 label={t("cases.court")}
                 placeholder={t("common.allCourts")}
@@ -348,23 +385,27 @@ function NewCasePage() {
                   <option key={name} value={name} />
                 ))}
               </datalist>
-              <Input
-                label={t("cases.judge")}
-                placeholder="Hon. Justice Syed Ali Shah"
-                {...register("judge_name")}
-              />
             </div>
 
+            {/* Fresh Diary — replaces Judge / Bench */}
+            <DatePicker
+              label={t("cases.freshDiary")}
+              placeholder="Fresh Diary"
+              error={errors.fresh_diary?.message}
+              {...register("fresh_diary")}
+            />
+
+            {/* Current Proceeding — replaces Description */}
             <Textarea
-              label={t("cases.description")}
+              label={t("cases.currentProceedingCase")}
               rows={3}
-              placeholder="Brief description of the case…"
-              {...register("description")}
+              placeholder="Current proceeding / today's order or notice..."
+              {...register("current_proceeding")}
             />
           </div>
         </Card>
 
-        {/* ── First Hearing ── */}
+        {/* ── First Hearing Entry (optional) ── */}
         <Card>
           <h2 className="text-xs font-semibold text-navy-500 uppercase tracking-wider mb-3">
             {t("cases.firstHearing")} <span className="text-navy-400 font-normal">({t("common.optional")})</span>
