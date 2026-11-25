@@ -19,6 +19,15 @@ export interface PartyRoleConfig {
   secondaryPlaceholder?: string;
 }
 
+export interface FromRolePair {
+  /** Label when selected as FROM role for primary (left) party */
+  primaryEn: string;
+  primaryUr: string;
+  /** Label when selected as FROM role for secondary (right) party */
+  secondaryEn: string;
+  secondaryUr: string;
+}
+
 export interface CaseTypeDefinition {
   /** Standardized canonical name */
   name: string;
@@ -31,6 +40,88 @@ export interface CaseTypeDefinition {
   /** Party ("vs") role mapping */
   parties: PartyRoleConfig;
 }
+
+/**
+ * FROM Role Pair Mapping — when a FROM suggestion is clicked,
+ * determines what the left and right party labels should be.
+ * 
+ * Key: FROM role (e.g., "Plaintiff", "State", "Petitioner")
+ * Value: Party pair configuration for primary/secondary labels
+ */
+export const FROM_ROLE_PAIR_MAP: Record<string, FromRolePair> = {
+  "Plaintiff": {
+    primaryEn: "Plaintiff",
+    primaryUr: "مدعی",
+    secondaryEn: "Defendant",
+    secondaryUr: "مدعا علیہ",
+  },
+  "Defendant": {
+    primaryEn: "Defendant",
+    primaryUr: "مدعا علیہ",
+    secondaryEn: "Plaintiff",
+    secondaryUr: "مدعی",
+  },
+  "State": {
+    primaryEn: "State",
+    primaryUr: "ریاست",
+    secondaryEn: "Accused",
+    secondaryUr: "ملزم",
+  },
+  "Accused": {
+    primaryEn: "Accused",
+    primaryUr: "ملزم",
+    secondaryEn: "State",
+    secondaryUr: "ریاست",
+  },
+  "Petitioner": {
+    primaryEn: "Petitioner",
+    primaryUr: "درخواست گزار",
+    secondaryEn: "Respondent",
+    secondaryUr: "جواب دہندہ",
+  },
+  "Respondent": {
+    primaryEn: "Respondent",
+    primaryUr: "جواب دہندہ",
+    secondaryEn: "Petitioner",
+    secondaryUr: "درخواست گزار",
+  },
+  "Appellant": {
+    primaryEn: "Appellant",
+    primaryUr: "اپیل کنندہ",
+    secondaryEn: "Respondent",
+    secondaryUr: "جواب دہندہ",
+  },
+  "Decree-holder": {
+    primaryEn: "Decree-holder",
+    primaryUr: "ڈگری یافتہ",
+    secondaryEn: "Judgment-debtor",
+    secondaryUr: "ڈگری کا پابند",
+  },
+  "Judgment-debtor": {
+    primaryEn: "Judgment-debtor",
+    primaryUr: "ڈگری کا پابند",
+    secondaryEn: "Decree-holder",
+    secondaryUr: "ڈگری یافتہ",
+  },
+  "Claimant": {
+    primaryEn: "Claimant",
+    primaryUr: "دعوئ کرنے والا",
+    secondaryEn: "Respondent",
+    secondaryUr: "جواب دہندہ",
+  },
+  "Complainant": {
+    primaryEn: "Complainant",
+    primaryUr: "شاکی",
+    secondaryEn: "Accused",
+    secondaryUr: "ملزم",
+  },
+  "Applicant": {
+    primaryEn: "Applicant",
+    primaryUr: "درخواست گزار",
+    secondaryEn: "Respondent",
+    secondaryUr: "جواب دہندہ",
+  },
+};
 
 export const CASE_TYPE_DEFINITIONS: readonly CaseTypeDefinition[] = [
   {
@@ -224,4 +315,25 @@ export function getMappedFromRole(
   }
 
   return currentFrom;
+}
+/**
+ * Returns the party pair configuration for a given FROM role.
+ * When a user clicks a FROM suggestion chip, this returns the labels
+ * for both the primary (left) and secondary (right) party fields.
+ */
+export function getPartyPairForFromRole(fromRole?: string | null): FromRolePair {
+  if (!fromRole) return FROM_ROLE_PAIR_MAP["Plaintiff"] ?? {
+    primaryEn: "Plaintiff",
+    primaryUr: "مدعی",
+    secondaryEn: "Defendant",
+    secondaryUr: "مدعا علیہ",
+  };
+  
+  const trimmed = fromRole.trim();
+  return FROM_ROLE_PAIR_MAP[trimmed] ?? {
+    primaryEn: trimmed,
+    primaryUr: trimmed,
+    secondaryEn: "Other Party",
+    secondaryUr: "دوسری فریق",
+  };
 }

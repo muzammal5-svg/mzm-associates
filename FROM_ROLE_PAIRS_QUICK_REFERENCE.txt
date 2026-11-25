@@ -1,0 +1,194 @@
+═══════════════════════════════════════════════════════════════════════════════
+  FROM ROLE DYNAMIC PARTY LABELS - QUICK REFERENCE
+  October 27, 2026
+═══════════════════════════════════════════════════════════════════════════════
+
+MAPPING: When user clicks a FROM suggestion chip, the two party field labels 
+update dynamically to show the matching pair.
+
+─────────────────────────────────────────────────────────────────────────────
+PARTY LABEL PAIRS
+─────────────────────────────────────────────────────────────────────────────
+
+FROM Chip Clicked     →    Left Field Label         Right Field Label
+─────────────────────     ──────────────────────    ──────────────────────
+Plaintiff             →    PLAINTIFF *              DEFENDANT *
+Defendant             →    DEFENDANT *              PLAINTIFF *
+State                 →    STATE *                  ACCUSED *
+Accused               →    ACCUSED *                STATE *
+Petitioner            →    PETITIONER *             RESPONDENT *
+Respondent            →    RESPONDENT *             PETITIONER *
+Appellant             →    APPELLANT *              RESPONDENT *
+Decree-holder         →    DECREE-HOLDER *          JUDGMENT-DEBTOR *
+Judgment-debtor       →    JUDGMENT-DEBTOR *        DECREE-HOLDER *
+Claimant              →    CLAIMANT *               RESPONDENT *
+Complainant           →    COMPLAINANT *            ACCUSED *
+Applicant             →    APPLICANT *              RESPONDENT *
+
+─────────────────────────────────────────────────────────────────────────────
+URDU TRANSLATIONS
+─────────────────────────────────────────────────────────────────────────────
+
+Plaintiff             → مدعی (Mudai)
+Defendant             → مدعا علیہ (Mudaa Alaiha)
+State                 → ریاست (Riyasat)
+Accused               → ملزم (Malzum)
+Petitioner            → درخواست گزار (Darkhwast Guzar)
+Respondent            → جواب دہندہ (Jawab Dehinda)
+Appellant             → اپیل کنندہ (Appeal Kuninda)
+Decree-holder         → ڈگری یافتہ (Dgree Yafta)
+Judgment-debtor       → ڈگری کا پابند (Dgree ka Paband)
+Claimant              → دعوئ کرنے والا (Daawa Karnay Wala)
+Complainant           → شاکی (Shaki)
+Applicant             → درخواست گزار (Darkhwast Guzar)
+
+─────────────────────────────────────────────────────────────────────────────
+IMPLEMENTATION DETAILS
+─────────────────────────────────────────────────────────────────────────────
+
+CENTRALIZED MAPPING (web/lib/caseTypeConfig.ts):
+  
+  FROM_ROLE_PAIR_MAP = {
+    "Plaintiff": { primaryEn: "Plaintiff", primaryUr: "مدعی", 
+                   secondaryEn: "Defendant", secondaryUr: "مدعا علیہ" },
+    "Defendant": { primaryEn: "Defendant", primaryUr: "مدعا علیہ", 
+                   secondaryEn: "Plaintiff", secondaryUr: "مدعی" },
+    ... (12 total pairs)
+  }
+
+HELPER FUNCTION:
+  
+  getPartyPairForFromRole(fromRole) → Returns FromRolePair
+  - Looks up FROM role in FROM_ROLE_PAIR_MAP
+  - Returns primary + secondary labels
+  - Fallback for unknown roles
+
+FORM UPDATE (web/app/cases/new/page.tsx):
+
+  const currentFrom = watch("From");
+  const displayPartyConfig = {
+    primaryEn: getPartyPairForFromRole(currentFrom).primaryEn,
+    secondaryEn: getPartyPairForFromRole(currentFrom).secondaryEn,
+    // ... other properties
+  };
+
+  <Input label={displayPartyConfig.primaryEn} ... />
+  <Input label={displayPartyConfig.secondaryEn} ... />
+
+─────────────────────────────────────────────────────────────────────────────
+BEHAVIOR FLOW
+─────────────────────────────────────────────────────────────────────────────
+
+USER ACTION: Clicks "Defendant" chip
+        ↓
+FROM field updates → "Defendant"
+        ↓
+displayPartyConfig computed:
+  primaryEn: "Defendant"
+  secondaryEn: "Plaintiff"
+        ↓
+Component re-renders:
+  Left field label:  "DEFENDANT *"
+  Right field label: "PLAINTIFF *"
+        ↓
+If client "John" is selected:
+  Defendant field:  "John"
+  Plaintiff field:  (cleared)
+
+─────────────────────────────────────────────────────────────────────────────
+WHAT DOESN'T CHANGE
+─────────────────────────────────────────────────────────────────────────────
+
+✅ Form validation - same rules apply
+✅ Database columns - plaintiff_name / defendant_name unchanged
+✅ API payload - same structure
+✅ Case creation - works exactly as before
+✅ Case viewing - displays correctly
+✅ Existing cases - work with new dynamic labels
+✅ Required "*" indicator - still shows
+✅ Placeholder text - same placeholders used
+✅ Input values - user enters data normally
+✅ Dark theme styling - intact
+✅ Mobile responsive - md: grid-cols-2 maintained
+✅ RTL/Urdu support - works correctly
+
+─────────────────────────────────────────────────────────────────────────────
+TESTING QUICK CHECKS
+─────────────────────────────────────────────────────────────────────────────
+
+BEFORE CLICKING CHIP:
+  Case Type: Civil Case
+  FROM: "Plaintiff" (default)
+  Left Label:  "PLAINTIFF *"
+  Right Label: "DEFENDANT *"
+
+AFTER CLICKING "DEFENDANT":
+  Case Type: Civil Case
+  FROM: "Defendant"
+  Left Label:  "DEFENDANT *"
+  Right Label: "PLAINTIFF *"
+  ✓ Labels should flip
+
+AFTER CLICKING "STATE" (Criminal Case):
+  Case Type: Criminal Case
+  FROM: "State"
+  Left Label:  "STATE *"
+  Right Label: "ACCUSED *"
+  ✓ Labels should match criminal pair
+
+WITH CLIENT SELECTED:
+  Selected Client: "John"
+  Click "Accused" chip
+  FROM: "Accused"
+  Left Label:  "ACCUSED *"
+  Right Label: "STATE *"
+  Accused field: "John"
+  State field: (cleared)
+  ✓ Client should auto-fill correct field
+
+─────────────────────────────────────────────────────────────────────────────
+FILES INVOLVED
+─────────────────────────────────────────────────────────────────────────────
+
+ADDED/MODIFIED:
+  web/lib/caseTypeConfig.ts
+  - Interface: FromRolePair
+  - Const: FROM_ROLE_PAIR_MAP (12 role pairs)
+  - Function: getPartyPairForFromRole()
+
+  web/app/cases/new/page.tsx
+  - Import: getPartyPairForFromRole
+  - Computed: displayPartyConfig
+  - Updated: Party field labels
+
+NO CHANGES NEEDED:
+  web/app/cases/edit/page.tsx
+  web/i18n/locales/en.json
+  Database schema
+  API hooks
+  Validation rules
+
+─────────────────────────────────────────────────────────────────────────────
+EXTENSIBILITY
+─────────────────────────────────────────────────────────────────────────────
+
+ADD NEW FROM ROLE:
+  1. Add entry to FROM_ROLE_PAIR_MAP:
+     "NewRole": {
+       primaryEn: "...",
+       primaryUr: "...",
+       secondaryEn: "...",
+       secondaryUr: "...",
+     }
+  2. Add to FROM_ROLE_SUGGESTIONS if needed
+  3. Done! Labels will work automatically
+
+UPDATE EXISTING PAIR:
+  1. Modify entry in FROM_ROLE_PAIR_MAP
+  2. Done! All forms reflect changes immediately
+
+═══════════════════════════════════════════════════════════════════════════════
+Implementation: COMPLETE ✅
+Status: Ready for Testing
+Date: October 27, 2026
+═══════════════════════════════════════════════════════════════════════════════

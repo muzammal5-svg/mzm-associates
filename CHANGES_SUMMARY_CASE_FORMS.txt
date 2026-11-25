@@ -1,0 +1,296 @@
+═══════════════════════════════════════════════════════════════════════════════
+  CASE FORM UPDATES - IMPLEMENTATION SUMMARY
+  October 27, 2026
+═══════════════════════════════════════════════════════════════════════════════
+
+STATUS: ✅ COMPLETE & READY FOR TESTING
+
+─────────────────────────────────────────────────────────────────────────────
+WHAT WAS CHANGED
+─────────────────────────────────────────────────────────────────────────────
+
+FILE: web/app/cases/edit/page.tsx
+CHANGES: 5 updates to align with New Case form structure
+
+1. ✅ IMPORT ADDED
+   Line 17: Added DatePicker import
+   + import { DatePicker } from "@/components/ui/DatePicker";
+
+2. ✅ SCHEMA UPDATED
+   Lines 32-40: Updated form schema field names
+   BEFORE: judge_name: z.string().optional().or(z.literal("")),
+   AFTER:  fresh_diary: z.string().optional().or(z.literal("")),
+
+3. ✅ FORM RESET LOGIC UPDATED
+   Line 85: Updated reset() call to map fresh_diary
+   BEFORE: judge_name: c.judge_name ?? "",
+   AFTER:  fresh_diary: c.judge_name ?? "",
+   
+   NOTE: Maps from stored judge_name column to fresh_diary form field
+
+4. ✅ FORM SUBMISSION PAYLOAD UPDATED
+   Line 108: Updated submission to map fresh_diary to judge_name
+   BEFORE: judge_name: data.judge_name || null,
+   AFTER:  judge_name: data.fresh_diary || null,
+   
+   NOTE: Maps fresh_diary form field back to judge_name column for storage
+
+5. ✅ FORM UI UPDATED
+   Lines 169-176: Replaced Judge input with Fresh Diary DatePicker
+   
+   BEFORE:
+   <div className="grid md:grid-cols-2 gap-4">
+     <Input label={t("cases.court")} ... {...register("court_no")} />
+     <datalist id="court-options-edit">...</datalist>
+     <Input label={t("cases.judge")} {...register("judge_name")} />
+   </div>
+   <Textarea label={t("cases.description")} rows={3} {...register("description")} />
+   
+   AFTER:
+   <div className="grid md:grid-cols-2 gap-4">
+     <Input label={t("cases.court")} ... {...register("court_no")} />
+     <datalist id="court-options-edit">...</datalist>
+     <DatePicker label={t("cases.freshDiary")} {...register("fresh_diary")} />
+   </div>
+   <Textarea label={t("cases.currentProceedingCase")} rows={3} {...register("description")} />
+
+─────────────────────────────────────────────────────────────────────────────
+NEW CASE FORM STATUS
+─────────────────────────────────────────────────────────────────────────────
+
+FILE: web/app/cases/new/page.tsx
+STATUS: ✅ ALREADY COMPLETE - NO CHANGES NEEDED
+
+The New Case form already has all required functionality implemented:
+✅ Fresh Diary DatePicker field (defaults to current date)
+✅ Current Proceeding textarea field
+✅ Dynamic party labels based on case type
+✅ Case type switching with intelligent role remapping
+✅ All 6 case types with correct party mappings
+✅ From role suggestions that update with case type
+✅ First Hearing optional section
+
+─────────────────────────────────────────────────────────────────────────────
+CASE TYPE & PARTY MAPPING
+─────────────────────────────────────────────────────────────────────────────
+
+All 6 case types properly configured in web/lib/caseTypeConfig.ts
+
+1. CIVIL CASE
+   Primary:   Plaintiff (مدعی)
+   Secondary: Defendant (مدعا علیہ)
+   Offence:   No
+   Config:    ✅ Complete
+
+2. CRIMINAL CASE
+   Primary:   State (ریاست)
+   Secondary: Accused (ملزم)
+   Offence:   Yes
+   Config:    ✅ Complete
+
+3. CONSTITUTIONAL CASE
+   Primary:   Petitioner (درخواست گزار)
+   Secondary: Respondent (جواب دہندہ)
+   Offence:   No
+   Config:    ✅ Complete
+
+4. APPEAL
+   Primary:   Appellant (اپیل کنندہ)
+   Secondary: Respondent (جواب دہندہ)
+   Offence:   No
+   Config:    ✅ Complete
+
+5. EXECUTION
+   Primary:   Decree-holder (ڈگری یافتہ)
+   Secondary: Judgment-debtor (ڈگری کا پابند)
+   Offence:   No
+   Config:    ✅ Complete
+
+6. ARBITRATION
+   Primary:   Claimant (دعوئ کرنے والا)
+   Secondary: Respondent (جواب دہندہ)
+   Offence:   No
+   Config:    ✅ Complete
+
+─────────────────────────────────────────────────────────────────────────────
+FIELD MAPPING REFERENCE
+─────────────────────────────────────────────────────────────────────────────
+
+DATABASE → FORM → USER INTERFACE
+
+Old Judge Field (Edit Form):
+  judge_name (database) ← judge_name (form) ← Input "Judge / Bench" (UI)
+
+New Fresh Diary Field:
+  judge_name (database) ← fresh_diary (form) ← DatePicker "Fresh Diary" (UI)
+  
+  NOTE: Fresh Diary dates are stored in judge_name column for compatibility
+
+Description / Current Proceeding Field:
+  description (database) ← description (form) ← Textarea "Current Proceeding" (UI)
+  
+  NOTE: Label changed, field name and storage unchanged
+
+Party Labels (Dynamic):
+  plaintiff_name (database) ← plaintiff_name (form) ← Input with dynamic label (UI)
+  defendant_name (database) ← defendant_name (form) ← Input with dynamic label (UI)
+
+From / Representing:
+  representing (database) ← From (form) ← Input with dynamic chips (UI)
+
+─────────────────────────────────────────────────────────────────────────────
+TRANSLATION KEYS REQUIRED
+─────────────────────────────────────────────────────────────────────────────
+
+All translation keys already exist in web/i18n/locales/en.json:
+
+✅ cases.freshDiary          "Fresh Diary"
+✅ cases.currentProceedingCase "Current Proceeding"
+✅ cases.caseType            "Case Type"
+✅ cases.court               "Court"
+✅ cases.From                "From"
+✅ cases.fromPlaceholder     "e.g. Plaintiff, Defendant, Petitioner, Respondent..."
+✅ cases.offence             "Offence"
+✅ cases.caseDetails         "Case Details"
+✅ cases.firstHearing        "First Hearing Entry"
+✅ hearings.serialNo         "Serial No."
+✅ hearings.nextDate         "Next Date"
+✅ hearings.nextProceeding   "Next Proceeding"
+✅ common.optional           "Optional"
+
+─────────────────────────────────────────────────────────────────────────────
+TESTING CHECKLIST
+─────────────────────────────────────────────────────────────────────────────
+
+EDIT CASE FORM:
+□ Fresh Diary field displays as DatePicker
+□ Fresh Diary loads existing judge_name value correctly
+□ Fresh Diary date picker opens and allows date selection
+□ Current Proceeding label shows "Current Proceeding" (not "Description")
+□ Current Proceeding textarea loads existing description correctly
+□ All other fields work as before
+□ Form submission updates case correctly
+□ Case redirects to view page after save
+
+CASE TYPE SWITCHING:
+□ Selecting case type updates party field labels
+□ From role suggestions update with case type
+□ Clicking From chip updates the field and auto-fills party name
+□ Offence field shows only for Criminal Case
+□ All 6 case types display correct party labels
+
+MOBILE RESPONSIVE:
+□ Fresh Diary field works on mobile (iOS/Android)
+□ DatePicker opens correctly on touch devices
+□ Party fields stack properly on mobile
+□ From chips wrap without overflow
+
+RTL/URDU:
+□ Urdu party labels display correctly
+□ DatePicker works with RTL layout
+□ Current Proceeding textarea handles Urdu text
+□ Form layout adapts to RTL
+
+DARK THEME (from previous session):
+□ Fresh Diary DatePicker styled dark theme
+□ Current Proceeding textarea styled dark theme
+□ All form fields have dark theme styling
+□ Labels and placeholders visible on dark background
+
+─────────────────────────────────────────────────────────────────────────────
+BACKWARDS COMPATIBILITY
+─────────────────────────────────────────────────────────────────────────────
+
+✅ MAINTAINED: judge_name column still used for Fresh Diary storage
+   - Existing cases can be edited without data loss
+   - Fresh Diary dates stored in judge_name column
+   - No database migrations needed
+
+✅ MAINTAINED: description column unchanged
+   - Current Proceeding stored in description column
+   - Existing descriptions preserved
+   - Only field label changed in UI
+
+✅ MAINTAINED: All party field mappings
+   - plaintiff_name and defendant_name columns unchanged
+   - All existing cases work with dynamic labels
+   - From/representing field unchanged
+
+─────────────────────────────────────────────────────────────────────────────
+FILES MODIFIED
+─────────────────────────────────────────────────────────────────────────────
+
+1. web/app/cases/edit/page.tsx
+   - Added DatePicker import
+   - Updated form schema (judge_name → fresh_diary)
+   - Updated form reset logic
+   - Updated form submission payload
+   - Updated UI form fields
+
+STATUS: ✅ COMPLETE
+
+─────────────────────────────────────────────────────────────────────────────
+FILES NOT MODIFIED (Already Complete)
+─────────────────────────────────────────────────────────────────────────────
+
+✅ web/app/cases/new/page.tsx - Already has all required fields
+✅ web/lib/caseTypeConfig.ts - Case types properly configured
+✅ web/i18n/locales/en.json - All translation keys present
+✅ Database schema - judge_name and description columns exist
+
+─────────────────────────────────────────────────────────────────────────────
+DYNAMIC BEHAVIOR FEATURES
+─────────────────────────────────────────────────────────────────────────────
+
+CASE TYPE SELECTION:
+1. User selects case type from dropdown
+2. Party field labels update instantly
+3. From role suggestions update dynamically
+4. Suggestion chips refresh with case-type-specific roles
+5. Offence field shows/hides based on case type requirement
+
+FROM ROLE SELECTION:
+1. User clicks a From role chip
+2. From field updates with selected role
+3. If client already selected:
+   - Appropriate party field auto-fills with client name
+   - Other party field remains/clears (based on role logic)
+4. Selected chip highlights to show selection
+
+FRESH DIARY DEFAULTS:
+- New Case: Defaults to current date (Karachi timezone)
+- Edit Case: Loads existing diary date
+- DatePicker: Opens on click, allows selecting any valid date
+
+─────────────────────────────────────────────────────────────────────────────
+NEXT STEPS
+─────────────────────────────────────────────────────────────────────────────
+
+1. BUILD & VERIFY
+   npm run typecheck  → Verify TypeScript compilation
+   npm run lint       → Check ESLint issues
+
+2. TEST
+   Follow QUICK_TEST_CHECKLIST.md
+   - Create new case with each case type
+   - Edit existing case
+   - Switch case type and verify party labels update
+   - Test mobile responsiveness
+   - Test dark theme styling
+
+3. COMMIT & PUSH
+   git add web/app/cases/edit/page.tsx
+   git commit -m "feat: update edit case form with fresh diary and current proceeding fields"
+   git push origin main
+
+4. DEPLOY
+   Deploy to staging → Test thoroughly
+   Deploy to production → Ready for user testing
+
+─────────────────────────────────────────────────────────────────────────────
+
+STATUS: ✅ IMPLEMENTATION COMPLETE
+        ⏳ AWAITING BUILD & TESTING
+
+Updated: October 27, 2026
+═══════════════════════════════════════════════════════════════════════════════

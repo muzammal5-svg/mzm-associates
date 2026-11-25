@@ -31,6 +31,7 @@ import {
   getFromRoleSuggestions,
   isSecondaryPartyRole,
   getMappedFromRole,
+  getPartyPairForFromRole,
 } from "@/lib/caseTypeConfig";
 import type { Client }         from "@/types/supabase";
 
@@ -116,6 +117,18 @@ function NewCasePage() {
   // ── Dynamic party labels derived from selected case type ──────────────────
   const partyConfig = getPartyConfigForCaseType(selectedType?.name);
   const fromSuggestions = getFromRoleSuggestions(selectedType?.name);
+  
+  // ── Dynamic party labels derived from FROM role (overrides case type config) ──
+  // When a FROM chip is clicked, the party labels update to match the role pair
+  const fromRolePartyPair = getPartyPairForFromRole(currentFrom);
+  const displayPartyConfig = {
+    primaryEn: fromRolePartyPair.primaryEn,
+    primaryUr: fromRolePartyPair.primaryUr,
+    secondaryEn: fromRolePartyPair.secondaryEn,
+    secondaryUr: fromRolePartyPair.secondaryUr,
+    primaryPlaceholder: partyConfig.primaryPlaceholder,
+    secondaryPlaceholder: partyConfig.secondaryPlaceholder,
+  };
 
   // Track previous case type name so we can intelligently remap From role
   const prevCaseTypeNameRef = { current: "" };
@@ -332,12 +345,22 @@ function NewCasePage() {
                     type="button"
                     onClick={() => {
                       setValue("From", suggestion, { shouldValidate: true });
+                      
+                      // Update party field labels based on FROM role selection
+                      const partyPair = getPartyPairForFromRole(suggestion);
+                      // Note: We don't actually change plaintiff_name/defendant_name values,
+                      // just the labels displayed above them. The labels are derived from
+                      // partyPair in the render section below.
+                      
+                      // If client is selected, auto-fill appropriate party field
                       const client = selectedClient ?? prefilledClient;
                       if (client?.full_name) {
                         if (isSecondaryPartyRole(suggestion)) {
                           setValue("defendant_name", client.full_name, { shouldValidate: true });
+                          setValue("plaintiff_name", "", { shouldValidate: false });
                         } else {
                           setValue("plaintiff_name", client.full_name, { shouldValidate: true });
+                          setValue("defendant_name", "", { shouldValidate: false });
                         }
                       }
                     }}
@@ -353,17 +376,17 @@ function NewCasePage() {
               </div>
             </div>
 
-            {/* Dynamic party fields — labels update with case type */}
+            {/* Dynamic party fields — labels update with case type AND FROM role */}
             <div className="grid md:grid-cols-2 gap-4">
               <Input
-                label={partyConfig.primaryEn} required
-                placeholder={partyConfig.primaryPlaceholder ?? "Primary party name"}
+                label={displayPartyConfig.primaryEn} required
+                placeholder={displayPartyConfig.primaryPlaceholder ?? "Primary party name"}
                 error={errors.plaintiff_name?.message}
                 {...register("plaintiff_name")}
               />
               <Input
-                label={partyConfig.secondaryEn} required
-                placeholder={partyConfig.secondaryPlaceholder ?? "Opposing party name"}
+                label={displayPartyConfig.secondaryEn} required
+                placeholder={displayPartyConfig.secondaryPlaceholder ?? "Opposing party name"}
                 error={errors.defendant_name?.message}
                 {...register("defendant_name")}
               />
