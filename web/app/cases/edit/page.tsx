@@ -13,6 +13,7 @@ import { MutatingButton }     from "@/components/shared/MutatingButton";
 import { Card }               from "@/components/ui/Card";
 import { Input }              from "@/components/ui/Input";
 import { Select }             from "@/components/ui/Select";
+import { DatePicker }         from "@/components/ui/DatePicker";
 import { Textarea }           from "@/components/ui/Textarea";
 import { Button }             from "@/components/ui/Button";
 import { QueryErrorState }  from "@/components/ui/QueryErrorState";
@@ -34,7 +35,7 @@ const schema = z.object({
   case_type_id:    z.string().min(1),
   offence:         z.string().optional().or(z.literal("")),
   court_no:        z.string().optional().or(z.literal("")),
-  judge_name:      z.string().optional().or(z.literal("")),
+  fresh_diary:     z.string().optional().or(z.literal("")),
   description:     z.string().optional().or(z.literal("")),
 });
 const DEFAULT_COURT_SUGGESTIONS = [
@@ -86,7 +87,7 @@ function EditCasePage() {
       case_type_id:   c.case_type_id,
       offence:        c.offence ?? "",
       court_no:       c.court_no ?? "",
-      judge_name:     c.judge_name ?? "",
+      fresh_diary:    c.judge_name ?? "",
       description:    c.description ?? "",
     });
   }, [c, reset]);
@@ -110,7 +111,7 @@ function EditCasePage() {
         case_type_id:   data.case_type_id,
         offence:        needsOffence ? (data.offence || null) : null,
         court_no:       data.court_no || null,
-        judge_name:     data.judge_name || null,
+        judge_name:     data.fresh_diary || null,
         description:    data.description || null,
       });
       toast.success(t("common.caseUpdated"));
@@ -195,10 +196,10 @@ function EditCasePage() {
                   <option key={name} value={name} />
                 ))}
               </datalist>
-              <Input label={t("cases.judge")} {...register("judge_name")} />
+              <DatePicker label={t("cases.freshDiary")} {...register("fresh_diary")} />
             </div>
 
-            <Textarea label={t("cases.description")} rows={3} {...register("description")} />
+            <Textarea label={t("cases.currentProceedingCase")} rows={3} {...register("description")} />
           </div>
         </Card>
 
