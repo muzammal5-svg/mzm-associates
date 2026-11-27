@@ -26,6 +26,8 @@ const PRINT_STYLE = `
   body * { visibility: hidden !important; }
   #cause-list-print, #cause-list-print * { visibility: visible !important; }
   #cause-list-print { position: fixed; top: 0; left: 0; width: 100%; }
+  img, svg, canvas, picture, object, embed { display: none !important; }
+  * { background-image: none !important; }
   .no-print { display: none !important; }
 }
 `;
@@ -72,7 +74,6 @@ function CauseListPage() {
         rows:     allData.rows,
         date,
         firmName: firm?.name,
-        firmLogoUrl: firm?.logo_url,
       });
       toast.success(t("causeList.pdfDownloaded"));
     } catch (err: unknown) {
