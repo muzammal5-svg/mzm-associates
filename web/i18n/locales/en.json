@@ -117,6 +117,7 @@
     "vs": "vs",
     "description": "Description",
     "currentProceedingCase": "Current Proceeding",
+    "currentProceedingPlaceholder": "Current proceeding / today's order or notice...",
     "newCase": "New Case"
   },
   "clients": {

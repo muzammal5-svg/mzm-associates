@@ -25,6 +25,7 @@ import { useCase, useUpdateCase } from "@/hooks/useCases";
 import {
   getPartyConfigForCaseType,
   getFromRoleSuggestions,
+  getCaseTypeDisplayName,
 } from "@/lib/caseTypeConfig";
 
 const schema = z.object({
@@ -58,7 +59,7 @@ const DEFAULT_COURT_SUGGESTIONS = [
 type FormData = z.infer<typeof schema>;
 
 function EditCasePage() {
-  const { t }    = useTranslation();
+  const { t, i18n } = useTranslation();
   const router   = useRouter();
   const params   = useSearchParams();
   const toast    = useToast();
@@ -125,7 +126,10 @@ function EditCasePage() {
   if (caseError) return <AppShell showBack><QueryErrorState onRetry={() => void refetchCase()} /></AppShell>;
   if (!c) return <AppShell showBack><p className="text-danger text-sm">{t("common.caseNotFound")}</p></AppShell>;
 
-  const caseTypeOptions = caseTypes.map(ct => ({ value: ct.id, label: ct.name }));
+  const caseTypeOptions = caseTypes.map(ct => ({
+    value: ct.id,
+    label: getCaseTypeDisplayName(ct.name, i18n.language),
+  }));
   const courtOptions    = courts.map(ct => ({ value: ct.name, label: ct.name }));
 
   return (
@@ -180,10 +184,18 @@ function EditCasePage() {
 
             {/* Dynamic party fields — labels update with case type */}
             <div className="grid md:grid-cols-2 gap-4">
-              <Input label={partyConfig.primaryEn} required error={errors.plaintiff_name?.message}
-                {...register("plaintiff_name")} />
-              <Input label={partyConfig.secondaryEn} required error={errors.defendant_name?.message}
-                {...register("defendant_name")} />
+              <Input
+                label={`${partyConfig.primaryEn} (${partyConfig.primaryUr})`}
+                required
+                error={errors.plaintiff_name?.message}
+                {...register("plaintiff_name")}
+              />
+              <Input
+                label={`${partyConfig.secondaryEn} (${partyConfig.secondaryUr})`}
+                required
+                error={errors.defendant_name?.message}
+                {...register("defendant_name")}
+              />
             </div>
 
             <div className="grid md:grid-cols-2 gap-4">
@@ -199,7 +211,12 @@ function EditCasePage() {
               <DatePicker label={t("cases.freshDiary")} {...register("fresh_diary")} />
             </div>
 
-            <Textarea label={t("cases.currentProceedingCase")} rows={3} {...register("description")} />
+            <Textarea
+              label={t("cases.currentProceedingCase")}
+              rows={3}
+              placeholder={t("cases.currentProceedingPlaceholder") || "Current proceeding / today's order or notice..."}
+              {...register("description")}
+            />
           </div>
         </Card>
 

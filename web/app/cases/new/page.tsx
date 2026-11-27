@@ -31,7 +31,8 @@ import {
   getFromRoleSuggestions,
   isSecondaryPartyRole,
   getMappedFromRole,
-  getPartyPairForFromRole,
+  getCaseTypeDisplayName,
+  getCaseTypeDefinition,
 } from "@/lib/caseTypeConfig";
 import type { Client }         from "@/types/supabase";
 
@@ -78,7 +79,7 @@ type FormData = z.infer<typeof schema>;
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 function NewCasePage() {
-  const { t }       = useTranslation();
+  const { t, i18n } = useTranslation();
   const router      = useRouter();
   const params      = useSearchParams();
   const toast       = useToast();
@@ -115,44 +116,40 @@ function NewCasePage() {
   const needsOffence = selectedType?.requires_offence ?? false;
 
   // ── Dynamic party labels derived from selected case type ──────────────────
-  const partyConfig = getPartyConfigForCaseType(selectedType?.name);
+  const selectedDef     = getCaseTypeDefinition(selectedType?.name);
+  const partyConfig     = selectedDef?.parties ?? getPartyConfigForCaseType(selectedType?.name);
   const fromSuggestions = getFromRoleSuggestions(selectedType?.name);
-  
-  // ── Dynamic party labels derived from FROM role (overrides case type config) ──
-  // When a FROM chip is clicked, the party labels update to match the role pair
-  const fromRolePartyPair = getPartyPairForFromRole(currentFrom);
-  const displayPartyConfig = {
-    primaryEn: fromRolePartyPair.primaryEn,
-    primaryUr: fromRolePartyPair.primaryUr,
-    secondaryEn: fromRolePartyPair.secondaryEn,
-    secondaryUr: fromRolePartyPair.secondaryUr,
-    primaryPlaceholder: partyConfig.primaryPlaceholder,
-    secondaryPlaceholder: partyConfig.secondaryPlaceholder,
-  };
 
-  // Track previous case type name so we can intelligently remap From role
-  const prevCaseTypeNameRef = { current: "" };
+  // Track previous case type to intelligently remap From role and sync parties
+  const prevCaseTypeIdRef = { current: "" };
   useEffect(() => {
-    // When case type changes, remap the From role intelligently and update party names
-    const prevTypeName = prevCaseTypeNameRef.current;
-    const nextTypeName = selectedType?.name ?? "";
-    if (prevTypeName !== nextTypeName) {
-      prevCaseTypeNameRef.current = nextTypeName;
-      const remapped = getMappedFromRole(currentFrom, prevTypeName, nextTypeName);
-      if (remapped !== currentFrom) {
-        setValue("From", remapped, { shouldValidate: true });
-        // Also update party name if client is selected
-        const client = selectedClient ?? prefilledClient;
-        if (client?.full_name) {
-          const nextParties = getPartyConfigForCaseType(nextTypeName);
-          if (isSecondaryPartyRole(remapped)) {
-            setValue("defendant_name", client.full_name, { shouldValidate: true });
-            setValue("plaintiff_name", "", { shouldValidate: false });
-          } else {
-            setValue("plaintiff_name", client.full_name, { shouldValidate: true });
-            setValue("defendant_name", "", { shouldValidate: false });
-          }
-          void nextParties; // suppress lint
+    if (!caseTypeId) return;
+    const prevId = prevCaseTypeIdRef.current;
+    if (prevId === caseTypeId) return;
+    prevCaseTypeIdRef.current = caseTypeId;
+
+    const prevType = caseTypes.find(ct => ct.id === prevId);
+    const nextType = caseTypes.find(ct => ct.id === caseTypeId);
+    const prevTypeName = prevType?.name ?? "";
+    const nextTypeName = nextType?.name ?? "";
+
+    const remapped = getMappedFromRole(currentFrom, prevTypeName, nextTypeName);
+    if (remapped !== currentFrom) {
+      setValue("From", remapped, { shouldValidate: true });
+    }
+
+    // Auto-fill party name if client is selected
+    const client = selectedClient ?? prefilledClient;
+    if (client?.full_name) {
+      if (isSecondaryPartyRole(remapped)) {
+        setValue("defendant_name", client.full_name, { shouldValidate: true });
+        if (watch("plaintiff_name") === client.full_name) {
+          setValue("plaintiff_name", "", { shouldValidate: false });
+        }
+      } else {
+        setValue("plaintiff_name", client.full_name, { shouldValidate: true });
+        if (watch("defendant_name") === client.full_name) {
+          setValue("defendant_name", "", { shouldValidate: false });
         }
       }
     }
@@ -184,6 +181,12 @@ function NewCasePage() {
         customColsText.length > 0 ? customColsText.join("\n") : "",
       ].filter(Boolean).join("\n\n");
 
+      const hasFirstHearing = Boolean(
+        data.serial_no?.trim() ||
+        data.next_date?.trim() ||
+        data.next_proceeding?.trim()
+      );
+
       const newCase = await createCase.mutateAsync({
         firm_id:        profile.firm_id,
         client_id:      data.client_id,
@@ -200,11 +203,12 @@ function NewCasePage() {
         description:    combinedProceeding || undefined,
         assigned_to:    profile.id,
         created_by:     profile.id,
-        first_hearing: {
-          serial_no:       data.serial_no       || undefined,
+        first_hearing:  hasFirstHearing ? {
+          hearing_date:    data.fresh_diary || todayKarachi(),
+          serial_no:       data.serial_no?.trim()       || undefined,
           next_date:       data.next_date        || undefined,
-          next_proceeding: data.next_proceeding  || undefined,
-        },
+          next_proceeding: data.next_proceeding?.trim()  || undefined,
+        } : undefined,
       });
       toast.success(t("cases.new"), refNo ? `${refNo} created.` : "Case created.");
       router.push(`/cases/view?id=${newCase.id}`);
@@ -213,7 +217,10 @@ function NewCasePage() {
     }
   }
 
-  const caseTypeOptions = caseTypes.map(ct => ({ value: ct.id, label: ct.name }));
+  const caseTypeOptions = caseTypes.map(ct => ({
+    value: ct.id,
+    label: getCaseTypeDisplayName(ct.name, i18n.language),
+  }));
   const courtOptions    = courts.map(c  => ({ value: c.name, label: c.name }));
 
   return (
@@ -345,22 +352,20 @@ function NewCasePage() {
                     type="button"
                     onClick={() => {
                       setValue("From", suggestion, { shouldValidate: true });
-                      
-                      // Update party field labels based on FROM role selection
-                      const partyPair = getPartyPairForFromRole(suggestion);
-                      // Note: We don't actually change plaintiff_name/defendant_name values,
-                      // just the labels displayed above them. The labels are derived from
-                      // partyPair in the render section below.
-                      
+
                       // If client is selected, auto-fill appropriate party field
                       const client = selectedClient ?? prefilledClient;
                       if (client?.full_name) {
                         if (isSecondaryPartyRole(suggestion)) {
                           setValue("defendant_name", client.full_name, { shouldValidate: true });
-                          setValue("plaintiff_name", "", { shouldValidate: false });
+                          if (watch("plaintiff_name") === client.full_name) {
+                            setValue("plaintiff_name", "", { shouldValidate: false });
+                          }
                         } else {
                           setValue("plaintiff_name", client.full_name, { shouldValidate: true });
-                          setValue("defendant_name", "", { shouldValidate: false });
+                          if (watch("defendant_name") === client.full_name) {
+                            setValue("defendant_name", "", { shouldValidate: false });
+                          }
                         }
                       }
                     }}
@@ -376,53 +381,57 @@ function NewCasePage() {
               </div>
             </div>
 
-            {/* Dynamic party fields — labels update with case type AND FROM role */}
+            {/* Dynamic party fields — labels update dynamically with case type */}
             <div className="grid md:grid-cols-2 gap-4">
               <Input
-                label={displayPartyConfig.primaryEn} required
-                placeholder={displayPartyConfig.primaryPlaceholder ?? "Primary party name"}
+                label={`${partyConfig.primaryEn} (${partyConfig.primaryUr})`}
+                required
+                placeholder={partyConfig.primaryPlaceholder ?? `${partyConfig.primaryEn} Name`}
                 error={errors.plaintiff_name?.message}
                 {...register("plaintiff_name")}
               />
               <Input
-                label={displayPartyConfig.secondaryEn} required
-                placeholder={displayPartyConfig.secondaryPlaceholder ?? "Opposing party name"}
+                label={`${partyConfig.secondaryEn} (${partyConfig.secondaryUr})`}
+                required
+                placeholder={partyConfig.secondaryPlaceholder ?? `${partyConfig.secondaryEn} Name`}
                 error={errors.defendant_name?.message}
                 {...register("defendant_name")}
               />
             </div>
 
-            {/* Court (intact) */}
-            <div className="space-y-1.5">
-              <Input
-                label={t("cases.court")}
-                placeholder={t("common.allCourts")}
-                list="court-options"
-                {...register("court_no")}
-              />
-              <datalist id="court-options">
-                {Array.from(new Set([
-                  ...courtOptions.map((c) => c.value),
-                  ...DEFAULT_COURT_SUGGESTIONS,
-                ])).map((name) => (
-                  <option key={name} value={name} />
-                ))}
-              </datalist>
-            </div>
+            {/* Court and Fresh Diary in 2-column grid */}
+            <div className="grid md:grid-cols-2 gap-4">
+              <div className="space-y-1.5">
+                <Input
+                  label={t("cases.court")}
+                  placeholder={t("common.allCourts")}
+                  list="court-options"
+                  {...register("court_no")}
+                />
+                <datalist id="court-options">
+                  {Array.from(new Set([
+                    ...courtOptions.map((c) => c.value),
+                    ...DEFAULT_COURT_SUGGESTIONS,
+                  ])).map((name) => (
+                    <option key={name} value={name} />
+                  ))}
+                </datalist>
+              </div>
 
-            {/* Fresh Diary — replaces Judge / Bench */}
-            <DatePicker
-              label={t("cases.freshDiary")}
-              placeholder="Fresh Diary"
-              error={errors.fresh_diary?.message}
-              {...register("fresh_diary")}
-            />
+              <DatePicker
+                label={t("cases.freshDiary")}
+                placeholder="Fresh Diary"
+                error={errors.fresh_diary?.message}
+                {...register("fresh_diary")}
+              />
+            </div>
 
             {/* Current Proceeding — replaces Description */}
             <Textarea
               label={t("cases.currentProceedingCase")}
               rows={3}
-              placeholder="Current proceeding / today's order or notice..."
+              placeholder={t("cases.currentProceedingPlaceholder") || "Current proceeding / today's order or notice..."}
+              error={errors.current_proceeding?.message}
               {...register("current_proceeding")}
             />
           </div>

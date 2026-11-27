@@ -39,14 +39,160 @@ export interface CaseTypeDefinition {
   requiresOffence: boolean;
   /** Party ("vs") role mapping */
   parties: PartyRoleConfig;
+  /** Default FROM / representing role when this case type is selected */
+  defaultFrom: string;
+  /** Prioritized suggestion chips for this case type */
+  suggestions?: readonly string[];
 }
 
 /**
- * FROM Role Pair Mapping — when a FROM suggestion is clicked,
- * determines what the left and right party labels should be.
- * 
- * Key: FROM role (e.g., "Plaintiff", "State", "Petitioner")
- * Value: Party pair configuration for primary/secondary labels
+ * Standardized case type definitions and party ("vs") mappings.
+ *
+ * 1. Civil Case (from Civil Court) -> Plaintiff vs Defendant (مدعی بمقابلہ مدعا علیہ)
+ * 2. Criminal Case (from Criminal Court) -> State vs Accused (ریاست بمقابلہ ملزم)
+ * 3. Constitutional Case (from Constitutional Court) -> Petitioner vs Respondent (درخواست گزار بمقابلہ جواب دہندہ)
+ * 4. Appeal -> Appellant vs Respondent (اپیل کنندہ بمقابلہ جواب دہندہ)
+ * 5. Execution -> Decree-holder vs Judgment-debtor (ڈگری یافتہ بمقابلہ ڈگری کا پابند)
+ * 6. Arbitration -> Claimant vs Respondent (دعوئ کرنے والا بمقابلہ جواب دہندہ)
+ */
+export const CASE_TYPE_DEFINITIONS: readonly CaseTypeDefinition[] = [
+  {
+    name: "Civil Case",
+    nameUr: "دیوانی مقدمہ",
+    aliases: ["civil case", "civil court", "civil"],
+    requiresOffence: false,
+    parties: {
+      primaryEn: "Plaintiff",
+      primaryUr: "مدعی",
+      secondaryEn: "Defendant",
+      secondaryUr: "مدعا علیہ",
+      primaryPlaceholder: "Muhammad Aslam Khan",
+      secondaryPlaceholder: "Province of Punjab",
+    },
+    defaultFrom: "Plaintiff",
+    suggestions: ["Plaintiff", "Defendant", "Petitioner", "Respondent", "Appellant", "Accused"],
+  },
+  {
+    name: "Criminal Case",
+    nameUr: "فوجداری مقدمہ",
+    aliases: ["criminal case", "criminal court", "criminal"],
+    requiresOffence: true,
+    parties: {
+      primaryEn: "State",
+      primaryUr: "ریاست",
+      secondaryEn: "Accused",
+      secondaryUr: "ملزم",
+      primaryPlaceholder: "The State",
+      secondaryPlaceholder: "Accused Name",
+    },
+    defaultFrom: "Accused",
+    suggestions: ["Accused", "State", "Complainant", "Appellant", "Petitioner", "Respondent"],
+  },
+  {
+    name: "Constitutional Case",
+    nameUr: "آئینی مقدمہ",
+    aliases: ["constitutional case", "constitutional court", "constitutional", "writ", "writ petition"],
+    requiresOffence: false,
+    parties: {
+      primaryEn: "Petitioner",
+      primaryUr: "درخواست گزار",
+      secondaryEn: "Respondent",
+      secondaryUr: "جواب دہندہ",
+      primaryPlaceholder: "Petitioner Name",
+      secondaryPlaceholder: "Federation of Pakistan",
+    },
+    defaultFrom: "Petitioner",
+    suggestions: ["Petitioner", "Respondent", "Appellant", "Plaintiff", "Defendant", "Accused"],
+  },
+  {
+    name: "Appeal",
+    nameUr: "اپیل",
+    aliases: ["appeal", "civil appeal", "criminal appeal"],
+    requiresOffence: false,
+    parties: {
+      primaryEn: "Appellant",
+      primaryUr: "اپیل کنندہ",
+      secondaryEn: "Respondent",
+      secondaryUr: "جواب دہندہ",
+      primaryPlaceholder: "Appellant Name",
+      secondaryPlaceholder: "Respondent Name",
+    },
+    defaultFrom: "Appellant",
+    suggestions: ["Appellant", "Respondent", "Petitioner", "Accused", "Plaintiff", "Defendant"],
+  },
+  {
+    name: "Execution",
+    nameUr: "اجراء ڈگری",
+    aliases: ["execution", "execution petition", "execution court"],
+    requiresOffence: false,
+    parties: {
+      primaryEn: "Decree-holder",
+      primaryUr: "ڈگری یافتہ",
+      secondaryEn: "Judgment-debtor",
+      secondaryUr: "ڈگری کا پابند",
+      primaryPlaceholder: "Decree-holder Name",
+      secondaryPlaceholder: "Judgment-debtor Name",
+    },
+    defaultFrom: "Decree-holder",
+    suggestions: ["Decree-holder", "Judgment-debtor", "Plaintiff", "Defendant", "Petitioner", "Respondent"],
+  },
+  {
+    name: "Arbitration",
+    nameUr: "ثالثی",
+    aliases: ["arbitration"],
+    requiresOffence: false,
+    parties: {
+      primaryEn: "Claimant",
+      primaryUr: "دعوئ کرنے والا",
+      secondaryEn: "Respondent",
+      secondaryUr: "جواب دہندہ",
+      primaryPlaceholder: "Claimant Name",
+      secondaryPlaceholder: "Respondent Name",
+    },
+    defaultFrom: "Claimant",
+    suggestions: ["Claimant", "Respondent", "Petitioner", "Appellant", "Plaintiff", "Defendant"],
+  },
+] as const;
+
+export const DEFAULT_PARTY_CONFIG: PartyRoleConfig = {
+  primaryEn: "Plaintiff",
+  primaryUr: "مدعی",
+  secondaryEn: "Defendant",
+  secondaryUr: "مدعا علیہ",
+  primaryPlaceholder: "Muhammad Aslam Khan",
+  secondaryPlaceholder: "Province of Punjab",
+};
+
+/**
+ * Modular / extensible list of "From" (representing) role suggestions.
+ * Keep the primary 6 suggestions ("Plaintiff", "Defendant", "Petitioner", "Respondent", "Appellant", "Accused")
+ * first, with additional roles accessible as chips and via the autocomplete datalist.
+ */
+export const FROM_ROLE_SUGGESTIONS: readonly string[] = [
+  "Plaintiff",
+  "Defendant",
+  "Petitioner",
+  "Respondent",
+  "Appellant",
+  "Accused",
+  "State",
+  "Decree-holder",
+  "Judgment-debtor",
+  "Claimant",
+  "Complainant",
+  "Applicant",
+] as const;
+
+const SECONDARY_PARTY_ROLE_SET = new Set([
+  "defendant",
+  "respondent",
+  "accused",
+  "judgment-debtor",
+  "judgment debtor",
+]);
+
+/**
+ * FROM Role Pair Mapping — maps a selected role to its corresponding party pair labels.
  */
 export const FROM_ROLE_PAIR_MAP: Record<string, FromRolePair> = {
   "Plaintiff": {
@@ -123,128 +269,6 @@ export const FROM_ROLE_PAIR_MAP: Record<string, FromRolePair> = {
   },
 };
 
-export const CASE_TYPE_DEFINITIONS: readonly CaseTypeDefinition[] = [
-  {
-    name: "Civil Case",
-    nameUr: "دیوانی مقدمہ",
-    aliases: ["civil case", "civil court", "civil"],
-    requiresOffence: false,
-    parties: {
-      primaryEn: "Plaintiff",
-      primaryUr: "مدعی",
-      secondaryEn: "Defendant",
-      secondaryUr: "مدعا علیہ",
-      primaryPlaceholder: "Muhammad Aslam Khan",
-      secondaryPlaceholder: "Province of Punjab",
-    },
-  },
-  {
-    name: "Criminal Case",
-    nameUr: "فوجداری مقدمہ",
-    aliases: ["criminal case", "criminal court", "criminal"],
-    requiresOffence: true,
-    parties: {
-      primaryEn: "State",
-      primaryUr: "ریاست",
-      secondaryEn: "Accused",
-      secondaryUr: "ملزم",
-      primaryPlaceholder: "The State",
-      secondaryPlaceholder: "Accused Name",
-    },
-  },
-  {
-    name: "Constitutional Case",
-    nameUr: "آئینی مقدمہ",
-    aliases: ["constitutional case", "constitutional court", "constitutional", "writ"],
-    requiresOffence: false,
-    parties: {
-      primaryEn: "Petitioner",
-      primaryUr: "درخواست گزار",
-      secondaryEn: "Respondent",
-      secondaryUr: "جواب دہندہ",
-      primaryPlaceholder: "Petitioner Name",
-      secondaryPlaceholder: "Federation of Pakistan",
-    },
-  },
-  {
-    name: "Appeal",
-    nameUr: "اپیل",
-    aliases: ["appeal"],
-    requiresOffence: false,
-    parties: {
-      primaryEn: "Appellant",
-      primaryUr: "اپیل کنندہ",
-      secondaryEn: "Respondent",
-      secondaryUr: "جواب دہندہ",
-      primaryPlaceholder: "Appellant Name",
-      secondaryPlaceholder: "Respondent Name",
-    },
-  },
-  {
-    name: "Execution",
-    nameUr: "اجراء ڈگری",
-    aliases: ["execution"],
-    requiresOffence: false,
-    parties: {
-      primaryEn: "Decree-holder",
-      primaryUr: "ڈگری یافتہ",
-      secondaryEn: "Judgment-debtor",
-      secondaryUr: "ڈگری کا پابند",
-      primaryPlaceholder: "Decree-holder Name",
-      secondaryPlaceholder: "Judgment-debtor Name",
-    },
-  },
-  {
-    name: "Arbitration",
-    nameUr: "ثالثی",
-    aliases: ["arbitration"],
-    requiresOffence: false,
-    parties: {
-      primaryEn: "Claimant",
-      primaryUr: "دعوئ کرنے والا",
-      secondaryEn: "Respondent",
-      secondaryUr: "جواب دہندہ",
-      primaryPlaceholder: "Claimant Name",
-      secondaryPlaceholder: "Respondent Name",
-    },
-  },
-] as const;
-
-export const DEFAULT_PARTY_CONFIG: PartyRoleConfig = {
-  primaryEn: "Plaintiff",
-  primaryUr: "مدعی",
-  secondaryEn: "Defendant",
-  secondaryUr: "مدعا علیہ",
-  primaryPlaceholder: "Muhammad Aslam Khan",
-  secondaryPlaceholder: "Province of Punjab",
-};
-
-/**
- * Modular / extensible list of "From" (representing) role suggestions.
- */
-export const FROM_ROLE_SUGGESTIONS: readonly string[] = [
-  "Plaintiff",
-  "Defendant",
-  "State",
-  "Accused",
-  "Petitioner",
-  "Respondent",
-  "Appellant",
-  "Decree-holder",
-  "Judgment-debtor",
-  "Claimant",
-  "Complainant",
-  "Applicant",
-] as const;
-
-const SECONDARY_PARTY_ROLE_SET = new Set([
-  "defendant",
-  "respondent",
-  "accused",
-  "judgment-debtor",
-  "judgment debtor",
-]);
-
 /**
  * Look up a centralized CaseTypeDefinition by raw case type name or alias.
  */
@@ -257,7 +281,7 @@ export function getCaseTypeDefinition(rawName?: string | null): CaseTypeDefiniti
 }
 
 /**
- * Returns the standardized display name for a case type (e.g. "Civil" -> "Civil Case").
+ * Returns the standardized display name for a case type (e.g. "Civil Court" -> "Civil Case").
  */
 export function getCaseTypeDisplayName(rawName: string, lang?: string): string {
   const def = getCaseTypeDefinition(rawName);
@@ -284,56 +308,76 @@ export function isSecondaryPartyRole(role?: string | null): boolean {
  * Returns modular From-role suggestions with the selected case type's roles prioritized first.
  */
 export function getFromRoleSuggestions(caseTypeName?: string | null): string[] {
-  const parties = getPartyConfigForCaseType(caseTypeName);
-  return Array.from(
-    new Set([parties.primaryEn, parties.secondaryEn, ...FROM_ROLE_SUGGESTIONS])
-  );
+  const def = getCaseTypeDefinition(caseTypeName);
+  if (def) {
+    return Array.from(
+      new Set([
+        def.parties.primaryEn,
+        def.parties.secondaryEn,
+        ...(def.suggestions ?? []),
+        ...FROM_ROLE_SUGGESTIONS,
+      ])
+    );
+  }
+  return [...FROM_ROLE_SUGGESTIONS];
 }
 
 /**
  * Maps the current "From" role to the corresponding primary/secondary role when
- * switching case types, if the current role was one of the previous case type's roles
- * or a standard default role.
+ * switching case types.
  */
 export function getMappedFromRole(
   currentFrom: string,
   prevCaseTypeName?: string | null,
   nextCaseTypeName?: string | null
 ): string {
-  const nextParties = getPartyConfigForCaseType(nextCaseTypeName);
+  const nextDef = getCaseTypeDefinition(nextCaseTypeName);
+  const nextParties = nextDef?.parties ?? DEFAULT_PARTY_CONFIG;
   const trimmed = currentFrom.trim();
-  if (!trimmed) return nextParties.primaryEn;
+  if (!trimmed) return nextDef?.defaultFrom ?? nextParties.primaryEn;
 
-  const prevParties = getPartyConfigForCaseType(prevCaseTypeName);
+  const prevDef = getCaseTypeDefinition(prevCaseTypeName);
+  const prevParties = prevDef?.parties ?? DEFAULT_PARTY_CONFIG;
   const lower = trimmed.toLowerCase();
 
-  if (lower === prevParties.primaryEn.toLowerCase() || lower === DEFAULT_PARTY_CONFIG.primaryEn.toLowerCase()) {
-    return nextParties.primaryEn;
+  if (
+    lower === prevParties.primaryEn.toLowerCase() ||
+    lower === DEFAULT_PARTY_CONFIG.primaryEn.toLowerCase()
+  ) {
+    return nextDef?.defaultFrom ?? nextParties.primaryEn;
   }
-  if (lower === prevParties.secondaryEn.toLowerCase() || lower === DEFAULT_PARTY_CONFIG.secondaryEn.toLowerCase()) {
+  if (
+    lower === prevParties.secondaryEn.toLowerCase() ||
+    lower === DEFAULT_PARTY_CONFIG.secondaryEn.toLowerCase()
+  ) {
     return nextParties.secondaryEn;
   }
 
   return currentFrom;
 }
+
 /**
  * Returns the party pair configuration for a given FROM role.
- * When a user clicks a FROM suggestion chip, this returns the labels
- * for both the primary (left) and secondary (right) party fields.
  */
 export function getPartyPairForFromRole(fromRole?: string | null): FromRolePair {
-  if (!fromRole) return FROM_ROLE_PAIR_MAP["Plaintiff"] ?? {
-    primaryEn: "Plaintiff",
-    primaryUr: "مدعی",
-    secondaryEn: "Defendant",
-    secondaryUr: "مدعا علیہ",
-  };
-  
+  if (!fromRole) {
+    return (
+      FROM_ROLE_PAIR_MAP["Plaintiff"] ?? {
+        primaryEn: "Plaintiff",
+        primaryUr: "مدعی",
+        secondaryEn: "Defendant",
+        secondaryUr: "مدعا علیہ",
+      }
+    );
+  }
+
   const trimmed = fromRole.trim();
-  return FROM_ROLE_PAIR_MAP[trimmed] ?? {
-    primaryEn: trimmed,
-    primaryUr: trimmed,
-    secondaryEn: "Other Party",
-    secondaryUr: "دوسری فریق",
-  };
+  return (
+    FROM_ROLE_PAIR_MAP[trimmed] ?? {
+      primaryEn: trimmed,
+      primaryUr: trimmed,
+      secondaryEn: "Other Party",
+      secondaryUr: "دوسری فریق",
+    }
+  );
 }
